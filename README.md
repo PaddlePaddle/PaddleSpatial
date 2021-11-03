@@ -25,10 +25,12 @@ PaddleSpatial
 
 ### committers
 * zhoujingbo(zhoujingbo@baidu.com)
+* liyanyan(liyanyanliyanyan@baidu.com)
+* luxinjiang(luxinjiang@baidu.com)
 
 讨论
 ---
-百度Hi交流群：群号
+百度如流交流群：群号
 
 
 [changelog]: http://icode.baidu.com/repos/baidu/bil-plat/PaddleSpatial/blob/master:CHANGELOG.md
