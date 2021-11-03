@@ -13,7 +13,6 @@ from shapely import wkt
 from region import Point
 from region import Region
 from generate.gen import algorithm
-from conf import Conf
 
 # common
 def log(info):
@@ -26,7 +25,7 @@ def log(info):
     Raise: 
         None
     """
-    print datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), info
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), info)
     sys.stdout.flush()
 
 

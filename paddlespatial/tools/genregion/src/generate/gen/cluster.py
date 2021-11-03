@@ -426,16 +426,14 @@ class HCCluster(Cluster):
         Raise: 
             None
         """
-        print "hc cluster: ",
+        print("hc cluster: ")
         for pt in self.points:
-            print pt, ",",
-        print
+            print(pt, ",")
         for fhc, weight in self.friends:
-            print "friend weight: ", weight, " : ",
+            print("friend weight: ", weight, " : ")
             for pt in fhc.points:
-                print pt, ",",
-            print
-        print "mbr: (%f, %f), (%f, %f)" % (self.minx, self.miny, self.maxx, self.maxy)
+                print(pt, ",")
+        print("mbr: (%f, %f), (%f, %f)" % (self.minx, self.miny, self.maxx, self.maxy))
 
 
 class HCAlgorithm(object):

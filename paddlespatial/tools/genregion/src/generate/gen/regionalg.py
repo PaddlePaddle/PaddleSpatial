@@ -104,16 +104,15 @@ class Neighbor(object):
         Raise: 
             None
         """
-        print "neighbor"
+        print("neighbor")
         if self.region is not None:
-            print "\tregion: ", str(self.region)
+            print("\tregion: ", str(self.region))
         else:
-            print "\tregion: None"
-        print "\tPoint: ",
+            print("\tregion: None")
+        print("\tPoint: ")
         for pt in self.points:
-            print str(pt), ", ",
-        print
-        print "\tlength: ", self.length
+            print(str(pt), ", ")
+        print("\tlength: ", self.length)
 
 
 class LinkDict(object):

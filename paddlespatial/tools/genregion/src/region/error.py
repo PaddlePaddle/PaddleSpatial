@@ -18,7 +18,7 @@ def debug(info):
     Raise: 
         None
     """
-    print datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), info
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), info)
     sys.stdout.flush()
 
 class RegionError(Exception):
