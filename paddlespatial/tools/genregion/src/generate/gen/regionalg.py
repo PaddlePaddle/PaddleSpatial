@@ -16,7 +16,7 @@ class Link(mygeo.Segment):
     """
     Desc: 区域处理算法的link对象
     """
-    __slots__ = ("twin_link", "region")
+    #__slots__ = ("twin_link", "region")
 
     def __init__(self, start, end):
         """
@@ -54,7 +54,7 @@ class Neighbor(object):
     """
     Desc: region的邻居对象, 记录邻居的region, 同邻居的边界信息等
     """
-    __slots__ = ("region", "points", "length")
+    #__slots__ = ("region", "points", "length")
 
     def __init__(self, region, points, length):
         """
@@ -119,7 +119,7 @@ class LinkDict(object):
     """
     Desc: link生成装置
     """
-    __slots__ = ("link_dict", )
+    #__slots__ = ("link_dict", )
 
     def __init__(self):
         """
@@ -227,8 +227,8 @@ class Region(mygeo.Region):
     """
     Desc: 记录region与link之间的关系
     """
-    __slots__ = ("link_dict", "parent_region", "linkss", "area_", "length_", "width_", \
-                 "neighbors")
+    #__slots__ = ("link_dict", "parent_region", "linkss", "area_", "length_", "width_", \
+                 #"neighbors")
 
     def __init__(self, region, parent_region, link_dict):
         """

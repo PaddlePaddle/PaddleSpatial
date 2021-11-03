@@ -14,7 +14,7 @@ class Point(mygeo.Point):
     """
     Desc: 聚类的point对象，id, x, y; id相同的点不能聚合在一起
     """
-    __slots__ = ("id", )
+    #__slots__ = ("id", )
 
     def __init__(self, x, y, id=None):
         mygeo.Point.__init__(self, x, y)
@@ -24,7 +24,7 @@ class Cluster(object):
     """
     Desc: 聚类对象, 点聚类后的结果
     """
-    __slots__ = ("minx", "maxx", "miny", "maxy", "points", "ids")
+    #__slots__ = ("minx", "maxx", "miny", "maxy", "points", "ids")
 
     def __init__(self):
         """

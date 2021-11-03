@@ -202,8 +202,8 @@ def generate_regions(segments, raw_regions=None, grid_size=1024, \
         None
     """
     regions = None
-    if raw_regions is not None:
-        regions = __filter_regions(segments, raw_regions, grid_size, clust_width)
+    #if raw_regions is not None:
+    #    regions = __filter_regions(segments, raw_regions, grid_size, clust_width)
     clusters = __cluster_points(segments, regions, grid_size, clust_width)
     pointmap = generator.clusters_to_pointmap(clusters)
     del clusters
