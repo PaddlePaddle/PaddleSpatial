@@ -156,7 +156,7 @@ class VmrGAE(nn.Layer):
         self.prior_mean = nn.Sequential(nn.Linear(h_dim, h_dim))
         self.prior_std = nn.Sequential(nn.Linear(h_dim, h_dim), nn.Softplus())
             
-        self.rnn = graph_gru_gcn(h_dim + h_dim, h_dim, n_layers)
+        self.rnn = GruGcn(h_dim + h_dim, h_dim, n_layers)
 
         if self.same_structure:
             self.mgcn_mean = DiffusionGCNConv(h_dim, h_dim)
