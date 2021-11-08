@@ -12,7 +12,7 @@ Date:    2021/10/26
 import os
 import numpy as np
 import paddle
-from paddlespatial.networks.vmrgae.model import VMR_GAE
+from model import VmrGAE
 from train import prep_env
 
 
@@ -21,9 +21,9 @@ if __name__ == '__main__':
     env = prep_env(flag='eval')
 
     # load VMR-GAE and run
-    model = VMR_GAE(x_dim=env["x"].shape[-1], d_dim=env["xs"].shape[-1], h_dim=env["args"].hidden_dim,
-                    num_nodes=env["args"].num_nodes, n_layers=env["args"].rnn_layer,
-                    eps=1e-10, same_structure=True)
+    model = VmrGAE(x_dim=env["x"].shape[-1], d_dim=env["xs"].shape[-1], h_dim=env["args"].hidden_dim,
+                   num_nodes=env["args"].num_nodes, n_layers=env["args"].rnn_layer,
+                   eps=1e-10, same_structure=True)
 
     if not os.path.isfile('%s/model.pdparams' % env["args"].checkpoints):
         print('Checkpoint does not exist.')

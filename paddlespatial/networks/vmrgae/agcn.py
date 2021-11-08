@@ -41,8 +41,8 @@ class AGCNConv(nn.Layer):
         self.activation = activation
         self.distance_conv = pgl.nn.GCNConv(input_size, output_size, activation=None, norm=norm)
         if addaptadj:
-            self.nodevec_col = self.create_parameter(shape=[output_size,num_nodes])
-            self.nodevec_lin = self.create_parameter(shape=[num_nodes,output_size])
+            self.nodevec_col = self.create_parameter(shape=[output_size, num_nodes])
+            self.nodevec_lin = self.create_parameter(shape=[num_nodes, output_size])
             self.adaptive_conv = pgl.nn.GCNConv(input_size, output_size, activation=None, norm=norm)
             self.mlp = nn.Sequential(nn.Linear(2 * output_size, output_size))
 
@@ -69,7 +69,7 @@ class AGCNConv(nn.Layer):
         for i in range(self.num_nodes):
             for j in range(self.num_nodes):
                 if adpmat[i][j] > 0:
-                    edge_index.append([i,j])
+                    edge_index.append([i, j])
                     edge_feat.append(adpmat[i][j])
         edge_feat = paddle.to_tensor(edge_feat)
         graph_adp = pgl.Graph(edges=edge_index,

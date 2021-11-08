@@ -20,7 +20,7 @@ import time
 import utils
 
 
-class graph_gru_gcn(nn.Layer):
+class GruGcn(nn.Layer):
     """
     Desc:
         The gated recurrent network with GCN as operator
@@ -35,7 +35,7 @@ class graph_gru_gcn(nn.Layer):
             hidden_size: The dimension size of the hidden tensor
             n_layers: The layer number of this network
         """
-        super(graph_gru_gcn, self).__init__()
+        super(GruGcn, self).__init__()
         self.hidden_size = hidden_size
         self.n_layer = n_layer
         self.tanhlayer = nn.Tanh()
@@ -86,15 +86,15 @@ class graph_gru_gcn(nn.Layer):
                 h_tilde_g = self.tanhlayer(self.weight_xh[i](g, inp) + self.weight_hh[i](g, r_g * h[i]))
                 h_out.append(z_g * h[i] + (1 - z_g) * h_tilde_g)
             else:
-                z_g = F.sigmoid(self.weight_xz[i](g, h_out[i-1]) + self.weight_hz[i](g, h[i]))
-                r_g = F.sigmoid(self.weight_xr[i](g, h_out[i-1]) + self.weight_hr[i](g, h[i]))
-                h_tilde_g = self.tanhlayer(self.weight_xh[i](g, h_out[i-1]) + self.weight_hh[i](g, r_g * h[i]))
+                z_g = F.sigmoid(self.weight_xz[i](g, h_out[i - 1]) + self.weight_hz[i](g, h[i]))
+                r_g = F.sigmoid(self.weight_xr[i](g, h_out[i - 1]) + self.weight_hr[i](g, h[i]))
+                h_tilde_g = self.tanhlayer(self.weight_xh[i](g, h_out[i - 1]) + self.weight_hh[i](g, r_g * h[i]))
                 h_out.append(z_g * h[i] + (1 - z_g) * h_tilde_g)
         return h_out
 
 
 # main framework
-class VMR_GAE(nn.Layer):
+class VmrGAE(nn.Layer):
     """
     Desc:
         The VMR-GAE model
@@ -116,7 +116,7 @@ class VMR_GAE(nn.Layer):
             align: If True, the distribution alignment will be applied.
             is_region_feature: If False, the node feature of target modal is an identity matrix.
         """
-        super(VMR_GAE, self).__init__()
+        super(VmrGAE, self).__init__()
         self.x_dim = x_dim
         self.d_dim = d_dim
         self.h_dim = h_dim
@@ -257,7 +257,7 @@ class VMR_GAE(nn.Layer):
             z_t_out = paddle.unsqueeze(self.phi_z_out(paddle.concat([e_x_t, e_xs_t], 1)), 1)
             z_t_in = paddle.concat([z_t_in for i in range(self.num_nodes)], axis=0)
             z_t_out = paddle.concat([z_t_out for i in range(self.num_nodes)], axis=1)
-            z_t = paddle.concat([z_t_out, z_t_in], axis=2).reshape((self.num_nodes*self.num_nodes, -1))
+            z_t = paddle.concat([z_t_out, z_t_in], axis=2).reshape((self.num_nodes * self.num_nodes, -1))
             dec_t = self.phi_dec(z_t).reshape((self.num_nodes, self.num_nodes))
             end_time = time.time()
 
@@ -309,8 +309,8 @@ class VMR_GAE(nn.Layer):
             theloss: A tensor with shape (1) indicating the NLL Poission Loss
         """
         inputs = A_scaler.inverse_transform(inputs)
-        loss = inputs - truth * paddle.log(inputs+self.eps) \
-            + truth * paddle.log(truth+self.eps) \
+        loss = inputs - truth * paddle.log(inputs + self.eps) \
+            + truth * paddle.log(truth + self.eps) \
             - truth + 0.5 * paddle.log(2 * 3.1415926 * truth + self.eps)
         loss = ((loss * mask) / (mask.sum())).sum()
         

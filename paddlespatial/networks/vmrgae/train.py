@@ -14,9 +14,9 @@ import os
 import numpy as np
 import paddle
 import pgl
-from paddlespatial.networks.vmrgae.model import VMR_GAE
-import paddlespatial.networks.vmrgae.utils as utils
-from paddlespatial.networks.vmrgae.utils import MinMaxScaler
+from model import VmrGAE
+import utils as utils
+from utils import MinMaxScaler
 
 
 def prep_env(flag='train'):
@@ -130,9 +130,9 @@ if __name__ == '__main__':
     env = prep_env()
 
     # load VMR-GAE and run
-    model = VMR_GAE(x_dim=env["x"].shape[-1], d_dim=env["xs"].shape[-1], h_dim=env["args"].hidden_dim,
-                    num_nodes=env["args"].num_nodes, n_layers=env["args"].rnn_layer,
-                    eps=1e-10, same_structure=True)
+    model = VmrGAE(x_dim=env["x"].shape[-1], d_dim=env["xs"].shape[-1], h_dim=env["args"].hidden_dim,
+                   num_nodes=env["args"].num_nodes, n_layers=env["args"].rnn_layer,
+                   eps=1e-10, same_structure=True)
 
     # Before training, read the checkpoints if available
     if not os.path.isfile('%s/model.pdparams' % env["args"].checkpoints):
@@ -161,12 +161,12 @@ if __name__ == '__main__':
             = model(env["x"], env["xs"], env["target_graph"], env["supp_graph"], env["mask"],
                     env["primary_scale"], env["ground_truths"])
         pred = env["primary_scale"].inverse_transform(all_dec_t[-1].numpy())
-        val_MAE, val_RMSE, val_MAPE = utils.valid(pred, env["val_data"][0],
-                                                  env["val_data"][1], flag='val')
-        test_MAE, test_RMSE, test_MAPE = utils.valid(pred, env["test_data"][0],
-                                                     env["test_data"][1], flag='test')
-        # train_MAE, train_RMSE, train_MAPE = utils.valid(pred, env["train_data"][0],
-        #                                                 env["train_data"][1], flag='train')
+        val_MAE, val_RMSE, val_MAPE = utils.validate(pred, env["val_data"][0],
+                                                     env["val_data"][1], flag='val')
+        test_MAE, test_RMSE, test_MAPE = utils.validate(pred, env["test_data"][0],
+                                                        env["test_data"][1], flag='test')
+        # train_MAE, train_RMSE, train_MAPE = utils.validate(pred, env["train_data"][0],
+        #                                                    env["train_data"][1], flag='train')
         if val_MAPE < best_val_mape:
             best_val_mape = val_MAPE
             max_iter = 0
@@ -192,7 +192,7 @@ if __name__ == '__main__':
             print('test', "MAE:", test_MAE, 'RMSE:', test_RMSE, 'MAPE:', test_MAPE)
 
         if (loss.mean() < min_loss).item() | (k == env["args"].delay):
-            print('epoch: %d, Loss goes down, save the model. pis_loss = %f' % (k,pis_loss.mean().item()))
+            print('epoch: %d, Loss goes down, save the model. pis_loss = %f' % (k, pis_loss.mean().item()))
             print('val', "MAE:", val_MAE, 'RMSE:', val_RMSE, 'MAPE:', val_MAPE)
             print('test', "MAE:", test_MAE, 'RMSE:', test_RMSE, 'MAPE:', test_MAPE)
             min_loss = loss.mean().item()

@@ -13,13 +13,13 @@ import numpy as np
 import math
 
 
-def valid(preds, test_index, test_value, flag='val'):
+def validate(pred, test_index, test_value, flag='val'):
     # type: (np.array, np.array, np.array, str) -> (float, float, float)
     """
     Desc:
         calculate metric (MAE, RMSE, MAPE)
     Args:
-        preds: An array with shape (num_nodes, num_nodes)
+        pred: An array with shape (num_nodes, num_nodes)
         test_index: An array with shape (testset_size, 2)
         test_value: An array with shape (testset_size)
         flag: The string indicating the dataset, e.g., test, val, train.
@@ -34,9 +34,9 @@ def valid(preds, test_index, test_value, flag='val'):
     count = 0
     for i in range(len(test_index)):
         if test_value[i] > 2:
-            mae += abs(test_value[i] - preds[test_index[i][0]][test_index[i][1]])
-            rmse += abs(test_value[i] - preds[test_index[i][0]][test_index[i][1]]) ** 2
-            mape += abs(test_value[i] - preds[test_index[i][0]][test_index[i][1]]) / test_value[i]
+            mae += abs(test_value[i] - pred[test_index[i][0]][test_index[i][1]])
+            rmse += abs(test_value[i] - pred[test_index[i][0]][test_index[i][1]]) ** 2
+            mape += abs(test_value[i] - pred[test_index[i][0]][test_index[i][1]]) / test_value[i]
             count += 1
     mae = mae / count
     rmse = math.sqrt(rmse / count)
