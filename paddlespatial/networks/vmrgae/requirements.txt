@@ -1,0 +1,3 @@
+numpy~=1.21.4
+ipaddlepaddle-gpu==2.1.3
+pgl==2.1.5

@@ -1,0 +1,28 @@
+1. Dependencies should be installed using the following command before training:
+   pip install -r requirements_vmrgae.txt
+
+2. Data description:
+       Publicly available Taxi and Limousine Commission (TLC) Taxi trip Data
+   from  https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+
+       We provide the pre-processed toy dataset of 6 hours from 2019/4/13 8:00 a.m. to 2019/4/13 2:00 p.m.
+   in ./data/NYC-taxi (2 hours per time step), including:
+   ----train_data.npy   The OD flows of 3 time steps for training from Yellow Taxi records in sparse representation.
+                        The sparse OD matrix of each time step is a [Index, Value] list.
+                        Index = [(i_1,j_1),...,(i_k,j_k)], Value = [A_{i_1,j_1},...,A_{i_k,j_k}].
+                        (70% of the whole existed OD pairs of Yellow Taxi)
+   ----val_data.npy     The OD flows of the last time steps for validation.
+                        (10% of the whole existed OD pairs of Yellow Taxi)
+   ----test_data.npy    The OD flows of the last time steps for testing.
+                        (20% of the whole existed OD pairs of Yellow Taxi)
+   ----green_data.npy   The OD flows of 3 time steps for training from Green Taxi records
+
+3. Here are commands for training the model on NYC Taxi.
+   python train.py --data_path ./data/NYC-taxi
+
+4. Evaluation.
+   python eval.py --data_path ./data/NYC-taxi --checkpoints ./nyc/checkpoints
+
+
+Copyright (c) 2021 Baidu.com, Inc. All Rights Reserved.
+
