@@ -1,5 +1,5 @@
 1. Dependencies should be installed using the following command before training:
-   pip install -r requirements_vmrgae.txt
+   pip install -r requirements.txt
 
 2. Data description:
        Publicly available Taxi and Limousine Commission (TLC) Taxi trip Data
@@ -25,4 +25,3 @@
 
 
 Copyright (c) 2021 Baidu.com, Inc. All Rights Reserved.
-

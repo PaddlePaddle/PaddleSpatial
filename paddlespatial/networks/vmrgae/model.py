@@ -100,8 +100,8 @@ class VmrGAE(nn.Layer):
         The VMR-GAE model
     """
     def __init__(self, x_dim, d_dim, h_dim, num_nodes, n_layers, eps=1e-10, same_structure=True, align=True,
-                 is_region_feature=True):
-        # type: (int, int, int, int, int, float, bool, bool, bool) -> None
+                 is_region_feature=True, is_debug=False):
+        # type: (int, int, int, int, int, float, bool, bool, bool, bool) -> None
         """
         Desc:
             __init__
@@ -115,6 +115,7 @@ class VmrGAE(nn.Layer):
             same_structure: If True, the target and supple modal input are in the same structure.
             align: If True, the distribution alignment will be applied.
             is_region_feature: If False, the node feature of target modal is an identity matrix.
+            is_debug: a boolean variable
         """
         super(VmrGAE, self).__init__()
         self.x_dim = x_dim
@@ -125,6 +126,7 @@ class VmrGAE(nn.Layer):
         self.num_nodes = num_nodes
         self.align = align
         self.is_region_feature = is_region_feature
+        self.is_debug = is_debug
         self.same_structure = same_structure
 
         self.phi_x = nn.Sequential(nn.Linear(x_dim, h_dim), nn.ReLU())
@@ -228,15 +230,16 @@ class VmrGAE(nn.Layer):
             enc_std_t = F.softplus(self.enc_std(graphs_target[t], enc_t))
 
             # encoder of adaptive variational demand encoder
-            # start_time = time.time()
+            start_time = time.time()
             if self.same_structure:
                 enc_xs_mean_t = self.mgcn_mean(graph_sup[t], phi_xs_t)
                 enc_xs_std_t = self.mgcn_std(graph_sup[t], phi_xs_t)
             else:
                 enc_xs_mean_t = self.mgcn_mean(graph_sup, phi_xs_t)
                 enc_xs_std_t = self.mgcn_std(graph_sup, phi_xs_t)
-            # end_time = time.time()
-            # print('encoder_xs:', end_time-start_time)
+            end_time = time.time()
+            if self.is_debug:
+                print('encoder_xs:', end_time - start_time)
 
             # prior
             prior_t = self.prior(all_h[t][-1])
@@ -253,6 +256,7 @@ class VmrGAE(nn.Layer):
             e_xs_t = self._reparameterized_sample(enc_xs_mean_t, enc_xs_std_t)
 
             # decoder
+            start_time = time.time()
             z_t_in = paddle.unsqueeze(self.phi_z_in(paddle.concat([e_x_t, e_xs_t], 1)), 0)
             z_t_out = paddle.unsqueeze(self.phi_z_out(paddle.concat([e_x_t, e_xs_t], 1)), 1)
             z_t_in = paddle.concat([z_t_in for i in range(self.num_nodes)], axis=0)
@@ -260,6 +264,8 @@ class VmrGAE(nn.Layer):
             z_t = paddle.concat([z_t_out, z_t_in], axis=2).reshape((self.num_nodes * self.num_nodes, -1))
             dec_t = self.phi_dec(z_t).reshape((self.num_nodes, self.num_nodes))
             end_time = time.time()
+            if self.is_debug:
+                print('Decoder time consumption:', end_time - start_time)
 
             # recurrence
             h_t = self.rnn(graphs_target[t], paddle.concat([phi_x_t, phi_e_x_t], 1), all_h[t])
@@ -269,11 +275,10 @@ class VmrGAE(nn.Layer):
             if self.align:
                 kld_loss_sup += 0.2 * self._kld_gauss(enc_xs_mean_t, enc_xs_std_t, prior_xs_mean_t, prior_xs_std_t)
             else:
-                # kld_loss_sup += 0.2 * self._kld_gauss(enc_d_mean_t, enc_d_std_t, self.xs_prior_mean,
-                #                                       self.xs_prior_std)
-                kld_loss_sup += 0.2 * self._kld_gauss(enc_mean_t, enc_std_t, self.xs_prior_mean, self.xs_prior_std)
+                kld_loss_sup += 0.2 * self._kld_gauss(enc_xs_mean_t, enc_xs_std_t, self.xs_prior_mean,
+                                                      self.xs_prior_std)
 
-            if (xs.shape[0]-t) <= 24:
+            if (xs.shape[0] - t) <= 24:
                 pis_loss += self.masked_pisloss(dec_t, truths[t], mask, A_scaler)
             # sim_loss += self.Regularization_loss(z_t_in, poi_lambda_in[t], z_t_out)
 
@@ -327,6 +332,8 @@ class VmrGAE(nn.Layer):
         Returns:
             representation: A tensor with shape (num_nodes, h_dim)
         """
+        if self.is_debug:
+            print(">>> Re-parameterization >>>")
         eps1 = paddle.randn(std.shape)
         representation = mean + eps1 * std
         return representation
