@@ -5,9 +5,16 @@ import os
 
 
 # read data
-class City_Dataset(Dataset):
+class CityDataset(Dataset):
+    """
+    To load the dataset of a given city.
+
+    Args:
+        dataset_type: the prefix of the file name of dataset. (train/eval)
+        city_name: the name of given city. (e.g. Wuhan)
+    """
     def __init__(self, dataset_type, city_name):
-        super(City_Dataset, self).__init__()
+        super(CityDataset, self).__init__()
         self.type = dataset_type
         self.city_name = city_name
         root_path = os.path.dirname(os.path.realpath(__file__))
@@ -30,9 +37,12 @@ class City_Dataset(Dataset):
 
 
 # reference city is Shenzhen
-class Encoder_shenzhen(paddle.nn.Layer):
+class EncoderShenzhen(paddle.nn.Layer):
+    """
+    Define the Encoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Encoder_shenzhen, self).__init__()
+        super(EncoderShenzhen, self).__init__()
         self.linear_1 = paddle.nn.Linear(236, 16)
         self.relu = paddle.nn.ReLU()
 
@@ -41,9 +51,12 @@ class Encoder_shenzhen(paddle.nn.Layer):
         y = self.relu(y)
         return y
 
-class Decoder_shenzhen(paddle.nn.Layer):
+class DecoderShenzhen(paddle.nn.Layer):
+    """
+    Define the Decoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Decoder_shenzhen, self).__init__()
+        super(DecoderShenzhen, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 236)
         self.tanh = paddle.nn.Tanh()
 
@@ -52,9 +65,12 @@ class Decoder_shenzhen(paddle.nn.Layer):
         y = self.tanh(y)
         return y
 
-class Discriminator_shenzhen(paddle.nn.Layer):
+class DiscriminatorShenzhen(paddle.nn.Layer):
+    """
+    Define the Discriminator.
+    """
     def __init__(self):
-        super(Discriminator_shenzhen, self).__init__()
+        super(DiscriminatorShenzhen, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 16)
         self.linear_2 = paddle.nn.Linear(16, 1)
         self.relu = paddle.nn.ReLU()
@@ -70,9 +86,12 @@ class Discriminator_shenzhen(paddle.nn.Layer):
         y = self.sigmoid(y)
         return y
 
-class Classifier_shenzhen(paddle.nn.Layer):
+class ClassifierShenzhen(paddle.nn.Layer):
+    """
+    Define the classifier.
+    """
     def __init__(self):
-        super(Classifier_shenzhen, self).__init__()
+        super(ClassifierShenzhen, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 16)
         self.linear_2 = paddle.nn.Linear(16, 1)
         self.relu = paddle.nn.ReLU()
@@ -90,9 +109,12 @@ class Classifier_shenzhen(paddle.nn.Layer):
 
 
 # reference city is Changsha
-class Encoder_changsha(paddle.nn.Layer):
+class EncoderChangsha(paddle.nn.Layer):
+    """
+    Define the Encoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Encoder_changsha, self).__init__()
+        super(EncoderChangsha, self).__init__()
         self.linear_1 = paddle.nn.Linear(236, 1024)
         self.relu = paddle.nn.ReLU()
 
@@ -101,9 +123,12 @@ class Encoder_changsha(paddle.nn.Layer):
         y = self.relu(y)
         return y
 
-class Decoder_changsha(paddle.nn.Layer):
+class DecoderChangsha(paddle.nn.Layer):
+    """
+    Define the Decoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Decoder_changsha, self).__init__()
+        super(DecoderChangsha, self).__init__()
         self.linear_1 = paddle.nn.Linear(1024, 236)
         self.tanh = paddle.nn.Tanh()
 
@@ -112,9 +137,12 @@ class Decoder_changsha(paddle.nn.Layer):
         y = self.tanh(y)
         return y
 
-class Discriminator_changsha(paddle.nn.Layer):
+class DiscriminatorChangsha(paddle.nn.Layer):
+    """
+    Define the Discriminator.
+    """
     def __init__(self):
-        super(Discriminator_changsha, self).__init__()
+        super(DiscriminatorChangsha, self).__init__()
         self.linear_1 = paddle.nn.Linear(1024, 16)
         self.linear_2 = paddle.nn.Linear(16, 1)
         self.relu = paddle.nn.ReLU()
@@ -130,9 +158,12 @@ class Discriminator_changsha(paddle.nn.Layer):
         y = self.sigmoid(y)
         return y
 
-class Classifier_changsha(paddle.nn.Layer):
+class ClassifierChangsha(paddle.nn.Layer):
+    """
+    Define the Classifier.
+    """
     def __init__(self):
-        super(Classifier_changsha, self).__init__()
+        super(ClassifierChangsha, self).__init__()
         self.linear_1 = paddle.nn.Linear(1024, 32)
         self.linear_2 = paddle.nn.Linear(32, 1)
         self.relu = paddle.nn.ReLU()
@@ -150,9 +181,12 @@ class Classifier_changsha(paddle.nn.Layer):
 
 
 # reference city is Shanghai
-class Encoder_shanghai(paddle.nn.Layer):
+class EncoderShanghai(paddle.nn.Layer):
+    """
+    Define the Encoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Encoder_shanghai, self).__init__()
+        super(EncoderShanghai, self).__init__()
         self.linear_1 = paddle.nn.Linear(236, 16)
         self.relu = paddle.nn.ReLU()
 
@@ -161,9 +195,12 @@ class Encoder_shanghai(paddle.nn.Layer):
         y = self.relu(y)
         return y
 
-class Decoder_shanghai(paddle.nn.Layer):
+class DecoderShanghai(paddle.nn.Layer):
+    """
+    Define the Decoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Decoder_shanghai, self).__init__()
+        super(DecoderShanghai, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 236)
         self.tanh = paddle.nn.Tanh()
 
@@ -172,9 +209,12 @@ class Decoder_shanghai(paddle.nn.Layer):
         y = self.tanh(y)
         return y
 
-class Discriminator_shanghai(paddle.nn.Layer):
+class DiscriminatorShanghai(paddle.nn.Layer):
+    """
+    Define the Discriminator.
+    """
     def __init__(self):
-        super(Discriminator_shanghai, self).__init__()
+        super(DiscriminatorShanghai, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 16)
         self.linear_2 = paddle.nn.Linear(16, 1)
         self.relu = paddle.nn.ReLU()
@@ -190,9 +230,12 @@ class Discriminator_shanghai(paddle.nn.Layer):
         y = self.sigmoid(y)
         return y
 
-class Classifier_shanghai(paddle.nn.Layer):
+class ClassifierShanghai(paddle.nn.Layer):
+    """
+    Define the Classifier.
+    """
     def __init__(self):
-        super(Classifier_shanghai, self).__init__()
+        super(ClassifierShanghai, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 32)
         self.linear_2 = paddle.nn.Linear(32, 1)
         self.relu = paddle.nn.ReLU()
@@ -210,9 +253,12 @@ class Classifier_shanghai(paddle.nn.Layer):
 
 
 # reference city is Zhengzhou
-class Encoder_zhengzhou(paddle.nn.Layer):
+class EncoderZhengzhou(paddle.nn.Layer):
+    """
+    Define the Encoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Encoder_zhengzhou, self).__init__()
+        super(EncoderZhengzhou, self).__init__()
         self.linear_1 = paddle.nn.Linear(236, 128)
         self.relu = paddle.nn.ReLU()
 
@@ -221,9 +267,12 @@ class Encoder_zhengzhou(paddle.nn.Layer):
         y = self.relu(y)
         return y
 
-class Decoder_zhengzhou(paddle.nn.Layer):
+class DecoderZhengzhou(paddle.nn.Layer):
+    """
+    Define the Decoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Decoder_zhengzhou, self).__init__()
+        super(DecoderZhengzhou, self).__init__()
         self.linear_1 = paddle.nn.Linear(128, 236)
         self.tanh = paddle.nn.Tanh()
 
@@ -232,9 +281,12 @@ class Decoder_zhengzhou(paddle.nn.Layer):
         y = self.tanh(y)
         return y
 
-class Discriminator_zhengzhou(paddle.nn.Layer):
+class DiscriminatorZhengzhou(paddle.nn.Layer):
+    """
+    Define the Discriminator.
+    """
     def __init__(self):
-        super(Discriminator_zhengzhou, self).__init__()
+        super(DiscriminatorZhengzhou, self).__init__()
         self.linear_1 = paddle.nn.Linear(128, 16)
         self.linear_2 = paddle.nn.Linear(16, 1)
         self.relu = paddle.nn.ReLU()
@@ -250,9 +302,12 @@ class Discriminator_zhengzhou(paddle.nn.Layer):
         y = self.sigmoid(y)
         return y
 
-class Classifier_zhengzhou(paddle.nn.Layer):
+class ClassifierZhengzhou(paddle.nn.Layer):
+    """
+    Define the Classifier.
+    """
     def __init__(self):
-        super(Classifier_zhengzhou, self).__init__()
+        super(ClassifierZhengzhou, self).__init__()
         self.linear_1 = paddle.nn.Linear(128, 32)
         self.linear_2 = paddle.nn.Linear(32, 1)
         self.relu = paddle.nn.ReLU()
@@ -270,9 +325,12 @@ class Classifier_zhengzhou(paddle.nn.Layer):
 
 
 # reference city is Chengdu
-class Encoder_chengdu(paddle.nn.Layer):
+class EncoderChengdu(paddle.nn.Layer):
+    """
+    Define the Encoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Encoder_chengdu, self).__init__()
+        super(EncoderChengdu, self).__init__()
         self.linear_1 = paddle.nn.Linear(236, 16)
         self.relu = paddle.nn.ReLU()
 
@@ -281,9 +339,12 @@ class Encoder_chengdu(paddle.nn.Layer):
         y = self.relu(y)
         return y
 
-class Decoder_chengdu(paddle.nn.Layer):
+class DecoderChengdu(paddle.nn.Layer):
+    """
+    Define the Decoder of epicenter/reference/target city.
+    """
     def __init__(self):
-        super(Decoder_chengdu, self).__init__()
+        super(DecoderChengdu, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 236)
         self.tanh = paddle.nn.Tanh()
 
@@ -292,9 +353,12 @@ class Decoder_chengdu(paddle.nn.Layer):
         y = self.tanh(y)
         return y
 
-class Discriminator_chengdu(paddle.nn.Layer):
+class DiscriminatorChengdu(paddle.nn.Layer):
+    """
+    Define the Discriminator.
+    """
     def __init__(self):
-        super(Discriminator_chengdu, self).__init__()
+        super(DiscriminatorChengdu, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 16)
         self.linear_2 = paddle.nn.Linear(16, 1)
         self.relu = paddle.nn.ReLU()
@@ -310,9 +374,12 @@ class Discriminator_chengdu(paddle.nn.Layer):
         y = self.sigmoid(y)
         return y
 
-class Classifier_chengdu(paddle.nn.Layer):
+class ClassifierChengdu(paddle.nn.Layer):
+    """
+    Define the Classifier.
+    """
     def __init__(self):
-        super(Classifier_chengdu, self).__init__()
+        super(ClassifierChengdu, self).__init__()
         self.linear_1 = paddle.nn.Linear(16, 32)
         self.linear_2 = paddle.nn.Linear(32, 1)
         self.relu = paddle.nn.ReLU()
