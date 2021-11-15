@@ -7,6 +7,16 @@ from cwatcher import *
 from tqdm import tqdm
 
 def evaluate(reference_city, target_city, Encoder, Classifier, epoch_num):
+    """
+    Evaluate the trained model on the given city.
+
+    Args:
+        reference_city: the reference city on which the hyperparameters are chosen. (e.g. Shenzhen)
+        target_city: the target city that you want to evaluate the model performance. (e.g. Huizhou)
+        Encoder: the model structure of encoders. (e.g. EncoderShenzhen)
+        Classifier: the model structure of classifer. (e.g. ClassifierShenzhen)
+        epoch_num: the number of epoch that the model has been trained for. (e.g. 100)
+    """
     Target_eval = City_Dataset(dataset_type='eval', city_name=target_city)
     Target_eval_loader = DataLoader(dataset=Target_eval)
 
@@ -27,7 +37,7 @@ def evaluate(reference_city, target_city, Encoder, Classifier, epoch_num):
         features_T, y_T = paddle.cast(features_T, dtype='float32'), paddle.cast(y_T, dtype='float32')
         encoded_T = encoder(features_T)
         clf_T = classifier(encoded_T)
-        pred_T = np.concatenate((1-clf_T.numpy(), clf_T.numpy()), axis=1)
+        pred_T = np.concatenate((1 - clf_T.numpy(), clf_T.numpy()), axis=1)
         y_T = paddle.reshape(y_T, [-1, 1]).numpy()
         auc.update(preds=pred_T, labels=y_T)
     auc_value = auc.accumulate()
@@ -43,7 +53,7 @@ if __name__ == '__main__':
 
     evaluate(reference_city=args.reference_city, \
              target_city=args.target_city, \
-             Encoder=eval("Encoder_" + args.reference_city), \
-             Classifier=eval("Classifier_" + args.reference_city), \
+             Encoder=eval("Encoder" + args.reference_city), \
+             Classifier=eval("Classifier" + args.reference_city), \
              epoch_num=args.epoch_num
              )

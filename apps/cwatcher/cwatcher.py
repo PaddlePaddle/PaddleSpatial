@@ -47,6 +47,9 @@ class EncoderShenzhen(paddle.nn.Layer):
         self.relu = paddle.nn.ReLU()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.relu(y)
         return y
@@ -61,6 +64,9 @@ class DecoderShenzhen(paddle.nn.Layer):
         self.tanh = paddle.nn.Tanh()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.tanh(y)
         return y
@@ -78,6 +84,9 @@ class DiscriminatorShenzhen(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -99,6 +108,9 @@ class ClassifierShenzhen(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -119,6 +131,9 @@ class EncoderChangsha(paddle.nn.Layer):
         self.relu = paddle.nn.ReLU()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.relu(y)
         return y
@@ -133,6 +148,9 @@ class DecoderChangsha(paddle.nn.Layer):
         self.tanh = paddle.nn.Tanh()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.tanh(y)
         return y
@@ -150,6 +168,9 @@ class DiscriminatorChangsha(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -171,6 +192,9 @@ class ClassifierChangsha(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -191,6 +215,9 @@ class EncoderShanghai(paddle.nn.Layer):
         self.relu = paddle.nn.ReLU()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.relu(y)
         return y
@@ -205,6 +232,9 @@ class DecoderShanghai(paddle.nn.Layer):
         self.tanh = paddle.nn.Tanh()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.tanh(y)
         return y
@@ -222,6 +252,9 @@ class DiscriminatorShanghai(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -243,6 +276,9 @@ class ClassifierShanghai(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -263,6 +299,9 @@ class EncoderZhengzhou(paddle.nn.Layer):
         self.relu = paddle.nn.ReLU()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.relu(y)
         return y
@@ -277,6 +316,9 @@ class DecoderZhengzhou(paddle.nn.Layer):
         self.tanh = paddle.nn.Tanh()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.tanh(y)
         return y
@@ -294,6 +336,9 @@ class DiscriminatorZhengzhou(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -315,6 +360,9 @@ class ClassifierZhengzhou(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -335,6 +383,9 @@ class EncoderChengdu(paddle.nn.Layer):
         self.relu = paddle.nn.ReLU()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.relu(y)
         return y
@@ -349,6 +400,9 @@ class DecoderChengdu(paddle.nn.Layer):
         self.tanh = paddle.nn.Tanh()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.linear_1(inputs)
         y = self.tanh(y)
         return y
@@ -366,6 +420,9 @@ class DiscriminatorChengdu(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
@@ -387,6 +444,9 @@ class ClassifierChengdu(paddle.nn.Layer):
         self.sigmoid = paddle.nn.Sigmoid()
 
     def forward(self, inputs):
+        """
+        Forward process.
+        """
         y = self.dropout(inputs)
         y = self.linear_1(y)
         y = self.relu(y)
