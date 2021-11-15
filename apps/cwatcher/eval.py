@@ -1,3 +1,15 @@
+# -*- coding: UTF-8 -*-
+################################################################################
+#
+# Copyright (c) 2021 Baidu.com, Inc. All Rights Reserved
+#
+################################################################################
+"""
+The file used to evaluate the performance of CWatcher.
+
+Authors: xiaocongxi(xiaocongxi@baidu.com)
+Date:    2021/11/15 10:30:45
+"""
 import numpy as np 
 import paddle
 from paddle.io import Dataset, DataLoader

@@ -65,7 +65,7 @@ The novel coronavirus disease (COVID-19) has crushed daily routines and is still
 Minimum usage:
 ```
     python code/train.py reference_city 
-    python code/train.py shenzhen          # example
+    python code/train.py Shenzhen          # example
 ```
 
 For other parameters run:
@@ -79,7 +79,7 @@ The trained model will be saved in the "model" directory.
 Minimun usage: run with specifying the corresponding reference city, target city and the training epochs (you may have saved diffenrent model params with different number of iterations.)
 ```
     python code/eval.py reference_city target_city epoch_num
-    python code/eval.py shenzhen huizhou 100            # example
+    python code/eval.py shenzhen Huizhou 100            # example
 ```
 
 # Paper Download

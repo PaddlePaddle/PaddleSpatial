@@ -1,3 +1,15 @@
+# -*- coding: UTF-8 -*-
+################################################################################
+#
+# Copyright (c) 2021 Baidu.com, Inc. All Rights Reserved
+#
+################################################################################
+"""
+The file used to train CWatcher.
+
+Authors: xiaocongxi(xiaocongxi@baidu.com)
+Date:    2021/11/15 10:30:45
+"""
 import numpy as np 
 import paddle
 from paddle.io import Dataset, DataLoader
@@ -7,6 +19,18 @@ from cwatcher import *
 from tqdm import tqdm
 
 def train(reference_city, Encoder, Decoder, Discriminator, Classifier, epoch_num, lr):
+    """
+    train CWatcher on the epicenter cities and tune the hyperparameters on the reference city.
+
+    Args:
+        reference_city: the reference city on which the hyperparameters are chosen. (e.g. Shenzhen)
+        Encoder: the model structure of encoders. (e.g. EncoderShenzhen)
+        Decoder: the model structure of decoders. (e.g. DecoderShenzhen)
+        Discriminator: the model structure of discriminator. (e.g. DiscriminatorShenzhen)
+        Classifier: the model structure of classifer. (e.g. ClassifierShenzhen)
+        epoch_num: the number of training epoch. (e.g. 100)
+        lr: learning rate. (e.g. 1e-4)
+    """
     np.random.seed(2)
     paddle.seed(2)
     Wuhan_train = City_Dataset(dataset_type='train', city_name='wuhan.labeled')
@@ -71,7 +95,7 @@ def train(reference_city, Encoder, Decoder, Discriminator, Classifier, epoch_num
             
             # optimize encoder
             optimizer_encoder.clear_grad()
-            loss_encoder = 0.7 *loss_cheat + 0.1 *loss_recons + 0.2 *loss_clf
+            loss_encoder = 0.7 * loss_cheat + 0.1 * loss_recons + 0.2 * loss_clf
             loss_encoder.backward()
             optimizer_encoder.step()
 
@@ -130,10 +154,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     train(reference_city=args.reference_city, \
-          Encoder=eval("Encoder_" + args.reference_city), \
-          Decoder=eval("Decoder_" + args.reference_city), \
-          Discriminator=eval("Discriminator_" + args.reference_city), \
-          Classifier=eval("Classifier_" + args.reference_city), \
+          Encoder=eval("Encoder" + args.reference_city), \
+          Decoder=eval("Decoder" + args.reference_city), \
+          Discriminator=eval("Discriminator" + args.reference_city), \
+          Classifier=eval("Classifier" + args.reference_city), \
           epoch_num=args.epoch_num, \
           lr=args.learning_rate
           )
