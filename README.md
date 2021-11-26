@@ -24,7 +24,6 @@ PaddleSpatial是一个基于高性能机器学习工具[PaddlePaddle飞桨](http
 ## 交流与反馈
 
 * 欢迎您通过 [Github Issues](https://github.com/PaddlePaddle/PaddleSpatial/issues) 来提交问题、报告与建议
-* 如果您对我们的工作感兴趣，也欢迎[加入我们](https://github.com/PaddlePaddle/PaddleSpatial/issues/6091) ！
 
 
 ## 版本更新
@@ -34,4 +33,4 @@ PaddleSpatial是一个基于高性能机器学习工具[PaddlePaddle飞桨](http
 
 ## License
 
-PaddleNLP遵循[Apache-2.0开源协议](./LICENSE)。
+PaddleSpatial遵循[Apache-2.0开源协议](./LICENSE)。
