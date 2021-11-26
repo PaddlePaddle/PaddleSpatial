@@ -24,7 +24,7 @@ class SpatialLocalAGG(nn.Layer):
     Desc:
        Local aggregation layer for SA-GNN.
     """
-    def __init__(self, input_dim, hidden_dim, transform=False, activation=lambda x: x):
+    def __init__(self, input_dim, hidden_dim, transform=False, activation=None):
         """
         Desc:
             __init__
@@ -70,7 +70,7 @@ class SpatialOrientedAGG(nn.Layer):
     Desc:
        Global aggregation layer for SA-GNN.
     """
-    def __init__(self, input_dim, hidden_dim, num_sectors, transform=False, activation=F.relu):
+    def __init__(self, input_dim, hidden_dim, num_sectors, transform=False, activation=None):
         """
         Desc:
             __init__
@@ -83,7 +83,7 @@ class SpatialOrientedAGG(nn.Layer):
         """
         super(SpatialOrientedAGG, self).__init__()
         self.num_sectors = num_sectors
-        linear_input_dim = hidden_dim * (num_sectors+1) if transform else input_dim * (num_sectors+1)
+        linear_input_dim = hidden_dim * (num_sectors + 1) if transform else input_dim * (num_sectors + 1)
         self.linear = nn.Linear(linear_input_dim, hidden_dim, bias_attr=False)
         
         self.conv_layer = nn.LayerList()
@@ -149,13 +149,12 @@ class SpatialOrientedAGG(nn.Layer):
         return output
 
 
-
 class SpatialAttnProp(nn.Layer):
     """
     Desc:
        Location-aware attentive propagation layer for SA-GNN.
     """
-    def __init__(self, input_dim, hidden_dim, num_heads, dropout, max_dist=10000, grid_len=100, activation=F.relu):
+    def __init__(self, input_dim, hidden_dim, num_heads, dropout, max_dist=10000, grid_len=100, activation=None):
         super(SpatialAttnProp, self).__init__()
         """
         Desc:
@@ -173,12 +172,12 @@ class SpatialAttnProp(nn.Layer):
         self.hidden_dim = hidden_dim
         self.grid_len = grid_len
         self.max_dist = max_dist
-        self.grid_num = int(max_dist/grid_len)
+        self.grid_num = int(max_dist / grid_len)
         self.poi_fc = nn.Linear(input_dim, num_heads * hidden_dim)
-        self.loc_fc = nn.Linear(2*hidden_dim, num_heads * hidden_dim)
+        self.loc_fc = nn.Linear(2 * hidden_dim, num_heads * hidden_dim)
 
-        self.x_embedding = nn.Embedding(2*self.grid_num, hidden_dim, sparse=True)
-        self.y_embedding = nn.Embedding(2*self.grid_num, hidden_dim, sparse=True)
+        self.x_embedding = nn.Embedding(2 * self.grid_num, hidden_dim, sparse=True)
+        self.y_embedding = nn.Embedding(2 * self.grid_num, hidden_dim, sparse=True)
         self.weight_src = self.create_parameter(shape=[num_heads, hidden_dim])
         self.weight_dst = self.create_parameter(shape=[num_heads, hidden_dim])
         self.weight_loc = self.create_parameter(shape=[num_heads, hidden_dim])
@@ -238,8 +237,8 @@ class SpatialAttnProp(nn.Layer):
         y_inds = paddle.cast(paddle.abs(y)/self.grid_len, 'int64')
         x_inds = x_inds + self.grid_num * paddle.cast(x >= 0, 'int64')
         y_inds = y_inds + self.grid_num * paddle.cast(y >= 0, 'int64')
-        x_inds = paddle.clip(x_inds, 0, 2*self.grid_num-1)
-        y_inds = paddle.clip(y_inds, 0, 2*self.grid_num-1)
+        x_inds = paddle.clip(x_inds, 0, 2 * self.grid_num-1)
+        y_inds = paddle.clip(y_inds, 0, 2 * self.grid_num-1)
         return x_inds, y_inds
 
     def forward(self, graph, feature):
