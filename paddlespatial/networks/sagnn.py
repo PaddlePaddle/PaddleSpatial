@@ -237,8 +237,8 @@ class SpatialAttnProp(nn.Layer):
         y_inds = paddle.cast(paddle.abs(y)/self.grid_len, 'int64')
         x_inds = x_inds + self.grid_num * paddle.cast(x >= 0, 'int64')
         y_inds = y_inds + self.grid_num * paddle.cast(y >= 0, 'int64')
-        x_inds = paddle.clip(x_inds, 0, 2 * self.grid_num-1)
-        y_inds = paddle.clip(y_inds, 0, 2 * self.grid_num-1)
+        x_inds = paddle.clip(x_inds, 0, 2 * self.grid_num - 1)
+        y_inds = paddle.clip(y_inds, 0, 2 * self.grid_num - 1)
         return x_inds, y_inds
 
     def forward(self, graph, feature):
