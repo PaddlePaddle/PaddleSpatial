@@ -4,9 +4,9 @@
 </p>
 
 ----------------------------------------------------
-## 简介
+## Introduction
 
-PaddleSpatial是基于百度飞桨深度学习框架开发的时空大数据计算工具和平台，融合了百度领先的区域分割、时空迁移学习、时间序列预测等时空能力，可支持多种时空计算场景的应用。
+PaddleSpatial is a spatial-temporal computing tool, taking advantage of the advanced spatial-temporal data mining capacities including spatial transfer learning, time series prediction and region profiling, for facilitating the development of urban computing applications. 
 
 <p align="center">
 <img src="./docs/imgs/ps_framework.png" align="middle" heigh="70%" width="70%" />
@@ -14,23 +14,28 @@ PaddleSpatial是基于百度飞桨深度学习框架开发的时空大数据计�
 
 
 
+## Installation Guide
 
-## 安装指南
-
-PaddleSpatial是一个基于高性能机器学习工具[PaddlePaddle飞桨](https://github.com/paddlepaddle/paddle)的时空大数据计算开源工具库。详细的安装和环境配置指引请查阅[这里](./installation_guide_cn.md)。
-
+PaddleSpatial is an open source spatial-temporal computing tool based on [PaddlePaddle](https://github.com/paddlepaddle/paddle). The installation prerequisites and guide can be found [here] (./installation_guide.md).
 
 
-## 交流与反馈
+### Guide for Developers
+* To develope new functions based on the source code of PaddleSpatial, please refer to [guide for developers](./developer_guide.md).
+* For more details of the APIs, please refer to the [documents](https://paddlespatial.readthedocs.io/en/dev/).
 
-* 欢迎您通过 [Github Issues](https://github.com/PaddlePaddle/PaddleSpatial/issues) 来提交问题、报告与建议
+
+## Feedback and Community Support
+
+* Questions, reports, and suggestions are welcome through [Github Issues!](https://github.com/PaddlePaddle/PaddleSpatial/issues) 
 
 
-## 版本更新
-更多版本更新说明请查看[ChangeLog](./docs/CHANGELOG.md)
 
+## Updates
+
+* Updates please refer to [change log](./CHANGELOG.md)for details.
 
 
 ## License
 
-PaddleSpatial遵循[Apache-2.0开源协议](./LICENSE)。
+The release of PaddleSpatial is certified by the [Apache 2.0 license.](./LICENSE)
+
