@@ -358,12 +358,12 @@ class Segment(object):
         max_gx = int(max(self.start.x, self.end.x)) / grid_size
         min_gy = int(min(self.start.y, self.end.y)) / grid_size
         max_gy = int(max(self.start.y, self.end.y)) / grid_size
-        for grid_x in range(min_gx + 1, max_gx + 1):
+        for grid_x in range(int(min_gx) + 1, int(max_gx) + 1):
             x = grid_x * grid_size
             y = self.start.y + (self.end.y - self.start.y) * (x - self.start.x) \
                     / (self.end.x - self.start.x)
             self.__grids(x, y, grid_size, grid_set)
-        for grid_y in range(min_gy + 1, max_gy + 1):
+        for grid_y in range(int(min_gy) + 1, int(max_gy) + 1):
             y = grid_y * grid_size
             x = self.start.x + (self.end.x - self.start.x) * (y - self.start.y) \
                     / (self.end.y - self.start.y)
@@ -755,8 +755,8 @@ class Region(object):
         start_grid = bounds[0].grid(grid_size)
         end_grid = bounds[1].grid(grid_size)
         ret = []
-        for x_grid in range(start_grid[0], end_grid[0] + 1):
-            for y_grid in range(start_grid[1], end_grid[1] + 1):
+        for x_grid in range(start_grid[0], int(end_grid[0])):
+            for y_grid in range(start_grid[1], int(end_grid[1])):
                 ret.append((x_grid, y_grid))
         return ret
 
@@ -912,7 +912,7 @@ class Region(object):
         miny = (start_grid[1] - 1) * int(grid_size) 
         maxy = (end_grid[1] + 2) * int(grid_size)
         use_min = True
-        for x_grid in range(start_grid[0] + 1, end_grid[0] + 1):
+        for x_grid in range(int(start_grid[0]) + 1, int(end_grid[0]) + 1):
             x = x_grid * int(grid_size)
             if use_min:
                 points.append((x, miny))
@@ -1089,8 +1089,8 @@ def gen_segments(seg_file):
     """
     with open(seg_file, "rb") as fi:
         line = fi.readline()
-        while line != "":
-            p1, p2 = line.strip().split(",")
+        while line.decode() != "":
+            p1, p2 = line.decode().strip().split(",")
             x1, y1 = p1.split(" ")
             x2, y2 = p2.split(" ")
             yield Segment(Point(float(x1), float(y1)), Point(float(x2), float(y2)))
