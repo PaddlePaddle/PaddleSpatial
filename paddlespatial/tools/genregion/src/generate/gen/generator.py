@@ -313,7 +313,7 @@ class RegionGenerator(object):
                 sub_nodes = nodes[start_idx: i]
                 if len(sub_nodes) >= 3:
                     region = mygeo.Region(sub_nodes)
-                    if region.area > 0:
+                    if region.area() > 0:
                         if mygeo.is_counter_clockwise(sub_nodes):
                             if points is None:
                                 points = sub_nodes
