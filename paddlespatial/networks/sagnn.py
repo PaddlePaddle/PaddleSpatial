@@ -40,7 +40,7 @@ class SpatialLocalAGG(nn.Layer):
             self.linear = nn.Linear(input_dim, hidden_dim, bias_attr=False)
         self.activation = activation
 
-    def forward(self, graph, feature, norm=None):
+    def forward(self, graph, feature, norm=True):
         """
         Desc:
             A step of forward the layer.
@@ -52,8 +52,7 @@ class SpatialLocalAGG(nn.Layer):
         Returns:
             outputs: A tensor with shape (num_nodes, output_size)
         """
-        if self.norm and norm is None:
-            norm = GF.degree_norm(graph)
+        norm = GF.degree_norm(graph)
         if self.transform:
             feature = self.linear(feature)
         feature = feature * norm
@@ -87,7 +86,7 @@ class SpatialOrientedAGG(nn.Layer):
         self.linear = nn.Linear(linear_input_dim, hidden_dim, bias_attr=False)
         
         self.conv_layer = nn.LayerList()
-        for _ in range(num_sectors):
+        for _ in range(num_sectors + 1):
             conv = SpatialLocalAGG(input_dim, hidden_dim, transform, activation=lambda x: x)
             self.conv_layer.append(conv)
 
@@ -103,7 +102,6 @@ class SpatialOrientedAGG(nn.Layer):
         g = g.numpy()
         subgraph_edge_list = [[] for _ in range(self.num_sectors + 1)]
         coords = g.node_feat['coord'] # size: [num_poi, 2]
-
         for src_node, dst_node in g.edges:
             src_coord, dst_coord = coords[src_node], coords[dst_node]
             rela_coord = dst_coord - src_coord
@@ -114,8 +112,8 @@ class SpatialOrientedAGG(nn.Layer):
                 angle = np.arctan(rela_coord[1]/rela_coord[0])
                 angle = angle + np.pi * int(angle < 0)
                 angle = angle + np.pi * int(rela_coord[0] < 0)
-                sec_ind = int(angle / (np.pi / self.num_sectors)) + 1
-                sec_ind = min(sec_ind, self.num_sectors + 1)
+                sec_ind = int(angle / (np.pi / self.num_sectors)) 
+                sec_ind = min(sec_ind, self.num_sectors)
             subgraph_edge_list[sec_ind] += [(src_node, dst_node)]
         
         subgraph_list = []
@@ -145,6 +143,7 @@ class SpatialOrientedAGG(nn.Layer):
             h_list.append(h)
         
         feat_h = paddle.concat(h_list, axis=-1)
+        feat_h = paddle.cast(feat_h, 'float32')
         output = self.linear(feat_h)
         return output
 
@@ -232,7 +231,7 @@ class SpatialAttnProp(nn.Layer):
         Returns:
             outputs: Two tensors with shape (num_edges, 1)
         """
-        x, y = dst_coord - src_coord
+        x, y = paddle.split(dst_coord - src_coord, num_or_sections=2, axis=1)
         x_inds = paddle.cast(paddle.abs(x)/self.grid_len, 'int64')
         y_inds = paddle.cast(paddle.abs(y)/self.grid_len, 'int64')
         x_inds = x_inds + self.grid_num * paddle.cast(x >= 0, 'int64')
