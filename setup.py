@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name="paddlespatial",
-    version="0.0.1b",
+    version="0.1.0",
     author="baidu-bil",
     author_email="zhoujingbo@baidu.com",
     description="Adding version check",
