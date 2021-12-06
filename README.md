@@ -1,3 +1,4 @@
+English | [简体中文](README_cn.md)
 
 <p align="center">
 <img src="./docs/imgs/paddlespatial.png" align="middle" heigh="90%" width="90%" />
@@ -9,15 +10,20 @@
 PaddleSpatial is a spatial-temporal computing tool, taking advantage of the advanced spatial-temporal data mining capacities including spatial transfer learning, time series prediction and region profiling, for facilitating the development of urban computing applications. 
 
 <p align="center">
-<img src="./docs/imgs/ps_framework.png" align="middle" heigh="70%" width="70%" />
+<img src="./docs/imgs/ps_framework_en.png" align="middle" heigh="90%" width="90%" />
 </p>
 
 
-
-## Installation Guide
+## Resources
+### Installation Guide
 
 PaddleSpatial is an open source spatial-temporal computing tool based on [PaddlePaddle](https://github.com/paddlepaddle/paddle). The installation prerequisites and guide can be found [here] (./installation_guide.md).
 
+
+
+### Tutorials
+We provide [tutorials](./tutorials) to help you navigate the repository and start quickly.
+ 
 
 ### Guide for Developers
 * To develope new functions based on the source code of PaddleSpatial, please refer to [guide for developers](./developer_guide.md).
@@ -32,7 +38,7 @@ PaddleSpatial is an open source spatial-temporal computing tool based on [Paddle
 
 ## Updates
 
-* Updates please refer to [change log](./CHANGELOG.md)for details.
+* Updates please refer to [change log](./CHANGELOG.md) for details.
 
 
 ## License
