@@ -38,10 +38,6 @@ PaddleSpatial是一个基于高性能机器学习工具[PaddlePaddle飞桨](http
 * 欢迎您通过 [Github Issues](https://github.com/PaddlePaddle/PaddleSpatial/issues) 来提交问题、报告与建议
 
 
-## 版本更新
-
-* 更多版本更新说明请查看[ChangeLog](./CHANGELOG.md)
-
 
 ## License
 

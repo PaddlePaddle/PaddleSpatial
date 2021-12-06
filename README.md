@@ -17,7 +17,7 @@ PaddleSpatial is a spatial-temporal computing tool, taking advantage of the adva
 ## Resources
 ### Installation Guide
 
-PaddleSpatial is an open source spatial-temporal computing tool based on [PaddlePaddle](https://github.com/paddlepaddle/paddle). The installation prerequisites and guide can be found [here] (./installation_guide.md).
+PaddleSpatial is an open source spatial-temporal computing tool based on [PaddlePaddle](https://github.com/paddlepaddle/paddle). The installation prerequisites and guide can be found [here](./installation_guide.md).
 
 
 
@@ -34,11 +34,6 @@ We provide [tutorials](./tutorials) to help you navigate the repository and star
 
 * Questions, reports, and suggestions are welcome through [Github Issues!](https://github.com/PaddlePaddle/PaddleSpatial/issues) 
 
-
-
-## Updates
-
-* Updates please refer to [change log](./CHANGELOG.md) for details.
 
 
 ## License
