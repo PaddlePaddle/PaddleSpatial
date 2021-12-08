@@ -28,7 +28,7 @@ PaddleSpatial是一个基于高性能机器学习工具[PaddlePaddle飞桨](http
 
 ### 开发者指南
 * 如果你需要基于PaddleSpatial的源代码进行新功能的开发，请查阅我们提供的[开发者指南](./developer_guide.md)。
-* 如果你想知道PaddleSpatial各种接口的详情，请查阅[API文档](https://paddlehelix.readthedocs.io/en/dev/)。
+* 如果你想知道PaddleSpatial各种接口的详情，请查阅[API文档](https://paddlehelix.readthedocs.io)。
 
 
 

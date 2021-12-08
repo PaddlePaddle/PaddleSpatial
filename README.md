@@ -27,7 +27,7 @@ We provide [tutorials](./tutorials) to help you navigate the repository and star
 
 ### Guide for Developers
 * To develope new functions based on the source code of PaddleSpatial, please refer to [guide for developers](./developer_guide.md).
-* For more details of the APIs, please refer to the [documents](https://paddlespatial.readthedocs.io/en/dev/).
+* For more details of the APIs, please refer to the [documents](https://paddlespatial.readthedocs.io/).
 
 
 ## Feedback and Community Support
