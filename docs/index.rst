@@ -15,13 +15,14 @@ Welcome to PaddleSpatial Helper
    installation
 
 .. toctree::
+   :caption: Developer
+   :maxdepth: 2
+
+   developer
+
+.. toctree::
    :caption: Tutorials
    :maxdepth: 2
 
    tutorials
 
-.. toctree::
-   :caption: Developer
-   :maxdepth: 2
-
-   developer
