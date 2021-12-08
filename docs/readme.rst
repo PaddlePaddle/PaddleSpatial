@@ -1,12 +1,11 @@
 
-English 
 
+.. image:: ./imgs/paddlespatial.png
+   :align: center
 
-.. raw:: html
-
-   <p align="center">
-   <img src="./imgs/paddlespatial.png" align="middle" heigh="90%" width="90%" />
-   </p>
+*****************************
+Welcome to PaddleHelix Helper
+*****************************
 
 
 ----
