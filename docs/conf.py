@@ -8,7 +8,7 @@ copyright = author
 
 
 # The master toctree document.
-master_doc = 'readme'
+master_doc = 'index'
 
 # The suffix of source filenames.
 source_suffix = '.rst'

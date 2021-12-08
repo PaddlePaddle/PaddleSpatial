@@ -16,11 +16,9 @@ Introduction
 PaddleSpatial is a spatial-temporal computing tool, taking advantage of the advanced spatial-temporal data mining capacities including spatial transfer learning, time series prediction and region profiling, for facilitating the development of urban computing applications. 
 
 
-.. raw:: html
 
-   <p align="center">
-   <img src="./imgs/ps_framework_en.png" align="middle" heigh="90%" width="90%" />
-   </p>
+.. image:: ./imgs/ps_framework_en.png
+   :align: center
 
 
 Resources
