@@ -1,10 +1,9 @@
 
-
 .. image:: ./imgs/paddlespatial.png
    :align: center
 
 *****************************
-Welcome to PaddleHelix Helper
+Welcome to PaddleSpatial Helper
 *****************************
 
 
