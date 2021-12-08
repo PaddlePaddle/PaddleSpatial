@@ -39,7 +39,7 @@ Guide for Developers
 
 
 * To develope new functions based on the source code of PaddleSpatial, please refer to :doc:`/developer`.
-* For more details of the APIs, please refer to the `documents <https://paddlespatial.readthedocs.io/en/dev/>`_.
+* For more details of the APIs, please refer to the `documents <https://paddlespatial.readthedocs.io/>`_.
 
 Feedback and Community Support
 ------------------------------
