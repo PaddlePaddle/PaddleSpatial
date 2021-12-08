@@ -2,12 +2,20 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'PaddleSpatial'
+author = u'2021, Baidu Inc.'
+copyright = author
+
+
+# The master toctree document.
+master_doc = 'readme'
+
+# The suffix of source filenames.
+source_suffix = '.rst'
+
 
 release = '0.1'
-version = '0.1.0'
+version = '0.1.1'
 
 # -- General configuration
 
@@ -18,6 +26,12 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
 ]
+
+# Import mock dependencies packages
+autodoc_mock_imports = ['paddle', 'pgl']
+
+
+
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
