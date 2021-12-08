@@ -1,5 +1,5 @@
 
-English | `简体中文 <README_cn.md>`_
+English 
 
 
 .. raw:: html
@@ -30,18 +30,18 @@ Resources
 Installation Guide
 ^^^^^^^^^^^^^^^^^^
 
-PaddleSpatial is an open source spatial-temporal computing tool based on `PaddlePaddle <https://github.com/paddlepaddle/paddle>`_. The installation prerequisites and guide can be found `here <./installation_guide.md>`_.
+PaddleSpatial is an open source spatial-temporal computing tool based on `PaddlePaddle <https://github.com/paddlepaddle/paddle>`_. The installation prerequisites and guide can be found :doc:`/installation`.
 
 Tutorials
 ^^^^^^^^^
 
-We provide `tutorials <./tutorials>`_ to help you navigate the repository and start quickly.
+We provide :doc:`/tutorials` to help you navigate the repository and start quickly.
 
 Guide for Developers
 ^^^^^^^^^^^^^^^^^^^^
 
 
-* To develope new functions based on the source code of PaddleSpatial, please refer to `guide for developers <./developer_guide.md>`_.
+* To develope new functions based on the source code of PaddleSpatial, please refer to :doc:`/developer`.
 * For more details of the APIs, please refer to the `documents <https://paddlespatial.readthedocs.io/en/dev/>`_.
 
 Feedback and Community Support
