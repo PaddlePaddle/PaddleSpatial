@@ -19,9 +19,8 @@ Welcome to PaddleSpatial Helper
    :maxdepth: 2
 
    tutorials
-   developer
-   
- .. toctree::
+
+.. toctree::
    :caption: Developer
    :maxdepth: 2
 
