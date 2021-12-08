@@ -6,16 +6,13 @@ Welcome to PaddleSpatial Helper
 
    This project is under active development.
 
-
 .. include:: ./readme.rst
-
 
 .. toctree::
    :caption: Installation
    :maxdepth: 2
 
    installation
-
 
 .. toctree::
    :caption: Tutorials
@@ -24,7 +21,6 @@ Welcome to PaddleSpatial Helper
    tutorials
    developer
    
-
  .. toctree::
    :caption: Developer
    :maxdepth: 2
