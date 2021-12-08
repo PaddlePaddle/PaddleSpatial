@@ -41,7 +41,7 @@ class Roadnet(object):
         return list(segs.values())
 
 if __name__ == "__main__":
-    from conf import Conf
+    from configuration import Conf
     road = Roadnet(Conf.new_york_raw)
     segslists = road.to_seglists()
 

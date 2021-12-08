@@ -11,6 +11,8 @@ Author: duanjianguo(duanjianguo@baidu.com)
 Date: 2019/11/14 10:13:37
 """
 
+master_doc = 'index'
+
 class Conf(object):
     """
     Desc: 所有资源路径

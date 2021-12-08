@@ -17,7 +17,7 @@ from region import Region
 from region import Point
 from region import Segment
 from generate import etl
-from generate.conf import Conf
+from generate.configuration import Conf
 from generate.gen import algorithm
 from generate.gen import regionalg
 from generate import roadnet_load
