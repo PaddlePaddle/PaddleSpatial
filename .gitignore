@@ -52,3 +52,7 @@ coverage.xml
 # Sphinx documentation
 /docs/_build/
 
+# Temporary files and enviroment settings
+*.vscode
+*.DS_Store
+*.idea/*
