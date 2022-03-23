@@ -5,7 +5,7 @@ WPF has been widely recognized as one of the most critical issues in wind power 
 
 
 
-# Use Guide
+# User Guide
 ## Environment Setup   
 1. Operating systems
 
