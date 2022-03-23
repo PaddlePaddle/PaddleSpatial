@@ -53,6 +53,6 @@ coverage.xml
 /docs/_build/
 
 # Temporary files and enviroment settings
-*.vscode
-*.DS_Store
-*.idea/*
+*.vscode*
+*.DS_Store*
+*.idea*
