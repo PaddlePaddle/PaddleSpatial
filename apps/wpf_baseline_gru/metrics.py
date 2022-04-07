@@ -12,6 +12,21 @@ Date:    2022/03/10
 import numpy as np
 
 
+def ignore_zeros(predictions, grounds):
+    """
+    Desc:
+        Ignore the zero values for evaluation
+    Args:
+        predictions:
+        grounds:
+    Returns:
+        Predictions and ground truths
+    """
+    predictions[np.where(grounds == 0)] = 0
+    grounds[np.where(grounds == 0)] = 0
+    return predictions, grounds
+
+
 def rse(pred, ground_truth):
     """
     Desc:
@@ -115,6 +130,7 @@ def regressor_metrics(pred, gt):
     Returns:
         A tuple of metrics
     """
+    pred, gt = ignore_zeros(pred, gt)
     _mae = mae(pred, gt)
     _mse = mse(pred, gt)
     _rmse = rmse(pred, gt)
