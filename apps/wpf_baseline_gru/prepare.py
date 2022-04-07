@@ -50,7 +50,7 @@ def prep_env():
     parser.add_argument('--lr_adjust', type=str, default='type1', help='Adjust learning rate')
     parser.add_argument('--use_gpu', type=bool, default=True, help='Whether or not use GPU')
     parser.add_argument('--gpu', type=int, default=0, help='GPU ID')
-    parser.add_argument('--use_multi_gpu', action='store_true', default=False, help='Use multiple gpus or not')
+    # parser.add_argument('--use_multi_gpu', action='store_true', default=False, help='Use multiple gpus or not')
     parser.add_argument('--capacity', type=int, default=134, help="The capacity of a wind farm, "
                                                                   "i.e. the number of wind turbines in a wind farm")
     parser.add_argument('--turbine_id', type=int, default=0, help='Turbine ID')
@@ -89,28 +89,34 @@ def prep_env():
     }
     ###
     # Prepare the GPUs
-    args.use_gpu = True if paddle.device.is_compiled_with_cuda() and args.use_gpu else False
-    if args.use_gpu and args.use_multi_gpu:
-        args.devices = args.devices.replace(' ', '')
-        device_ids = args.devices.split(',')
-        args.device_ids = [int(id_) for id_ in device_ids]
-        args.gpu = args.device_ids[0]
-        settings.update(
-            {
-                "use_gpu": args.use_gpu,
-                "devices": args.devices,
-                "device_ids": args.device_ids,
-                "gpu": args.gpu,
-                "use_multi_gpu": args.use_multi_gpu
-             }
-        )
+    if paddle.device.is_compiled_with_cuda():
+        args.use_gpu = True
+        paddle.device.set_device('gpu:{}'.format(args.gpu))
     else:
-        settings.update(
-            {
-                "use_gpu": args.use_gpu,
-                "gpu": args.gpu,
-                "use_multi_gpu": args.use_multi_gpu
-             }
-        )
+        args.use_gpu = False
+        paddle.device.set_device('cpu')
+
+    # if args.use_gpu and args.use_multi_gpu:
+    #     args.devices = args.devices.replace(' ', '')
+    #     device_ids = args.devices.split(',')
+    #     args.device_ids = [int(id_) for id_ in device_ids]
+    #     args.gpu = args.device_ids[0]
+    #     settings.update(
+    #         {
+    #             "use_gpu": args.use_gpu,
+    #             "devices": args.devices,
+    #             "device_ids": args.device_ids,
+    #             "gpu": args.gpu,
+    #             "use_multi_gpu": args.use_multi_gpu
+    #          }
+    #     )
+    # else:
+    #     settings.update(
+    #         {
+    #             "use_gpu": args.use_gpu,
+    #             "gpu": args.gpu,
+    #             "use_multi_gpu": args.use_multi_gpu
+    #          }
+    #     )
     print("Experimental settings are: \n{}".format(str(settings)))
     return settings
