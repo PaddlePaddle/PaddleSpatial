@@ -5,7 +5,7 @@
 #
 ################################################################################
 """
-Description: Evaluation the performance
+Description: Evaluate the performance
 Authors: Lu,Xinjiang (luxinjiang@baidu.com)
 Date:    2022/03/10
 """

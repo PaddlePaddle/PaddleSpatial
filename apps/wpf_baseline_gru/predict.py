@@ -63,8 +63,10 @@ def forecast(settings):
     """
     preds = []
     gts = []
-    cur_setup = '{}_t{}_i{}_o{}_ls{}'.format(settings["filename"], settings["task"], settings["input_len"],
-                                             settings["output_len"], settings["lstm_layer"])
+    cur_setup = '{}_t{}_i{}_o{}_ls{}_train{}_val{}'.format(
+        settings["filename"], settings["task"], settings["input_len"], settings["output_len"], settings["lstm_layer"],
+        settings["train_size"], settings["val_size"]
+    )
     results = traverse_wind_farm(forecast_one, settings, cur_setup, flag='test')
     for j in range(settings["capacity"]):
         pred, gt = results[j]
@@ -77,7 +79,7 @@ def forecast(settings):
 
     # A convenient customized relative metric can be adopted
     # to evaluate the 'accuracy'-like performance of developed model for Wind Power forecasting problem
-    day_len = 144
+    day_len = settings["day_len"]
     day_acc = []
     for idx in range(0, preds.shape[0]):
         day_acc.append((1 - metrics.rmse(preds[idx, -day_len:, -1],

@@ -64,13 +64,12 @@ def train_and_val(experiment, model_folder, is_debug=False):
         os.makedirs(path_to_model)
 
     time_now = time.time()
-    # train_steps = len(train_loader)
     early_stopping = EarlyStopping(patience=args["patience"], verbose=True)
     model_optim = experiment.get_optimizer()
     criterion = Experiment.get_criterion()
 
+    epoch_start_time = time.time()
     for epoch in range(args["train_epochs"]):
-        epoch_start_time = time.time()
         iter_count = 0
         train_loss = []
         model.train()
@@ -82,11 +81,14 @@ def train_and_val(experiment, model_folder, is_debug=False):
             loss.backward()
             model_optim.minimize(loss)
             model_optim.step()
-        train_loss = np.average(train_loss)
         val_loss = val(experiment, val_loader, criterion)
 
         if is_debug:
+            train_loss = np.average(train_loss)
+            epoch_end_time = time.time()
             print("Epoch: {}, \nTrain Loss: {}, \nValidation Loss: {}".format(epoch, train_loss, val_loss))
+            print("Elapsed time for epoch-{}: {}".format(epoch, epoch_end_time - epoch_start_time))
+            epoch_start_time = epoch_end_time
 
         # Early Stopping if needed
         early_stopping(val_loss, model, path_to_model, args["turbine_id"])
@@ -94,9 +96,6 @@ def train_and_val(experiment, model_folder, is_debug=False):
             print("Early stopped! ")
             break
         adjust_learning_rate(model_optim, epoch + 1, args)
-        epoch_end_time = time.time()
-        if is_debug:
-            print("Elapsed time for epoch-{}: {}".format(epoch, epoch_end_time - epoch_start_time))
 
 
 if __name__ == "__main__":
@@ -104,6 +103,8 @@ if __name__ == "__main__":
     #
     # Set up the initial environment
     # Current settings for the model
-    cur_setup = '{}_t{}_i{}_o{}_ls{}'.format(settings["filename"], settings["task"], settings["input_len"],
-                                             settings["output_len"], settings["lstm_layer"])
+    cur_setup = '{}_t{}_i{}_o{}_ls{}_train{}_val{}'.format(
+        settings["filename"], settings["task"], settings["input_len"], settings["output_len"], settings["lstm_layer"],
+        settings["train_size"], settings["val_size"]
+    )
     traverse_wind_farm(train_and_val, settings, cur_setup)
