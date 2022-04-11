@@ -21,8 +21,8 @@ def prep_env():
     parser = argparse.ArgumentParser(description='Long Term Wind Power Forecasting')
     ###
     parser.add_argument('--data_path', type=str, default='./data/', help='Path to the data file')
-    parser.add_argument('--filename', type=str, default='wtb_kdd22_full.csv', help='Filename of the input data, '
-                                                                                   'change it if necessary')
+    parser.add_argument('--filename', type=str, default='sdwpf_baidukddcup2022_full.csv',
+                        help='Filename of the input data, change it if necessary')
     parser.add_argument('--task', type=str, default='MS', help='The type of forecasting task, '
                                                                'options:[M, S, MS]; '
                                                                'M: multivariate --> multivariate, '
@@ -37,9 +37,9 @@ def prep_env():
     parser.add_argument('--out_var', type=int, default=1, help='Number of the output variables')
     parser.add_argument('--day_len', type=int, default=144, help='Number of observations in one day')
     parser.add_argument('--train_size', type=int, default=153, help='Number of days for training')
-    parser.add_argument('--val_size', type=int, default=30, help='Number of days for validation')
-    parser.add_argument('--test_size', type=int, default=7, help='Number of days for testing')
-    parser.add_argument('--total_size', type=int, default=214, help='Number of days for the whole dataset')
+    parser.add_argument('--val_size', type=int, default=16, help='Number of days for validation')
+    parser.add_argument('--test_size', type=int, default=15, help='Number of days for testing')
+    parser.add_argument('--total_size', type=int, default=184, help='Number of days for the whole dataset')
     parser.add_argument('--lstm_layer', type=int, default=2, help='Number of LSTM layers')
     parser.add_argument('--dropout', type=float, default=0.05, help='Dropout')
     parser.add_argument('--num_workers', type=int, default=5, help='#workers for data loader')
