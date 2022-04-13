@@ -73,7 +73,7 @@ def evaluate(settings):
     day_len = settings["day_len"]
     day_acc = []
     for idx in range(0, preds.shape[0]):
-        acc = 1 - metrics.rmse(preds[idx, -day_len:, -1], gts[idx, -day_len:, -1]) / (settings["capacity"] * 1000)
+        acc = 1 - metrics.rmse(preds[idx, -day_len*2:, -1], gts[idx, -day_len*2:, -1]) / (settings["capacity"] * 1000)
         if acc != acc:
             continue
         day_acc.append(acc)
