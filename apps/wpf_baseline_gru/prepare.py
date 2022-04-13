@@ -56,6 +56,7 @@ def prep_env():
     parser.add_argument('--turbine_id', type=int, default=0, help='Turbine ID')
     parser.add_argument('--pred_file', type=str, default='./predict.py',
                         help='The path to the script for making predictions')
+    parser.add_argument('--stride', type=int, default=1, help='The stride that a window adopts to roll the test set')
     parser.add_argument('--is_debug', type=bool, default=False, help='True or False')
     args = parser.parse_args()
     settings = {
@@ -85,6 +86,7 @@ def prep_env():
         "capacity": args.capacity,
         "turbine_id": args.turbine_id,
         "pred_file": args.pred_file,
+        "stride": args.stride,
         "is_debug": args.is_debug
     }
     ###

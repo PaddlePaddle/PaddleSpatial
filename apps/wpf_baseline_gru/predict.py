@@ -14,7 +14,6 @@ import paddle
 import numpy as np
 from common import Experiment
 from common import traverse_wind_farm
-import metrics
 
 
 def forecast_one(experiment, model_folder):
@@ -47,8 +46,9 @@ def forecast_one(experiment, model_folder):
 
     predictions = test_data.inverse_transform(predictions)
     true_lst = test_data.inverse_transform(true_lst)
+    raw_df = test_data.get_raw_data()
 
-    return predictions, true_lst
+    return predictions, true_lst, raw_df
 
 
 def forecast(settings):
@@ -63,28 +63,16 @@ def forecast(settings):
     """
     preds = []
     gts = []
+    raw_data_ls = []
     cur_setup = '{}_t{}_i{}_o{}_ls{}_train{}_val{}'.format(
         settings["filename"], settings["task"], settings["input_len"], settings["output_len"], settings["lstm_layer"],
         settings["train_size"], settings["val_size"]
     )
     results = traverse_wind_farm(forecast_one, settings, cur_setup, flag='test')
     for j in range(settings["capacity"]):
-        pred, gt = results[j]
+        pred, gt, raw_data = results[j]
         preds.append(pred)
         gts.append(gt)
-    preds = np.array(preds)
-    gts = np.array(gts)
-    preds = np.sum(preds, axis=0)
-    gts = np.sum(gts, axis=0)
+        raw_data_ls.append(raw_data)
 
-    # A convenient customized relative metric can be adopted
-    # to evaluate the 'accuracy'-like performance of developed model for Wind Power forecasting problem
-    day_len = settings["day_len"]
-    day_acc = []
-    for idx in range(0, preds.shape[0]):
-        day_acc.append((1 - metrics.rmse(preds[idx, -day_len:, -1],
-                                         gts[idx, -day_len:, -1]) / (settings["capacity"] * 1000)))
-    day_acc = np.array(day_acc).mean()
-    print('Accuracy:  {:.4f}%'.format(day_acc * 100))
-
-    return preds, gts
+    return preds, gts, raw_data_ls

@@ -10,6 +10,7 @@ Authors: Lu,Xinjiang (luxinjiang@baidu.com)
 Date:    2022/03/10
 """
 from typing import Callable
+import time
 import numpy as np
 import paddle
 import paddle.nn as nn
@@ -253,17 +254,24 @@ def traverse_wind_farm(method, params, model_path, flag='train'):
         Predictions (for test) or None
     """
     responses = []
+    start_time = time.time()
     for i in range(params["capacity"]):
         params["turbine_id"] = i
         exp = Experiment(params)
-        print('>>>>>>> Processing: Turbine {:3d} >>>>>>>>>>>>>>>>>>>>>>>>>>\n'.format(i))
         if 'train' == flag:
+            print('>>>>>>> Training Turbine {:3d} >>>>>>>>>>>>>>>>>>>>>>>>>>\n'.format(i))
             method(exp, model_path, is_debug=params["is_debug"])
         elif 'test' == flag:
+            print('>>>>>>> Forecasting Turbine {:3d} >>>>>>>>>>>>>>>>>>>>>>>>>>\n'.format(i))
             res = method(exp, model_path)
             responses.append(res)
         else:
             pass
         paddle.device.cuda.empty_cache()
+        if params["is_debug"]:
+            end_time = time.time()
+            print("Elapsed time for {} turbine {} is {} secs".format("training" if "train" == flag else "predicting", i,
+                                                                end_time - start_time))
+            start_time = end_time
     if 'test' == flag:
         return responses

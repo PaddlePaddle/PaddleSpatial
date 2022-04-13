@@ -156,6 +156,10 @@ class WindTurbineDataset(Dataset):
             data = df_data.values
         self.data_x = data[border1:border2]
         self.data_y = data[border1:border2]
+        self.raw_data = df_data[border1 + self.input_len:border2]
+
+    def get_raw_data(self):
+        return self.raw_data
 
     def __getitem__(self, index):
         #
