@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--task', type=str,
                         default='road_representation', help='the name of task')
     parser.add_argument('--model', type=str,
-                        default='GeomGCN', help='the name of model in [ChebConv GeomGCN DeepWalk LINE]')
+                        default='ChebConv', help='the name of model in [ChebConv GeomGCN DeepWalk LINE]')
     parser.add_argument('--dataset', type=str,
                         default='bj_roadmap_edge', help='the name of dataset')
     parser.add_argument('--gpu', type=str2bool,
