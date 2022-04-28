@@ -1,7 +1,7 @@
 import json
 import paddle
 import argparse
-from util import ensure_dir, get_logger, get_model, get_dataset, get_trainer, str2bool
+from util import get_logger, get_model, get_dataset, get_trainer, str2bool
 
 
 def run_model(config=None):
@@ -35,11 +35,11 @@ if __name__ == '__main__':
     parser.add_argument('--task', type=str,
                         default='road_representation', help='the name of task')
     parser.add_argument('--model', type=str,
-                        default='ChebConv', help='the name of model in [ChebConv GeomGCN DeepWalk Node2Vec LINE]')
+                        default='GeomGCN', help='the name of model in [ChebConv GeomGCN DeepWalk LINE]')
     parser.add_argument('--dataset', type=str,
                         default='bj_roadmap_edge', help='the name of dataset')
     parser.add_argument('--gpu', type=str2bool,
-                        default=True, help='the name of dataset')
+                        default=True, help='whether to use gpu or not')
     parser.add_argument('--config_file', type=str,
                         default='config.json', help='the file name of config file')
     # 解析参数
