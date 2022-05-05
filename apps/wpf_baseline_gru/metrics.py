@@ -165,7 +165,8 @@ def turbine_scores(pred, gt, raw_data, examine_len, stride=1):
         The averaged MAE and RMSE
     """
     cond = (raw_data['Patv'] <= 0) & (raw_data['Wspd'] > 2.5) | \
-           (raw_data['Pab1'] > 89) | (raw_data['Pab2'] > 89) | (raw_data['Pab3'] > 89)
+           (raw_data['Pab1'] > 89) | (raw_data['Pab2'] > 89) | (raw_data['Pab3'] > 89) | \
+           (raw_data['Wdir'] < -180) | (raw_data['Wdir'] > 180) | (raw_data['Ndir'] < -720) | (raw_data['Ndir'] > 720)
     maes, rmses = [], []
     cnt_sample, out_seq_len, _ = pred.shape
     for i in range(0, cnt_sample, stride):

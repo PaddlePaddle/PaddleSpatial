@@ -271,7 +271,7 @@ def traverse_wind_farm(method, params, model_path, flag='train'):
         if params["is_debug"]:
             end_time = time.time()
             print("Elapsed time for {} turbine {} is {} secs".format("training" if "train" == flag else "predicting", i,
-                                                                end_time - start_time))
+                                                                     end_time - start_time))
             start_time = end_time
     if 'test' == flag:
         return responses
