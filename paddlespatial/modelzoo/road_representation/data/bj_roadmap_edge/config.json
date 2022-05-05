@@ -1,0 +1,28 @@
+{
+  "geo": {
+    "including_types": [
+      "LineString"
+    ],
+    "LineString": {
+      "highway": "num",
+      "length": "num",
+      "lanes": "num",
+      "tunnel": "num",
+      "bridge": "num",
+      "maxspeed": "num",
+      "width": "num",
+      "alley": "num",
+      "roundabout": "num"
+    }
+  },
+  "rel": {
+    "including_types": [
+      "geo"
+    ],
+    "geo": {}
+  },
+  "info": {
+    "geo_file": "bj_roadmap_edge",
+    "rel_file": "bj_roadmap_edge"
+  }
+}
