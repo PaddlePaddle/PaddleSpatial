@@ -59,9 +59,9 @@ def prep_env():
     parser.add_argument('--turbine_id', type=int, default=0, help='Turbine ID')
     parser.add_argument('--pred_file', type=str, default='./predict.py',
                         help='The path to the script for making predictions')
-    parser.add_argument('--framework', type=str, default='PaddlePaddle',
-                        help='The machine learning framework adopted, e.g. PaddlePaddle, PyTorch, Tensorflow '
-                             'or Base (No DL framework) ')
+    parser.add_argument('--framework', type=str, default='paddlepaddle',
+                        help='The machine learning framework adopted, e.g. paddlepaddle, pytorch, tensorflow '
+                             'or base (No DL framework) ')
     parser.add_argument('--is_debug', type=bool, default=False, help='True or False')
     args = parser.parse_args()
     settings = {
