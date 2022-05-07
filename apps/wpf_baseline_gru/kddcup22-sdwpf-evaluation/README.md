@@ -12,7 +12,7 @@
 
     python = 3.7
 
-3. Packages installed in different conda environment
+3. Packages installed in different conda environments
 
    1. [base](requirements/base_env_installed_packages.md)
    2. [paddlepaddle](requirements/paddlepaddle_env_installed_packages.md)
@@ -31,7 +31,7 @@ When participants submit their developed code and model in a compressed file, th
     | --- [base/paddle/pytorch/tensorflow]
          | --- __init__.py
          | --- evaluation.py  (required)
-         | --- preeict.py     (required)
+         | --- preeict.py
          | --- metrics.py     (required)
          | --- test_data.py   (required)
          | --- ...
@@ -41,10 +41,10 @@ When participants submit their developed code and model in a compressed file, th
 ```
 
 The extracted folder is named as 'kddcup22-sdwpf-evaluation'. 
-This folder should contain a sub-folder named as 'base'/'paddlepaddle'/'pytorch'/'tensorflow', which depends on the machine learning framework one adopts. 
-In the code sub-folder, evaluation.py, predict.py, metrics.py and test_data.py are required.
-And, the evaluation.py, metrics.py and test_data.py should be the released version, which will be checked with MD5 when the submission starts.
-In the predict.py script, the forecast interface should be implemented by the participants, and the forecast interface takes a dictionary that consists of a number of settings as the parameter. 
+This folder should contain a sub-folder named as 'base' (or 'paddlepaddle' or 'pytorch' or 'tensorflow'), which depends on the machine learning framework one adopts. 
+In the code sub-folder, evaluation.py, metrics.py and test_data.py are required.
+And, the evaluation.py, metrics.py and test_data.py should be the released version, which will be checked with MD5 when the submission starts. 
+In the prediction-like script (e.g. the predict.py in the baseline code), the forecast interface should be implemented by the participants, and the forecast interface takes a dictionary that consists of a number of settings as the input parameter. 
 
 
 ## Shell Script for Running The Evaluation (TBD)
@@ -56,31 +56,32 @@ which will be determined after discussing with the AIStudio engineers.
 ```
     #!/usr/bin/env bash
 
-   if [ $# -ne 1 ]; then
-      echo "The machine learning framework (i.e. base/paddlepaddle/pytorch/tensorflow) is missing, which MUST be provided"
-      echo "For example, sh run_evaluation.sh paddlepaddle"
-      exit 1
-   fi
-   
-   ML_framework=$1
-   data_path="path/to/data"
-   filename="sdwpf_baidukddcup2022_full.csv"
-   path_to_test_x="path/to/data/sdwpf_baidukddcup2022_test/test_x"
-   path_to_test_y="path/to/data/sdwpf_baidukddcup2022_test/test_y"
-   predict_file="predict.py"
-   is_debug=True
-   
-   conda activate $1
-   python "./kddcup22-sdwpf-evaluation/"$ML_framework"/evaluation.py" \
-       --data_path $data_path \
-       --filename $filename \
-       --path_to_test_x $path_to_test_x \
-       --path_to_test_y $path_to_test_y \
-       --pred_file "./kddcup22-sdwpf-evaluation/"$ML_framework"/"$predict_file \
-       --is_debug $is_debug \
-       --framework $ML_framework
+    if [ $# -ne 1 ]; then
+        echo "The machine learning framework (i.e. base/paddlepaddle/pytorch/tensorflow) is missing, which MUST be provided"
+        echo "For example, sh run_evaluation.sh paddlepaddle"
+        exit 1
+    fi
+    
+    ML_framework=$1
+    data_path="path/to/data"
+    filename="sdwpf_baidukddcup2022_full.csv"
+    path_to_test_x="path/to/data/sdwpf_baidukddcup2022_test/test_x"
+    path_to_test_y="path/to/data/sdwpf_baidukddcup2022_test/test_y"
+    predict_file="predict.py"
+    is_debug=True
+    
+    conda activate $1
+    python "./kddcup22-sdwpf-evaluation/"$ML_framework"/evaluation.py" \
+        --data_path $data_path \
+        --filename $filename \
+        --path_to_test_x $path_to_test_x \
+        --path_to_test_y $path_to_test_y \
+        --pred_file "./kddcup22-sdwpf-evaluation/"$ML_framework"/"$predict_file \
+        --is_debug $is_debug \
+        --framework $ML_framework
 ```
 
 As can be seen in the above shell script, several arguments will be specified.
-In other words, in the script handling the parameters and settings, e.g. the prepare.py script in the baseline code, 
-the participants should maintain the arguments mentioned in the above shell script. 
+In other words, in the script handling the parameters and settings, e.g. the prepare.py in the baseline code, 
+the participants should keep the arguments mentioned in the above shell script. 
+
