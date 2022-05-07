@@ -1,0 +1,67 @@
+
+| 1.     | Package                 | Version               |
+|--------|-------------------------|-----------------------|
+| 3.     | absl-py                 | 0.13.0                |
+ | 4.     | attrs                   | 21.2.0                |
+ | 5.     | cachetools              | 4.2.2                 |
+| 6.     | certifi                 | 2021.5.30             |
+| 7.     | charset-normalizer      | 2.0.4                 |
+| 8.     | cycler                  | 0.10.0                |
+| 9.     | flatbuffers             | 2.0                   |
+| 10.    | google-auth             | 1.34.0                |
+| 11.    | google-auth-oauthlib    | 0.4.5                 |
+| 12.    | grpcio                  | 1.39.0                |
+| 13.    | idna                    | 3.2                   |
+ | 14.    | imageio                 | 2.9.0                 |
+ | 15.    | importlib-metadata      | 4.6.3                 |
+ | 16.    | iniconfig               | 1.1.1                 |
+ | 17.    | joblib                  | 1.0.1                 |
+| 18.    | kiwisolver              | 1.3.1                 | 
+ | 19.    | Markdown                | 3.3.4                 | 
+| 20.    | matplotlib              | 3.4.2                 | 
+| 21.    | etworkx                 | 2.6.2                 | 
+| 22.    | numpy                   | 1.21.1                | 
+| 23.    | oauthlib                | 3.1.1                 | 
+| 24.    | onnx                    | 1.10.1                | 
+| 25.    | onnxruntime-gpu         | 1.8.1                 | 
+| 26.    | opencv-python           | 4.5.3.56              | 
+| 27.    | packaging               | 21.0                  | 
+| 28.    | pandas                  | 1.3.1                 | 
+| 29.    | Pillow                  | 8.3.1                 | 
+| 30.    | pip                     | 21.2.2                | 
+| 31.    | pluggy                  | 0.13.1                | 
+| 32.    | protobuf                | 3.17.3                | 
+| 33.    | py                      | 1.10.0                | 
+| 34.    | pyasn1                  | 0.4.8                 | 
+| 35.    | pyasn1-modules          | 0.2.8                 | 
+| 36.    | pyparsing               | 2.4.7                 | 
+| 37.    | pytest                  | 6.2.4                 | 
+| 38.    | python-dateutil         | 2.8.2                 | 
+| 39.    | pytz                    | 2021.1                | 
+| 40.    | PyWavelets              | 1.1.1                 | 
+| 41.    | requests                | 2.26.0                | 
+| 42.    | requests-oauthlib       | 1.3.0                 | 
+| 43.    | rsa                     | 4.7.2                 |
+| 44.    | scikit-image            | 0.18.2                | 
+| 45.    | scikit-learn            | 0.24.2                |
+| 46.    | scipy                   | 1.7.1                 |
+| 47.    | seaborn                 | 0.11.1                |
+| 48.    | setuptools              | 52.0.0.post20210125   |
+| 49.    | six                     | 1.16.0                |
+| 50.    | tensorboard             | 2.6.0                 |
+| 51.    | tensorboard-data-server | 0.6.1                 |
+| 52.    | tensorboard-plugin-wit  | 1.8.0                 |
+| 53.    | threadpoolctl           | 2.2.0                 |
+| 54.    | tifffile                | 2021.7.30             |
+| 55.    | toml                    | 0.10.2                |
+| 56.    | torch                   | 1.9.0+cu102           |
+| 57.    | torchaudio              | 0.9.0                 |
+| 58.    | torchvision             | 0.10.0+cu102          |
+| 59.    | typing-extensions       | 3.10.0.0              |
+| 60.    | urllib3                 | 1.26.6                |
+| 61.    | Werkzeug                | 2.0.1                 |
+| 62.    | wheel                   | 0.36.2                |
+| 63.    | zipp                    | 3.5.0                 |
+
+
+

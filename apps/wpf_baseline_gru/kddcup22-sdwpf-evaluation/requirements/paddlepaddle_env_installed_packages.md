@@ -1,0 +1,68 @@
+
+| 1.    | Package                           | Version             |
+|-------|-----------------------------------|---------------------|
+| 3.    | astor                             | 0.8.1               | 
+| 4.    | Babel                             | 2.9.1               | 
+| 5.    | backports.entry-points-selectable | 1.1.0               | 
+| 6.    | bce-python-sdk                    | 0.8.61              |
+| 7.    | certifi                           | 2021.5.30           |
+ | 8.    | cfgv                              | 3.3.0               |
+ | 9.    | charset-normalizer                | 2.0.4               |
+ | 10.   | click                             | 8.0.1               |
+ | 11.   | cycler                            | 0.10.0              |
+ | 12.   | decorator                         | 5.0.9               |
+ | 13.   | distlib                           | 0.3.2               |
+ | 14.   | filelock                          | 3.0.12              |
+ | 15.   | flake8                            | 3.9.2               |
+ | 16.   | Flask                             | 2.0.1               |
+ | 17.   | Flask-Babel                       | 2.0.0               |
+ | 18.   | future                            | 0.18.2              |
+ | 19.   | gast                              | 0.4.0               |
+ | 20.   | identify                          | 2.2.13              |
+ | 21.   | idna                              | 3.2                 |
+ | 22.   | imageio                           | 2.9.0               |
+ | 23.   | importlib-metadata                | 4.6.3               |
+ | 24.   | itsdangerous                      | 2.0.1               |
+ | 25.   | Jinja2                            | 3.0.1               |
+ | 26.   | joblib                            | 1.0.1               |
+ | 27.   | kiwisolver                        | 1.3.1               |
+ | 28.   | MarkupSafe                        | 2.0.1               |
+ | 29.   | matplotlib                        | 3.4.2               |
+ | 30.   | mccabe                            | 0.6.1               |
+ | 31.   | networkx                          | 2.6.2               |
+ | 32.   | nodeenv                           | 1.6.0               |
+ | 33.   | numpy                             | 1.21.1              |
+ | 34.   | opencv-python                     | 4.5.3.56            |
+ | 35.   | paddlepaddle-gpu                  | 2.1.2               |
+ | 36.   | pandas                            | 1.3.1               |
+ | 37.   | Pillow                            | 8.3.1               |
+ | 38.   | pip                               | 21.2.2              |
+ | 39.   | platformdirs                      | 2.2.0               |
+ | 40.   | pre-commit                        | 2.14.0              |
+ | 41.   | protobuf                          | 3.17.3              |
+ | 42.   | pycodestyle                       | 2.7.0               |
+ | 43.   | pycryptodome                      | 3.10.1              |
+ | 44.   | pyflakes                          | 2.3.1               |
+ | 45.   | pyparsing                         | 2.4.7               |
+ | 46.   | python-dateutil                   | 2.8.2               |
+ | 47.   | pytz                              | 2021.1              |
+ | 48.   | PyWavelets                        | 1.1.1               |
+ | 49.   | PyYAML                            | 5.4.1               |
+ | 50.   | requests                          | 2.26.0              |
+ | 51.   | scikit-image                      | 0.18.2              |
+ | 52.   | scikit-learn                      | 0.24.2              |
+ | 53.   | scipy                             | 1.7.1               |
+ | 54.   | seaborn                           | 0.11.1              |
+ | 55.   | setuptools                        | 52.0.0.post20210125 |
+ | 56.   | shellcheck-py                     | 0.7.2.1             |
+ | 57.   | six                               | 1.16.0              |
+ | 58.   | threadpoolctl                     | 2.2.0               |
+ | 59.   | tifffile                          | 2021.7.30           |
+ | 60.   | toml                              | 0.10.2              |
+ | 61.   | typing-extensions                 | 3.10.0.0            |
+ | 62.   | urllib3                           | 1.26.6              |
+ | 63.   | virtualenv                        | 20.7.0              |
+ | 64.   | visualdl                          | 2.2.0               |
+ | 65.   | Werkzeug                          | 2.0.1               |
+ | 66.   | wheel                             | 0.36.2              |
+ | 67.   | zipp                              | 3.5.0               |
