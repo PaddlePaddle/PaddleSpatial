@@ -77,7 +77,7 @@ your model, please provide the detailed (apt/pip)-requirements.txt and contact t
       | --- metrics.py
       | --- test_data.py
       | --- apt-requiretments.txt   (optional)
-      } --- pip-requirements.txt    (optional)
+      | --- pip-requirements.txt    (optional)
       | --- ./tests
             | --- test-1.zip
             | --- test-2.zip
@@ -88,7 +88,7 @@ your model, please provide the detailed (apt/pip)-requirements.txt and contact t
       | --- metrics.py
       | --- test_data.py
       | --- apt-requiretments.txt   (optional)
-      } --- pip-requirements.txt    (optional)
+      | --- pip-requirements.txt    (optional)
       | --- ./tests
             | --- test-1.zip
             | --- test-2.zip
@@ -99,7 +99,7 @@ your model, please provide the detailed (apt/pip)-requirements.txt and contact t
       | --- metrics.py
       | --- test_data.py
       | --- apt-requiretments.txt   (optional)
-      } --- pip-requirements.txt    (optional)
+      | --- pip-requirements.txt    (optional)
       | --- ./tests
             | --- test-1.zip
             | --- test-2.zip
@@ -110,7 +110,7 @@ your model, please provide the detailed (apt/pip)-requirements.txt and contact t
       | --- metrics.py
       | --- test_data.py
       | --- apt-requiretments.txt   (optional)
-      } --- pip-requirements.txt    (optional)
+      | --- pip-requirements.txt    (optional)
       | --- ./tests
             | --- test-1.zip
             | --- test-2.zip
