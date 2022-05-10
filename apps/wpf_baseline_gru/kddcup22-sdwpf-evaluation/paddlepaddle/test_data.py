@@ -47,8 +47,6 @@ class TestData(object):
         if self.task == 'MS':
             cols = self.df_data.columns[self.start_col:]
             data = self.df_data[cols]
-        elif self.task == 'S':
-            data = self.df_data[[tid, self.target]]
         else:
             raise Exception("Unsupported task type ({})! ".format(self.task))
         seq = data.values[border1:border2]

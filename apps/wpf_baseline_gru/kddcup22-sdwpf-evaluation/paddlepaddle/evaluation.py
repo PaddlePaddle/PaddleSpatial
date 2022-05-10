@@ -13,10 +13,11 @@ import os
 import sys
 import time
 import traceback
+import tempfile
+import zipfile
 import numpy as np
 import metrics
 from test_data import TestData
-from prepare import prep_env
 
 
 class Loader(object):
@@ -62,21 +63,10 @@ def load_test_set(settings):
     test_x_files = sorted(test_x_files)
     base_dir_test_y = settings["path_to_test_y"]
     test_y_files = sorted(os.listdir(base_dir_test_y))
-    #
-    test_y_collection = []
-    for file in test_y_files:
-        settings["path_to_test_y"] = os.path.join(base_dir_test_y, file)
-        test_data = TestData(path_to_data=settings["path_to_test_y"])
-        turbines, raw_turbines = test_data.get_all_turbines()
-        test_ys = []
-        for turbine in turbines:
-            test_ys.append(turbine[:settings["output_len"], -settings["out_var"]:])
-        test_y_collection.append((test_ys, raw_turbines))
-    return test_x_files, test_y_collection
+    return test_x_files, test_y_files
 
 
 def performance(settings, prediction, ground_truth, ground_truth_df):
-    # type: (dict, np.ndarray, np.ndarray, np.ndarray) -> (float, float, float)
     """
     Desc:
         Test the performance on the whole wind farm
@@ -100,18 +90,31 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
     return overall_mae, overall_rmse, acc
 
 
-def evaluate():
+TAR_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_y'))
+PRED_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_x'))
+DATA_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data'))
+
+
+def evaluate(path_to_src_dir):
     """
     Desc:
         The main entrance for the evaluation
+    args:
+        path_to_src_dir:
     Returns:
         A dict indicating performance
     """
     start_test_time = time.time()
     # Set up the initial environment
-    envs = prep_env()
+    prep_module = Loader.load(os.path.join(path_to_src_dir, "prepare.py"))
+    envs = prep_module.prep_env()
+    envs["path_to_test_x"] = PRED_DIR
+    envs["path_to_test_y"] = TAR_DIR
+    envs["data_path"] = DATA_DIR
+    envs["pred_file"] = os.path.join(path_to_src_dir, envs["pred_file"])
+    envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
 
-    test_x_files, gt_coll = load_test_set(envs)
+    test_x_files, test_y_files = load_test_set(envs)
     if envs["is_debug"]:
         end_load_test_set_time = time.time()
         print("Load test_set (test_ys) in {} secs".format(end_load_test_set_time - start_test_time))
@@ -123,6 +126,7 @@ def evaluate():
     start_forecast_time = start_test_time
     end_forecast_time = start_forecast_time
     test_x_dir = envs["path_to_test_x"]
+    base_dir_test_y = envs["path_to_test_y"]
     for i, file in enumerate(test_x_files):
         envs["path_to_test_x"] = os.path.join(test_x_dir, file)
         prediction = forecast_module.forecast(envs)
@@ -132,8 +136,16 @@ def evaluate():
             print("\nElapsed time for {}-th prediction is: "
                   "{} secs \n".format(i, end_forecast_time - start_forecast_time))
             start_forecast_time = end_forecast_time
-        gt_y, gt_y_df = gt_coll[i]
-        tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_y, gt_y_df)
+
+        y_file = test_y_files[i]
+        envs["path_to_test_y"] = os.path.join(base_dir_test_y, y_file)
+        test_data = TestData(path_to_data=envs["path_to_test_y"])
+        turbines, raw_turbines = test_data.get_all_turbines()
+        test_ys = []
+        for turbine in turbines:
+            test_ys.append(turbine[:envs["output_len"], -envs["out_var"]:])
+        # tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_y, gt_y_df)
+        tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, test_ys, raw_turbines)
         print('\n\tThe {}-th prediction -- '
               'RMSE: {}, MAE: {}, Score: {}, '
               'and Accuracy: {:.4f}%'.format(i, tmp_rmse, tmp_mae, (tmp_rmse + tmp_mae) / 2, tmp_acc * 100))
@@ -153,10 +165,35 @@ def evaluate():
         print("\nTotal time for evaluation is {} secs\n".format(end_test_time - start_test_time))
 
     return {
-        "score": total_score,
+        "score": -1. * total_score,
         "ML-framework": envs["framework"]
     }
 
 
+def eval(submit_file):
+    """
+    Desc:
+        The interface for the system call
+    Args:
+        submit_file:
+    Returns:
+
+    """
+    # Check suffix of the submitted file
+    if not submit_file.endswith('.zip'):
+        raise Exception("Submitted file does not end with zip ！")
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        # Extract files
+        # Handle exceptions
+        with zipfile.ZipFile(submit_file) as src_f:
+            src_f.extractall(path=tmp_dir)
+            items = os.listdir(tmp_dir)
+            if 1 == len(items):
+                tmp_dir = os.path.join(tmp_dir, items[0])
+            return evaluate(tmp_dir)
+
+
 if __name__ == "__main__":
-    evaluate()
+    submitted_file = "./tests/test-1.zip"
+    eval(submitted_file)
