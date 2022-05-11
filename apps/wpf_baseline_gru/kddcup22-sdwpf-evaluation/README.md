@@ -61,8 +61,9 @@ In particular, the following arguments are required to be declared in 'prepare.p
 ## Backend Files for Evaluation
 
 Here, shown as below, we additionally demonstrate how the files are organized in the backend on the server side. 
-This folder contains four sub-folders (i.e. './base', './paddlepaddle', './pytorch' and './tensorflow') and other sub-folders. 
-In each sub-folder, evaluation.py, metrics.py and test_data.py are placed, which are currently released (please check for the latest updates in the [github](https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/wpf_baseline_gru/kddcup22-sdwpf-evaluation/paddlepaddle)).
+This folder contains four evaluation sub-folders (i.e. './base', './paddlepaddle', './pytorch' and './tensorflow') and other related sub-folders. 
+In each evaluation sub-folder, evaluation.py, metrics.py and test_data.py are placed, which are the same as currently released version 
+(please check for the latest updates in the [github](https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/wpf_baseline_gru/kddcup22-sdwpf-evaluation/paddlepaddle)).
 Besides, apt-requirements.txt and pip-requirements.txt are placed if necessary for different environments. 
 If someone finds the environment (see [here](./requirements) for detailed specifications) does not support 
 your model, please provide the detailed (apt/pip)-requirements.txt and contact the organizers ASAP. 
