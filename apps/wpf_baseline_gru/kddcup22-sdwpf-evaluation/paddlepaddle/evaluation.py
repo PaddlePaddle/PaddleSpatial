@@ -56,7 +56,7 @@ def load_test_set(settings):
     Args:
         settings:
     Returns:
-         Input files and output sequences
+         Input files and output files
     """
     test_x_dir = settings["path_to_test_x"]
     test_x_files = os.listdir(test_x_dir)
@@ -93,6 +93,15 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
 TAR_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_y'))
 PRED_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_x'))
 DATA_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data'))
+REQUIRED_ENV_VARS = [
+    "pred_file",
+    "checkpoints",
+    "day_len",
+    "capacity",
+    "output_len",
+    "out_var",
+    "framework"
+]
 
 
 def evaluate(path_to_src_dir):
@@ -106,8 +115,19 @@ def evaluate(path_to_src_dir):
     """
     start_test_time = time.time()
     # Set up the initial environment
-    prep_module = Loader.load(os.path.join(path_to_src_dir, "prepare.py"))
+    path_to_prep_script = os.path.join(path_to_src_dir, "prepare.py")
+    if not os.path.exists(path_to_prep_script):
+        raise Exception("The preparation script, i.e. 'prepare.py', does NOT exist! ")
+    prep_module = Loader.load(path_to_prep_script)
+
     envs = prep_module.prep_env()
+    for req_key in REQUIRED_ENV_VARS:
+        if req_key not in envs:
+            raise Exception("Key error: '{}'. The variable {} "
+                            "is missing in the prepared experimental settings! ".format(req_key, req_key))
+    if "is_debug" not in envs:
+        envs["is_debug"] = False
+
     envs["path_to_test_x"] = PRED_DIR
     envs["path_to_test_y"] = TAR_DIR
     envs["data_path"] = DATA_DIR
@@ -115,6 +135,7 @@ def evaluate(path_to_src_dir):
     envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
 
     test_x_files, test_y_files = load_test_set(envs)
+
     if envs["is_debug"]:
         end_load_test_set_time = time.time()
         print("Load test_set (test_ys) in {} secs".format(end_load_test_set_time - start_test_time))

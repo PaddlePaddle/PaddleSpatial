@@ -56,7 +56,6 @@ In particular, the following arguments are required to be declared in 'prepare.p
    * output_len
    * out_var
    * framework
-   * is_debug
 
 
 ## Backend Files for Evaluation
