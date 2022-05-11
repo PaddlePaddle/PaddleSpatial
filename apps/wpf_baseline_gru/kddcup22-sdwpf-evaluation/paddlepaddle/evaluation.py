@@ -213,9 +213,7 @@ def eval(submit_file):
             items = os.listdir(tmp_dir)
             if 1 == len(items):
                 tmp_dir = os.path.join(tmp_dir, items[0])
+                items = os.listdir(tmp_dir)
+            if 0 == len(items):
+                raise Exception("Zip file is empty! ")
             return evaluate(tmp_dir)
-
-
-if __name__ == "__main__":
-    submitted_file = "./tests/test-1.zip"
-    eval(submitted_file)
