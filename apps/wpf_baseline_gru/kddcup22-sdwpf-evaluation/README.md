@@ -45,7 +45,7 @@ Note that, the name of this script should be 'prepare.py'.
 In the prepare.py script, the prep_env() interface is required to be implemented which will be invoked 
 by the evaluation.py script (see the evaluation.py for more details). 
 
-(UPDATE) ATTENTION: No parser is allowed in the prepare.py (please refer to the newly updated tests/test-1.zip), 
+(UPDATE) ATTENTION: The argument parser is not allowed in the prepare.py (please refer to the newly updated tests/test-1.zip), 
 since it will conflict with the AIStudio eval_main() system call. 
 
 In particular, the following arguments are required to be declared in 'prepare.py' for evaluation: 
