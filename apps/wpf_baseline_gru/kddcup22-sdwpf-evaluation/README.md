@@ -7,14 +7,14 @@
 1. System
 
    * OS: Ubuntu 18.04 LTS
-   * GPU 
-     * Tesla V100
+   * GPU (one card)
+     * Tesla V100 (32 GB)
      * CUDA: 11.2, CuDNN: 8
      * Driver: 460.32.03
 
 3. Python version
 
-    python = 3.7
+    python = 3.7.11
 
 4. Packages installed in different environments
 
