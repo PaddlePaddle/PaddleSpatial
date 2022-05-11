@@ -96,10 +96,7 @@ DATA_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file
 REQUIRED_ENV_VARS = [
     "pred_file",
     "checkpoints",
-    "day_len",
-    "capacity",
-    "output_len",
-    "out_var",
+    "start_col",
     "framework"
 ]
 
@@ -131,6 +128,10 @@ def evaluate(path_to_src_dir):
     envs["path_to_test_x"] = PRED_DIR
     envs["path_to_test_y"] = TAR_DIR
     envs["data_path"] = DATA_DIR
+    envs["day_len"] = 144
+    envs["capacity"] = 134
+    envs["output_len"] = 288
+    envs["out_var"] = 1
     envs["pred_file"] = os.path.join(path_to_src_dir, envs["pred_file"])
     envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
 
@@ -160,7 +161,7 @@ def evaluate(path_to_src_dir):
 
         y_file = test_y_files[i]
         envs["path_to_test_y"] = os.path.join(base_dir_test_y, y_file)
-        test_data = TestData(path_to_data=envs["path_to_test_y"])
+        test_data = TestData(path_to_data=envs["path_to_test_y"], start_col=envs["start_col"])
         turbines, raw_turbines = test_data.get_all_turbines()
         test_ys = []
         for turbine in turbines:

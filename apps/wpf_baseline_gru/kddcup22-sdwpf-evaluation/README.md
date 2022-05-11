@@ -4,15 +4,19 @@
 
 ## Environment Setup   
 
-1. Operating system
+1. System
 
-    Ubuntu 18.04 
+   * OS: Ubuntu 18.04 LTS
+   * GPU 
+     * Tesla V100
+     * CUDA: 11.2, CuDNN: 8
+     * Driver: 460.32.03
 
-2. Python version
+3. Python version
 
     python = 3.7
 
-3. Packages installed in different environments
+4. Packages installed in different environments
 
    1. [base](requirements/base_env_installed_packages.md)
    2. [paddlepaddle](requirements/paddlepaddle_env_installed_packages.md)
@@ -51,10 +55,7 @@ since it will conflict with the AIStudio eval_main() system call.
 In particular, the following arguments are required to be declared in 'prepare.py' for evaluation: 
    * checkpoints
    * pred_file
-   * day_len
-   * capacity
-   * output_len
-   * out_var
+   * start_col
    * framework
 
 
