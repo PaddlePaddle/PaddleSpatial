@@ -16,12 +16,12 @@
 
     python = 3.7.11
 
-4. Packages installed in different environments
+4. Preinstalled Packages
 
-   1. [base](requirements/base_env_installed_packages.md)
-   2. [paddlepaddle](requirements/paddlepaddle_env_installed_packages.md)
-   3. [pytorch](requirements/pytorch_env_installed_packages.md)
-   4. [tensorflow](requirements/tensorflow_env_installed_packages.md)
+   1. [base](preinstalled-pkgs/base_env_installed_packages.md)     (Updated)
+   2. [paddlepaddle](preinstalled-pkgs/paddlepaddle_env_installed_packages.md)
+   3. [pytorch](preinstalled-pkgs/pytorch_env_installed_packages.md)
+   4. [tensorflow](preinstalled-pkgs/tensorflow_env_installed_packages.md)    (Updated)
 
 
 
@@ -31,12 +31,12 @@ When the participants submit their developed code and model in a zip file, e.g. 
 the extracted items should look like as follows: 
 
 ```
-   ./your-folder-name
+   ./your-folder-name         (rename it acording to your setting)
    | --- __init__.py         
-   | --- predict.py           (required)
-   | --- prepare.py           (required)
+   | --- predict.py           (required) (rename it acording to your setting)
+   | --- prepare.py           (required) (DO NOT rename it)
    | --- ... 
-   | --- ./your-model-folder  (required)
+   | --- ./your-model-folder  (required) (rename it acording your setting)
    | --- ... 
 ```
 
@@ -66,7 +66,7 @@ This folder contains four evaluation sub-folders (i.e. './base', './paddlepaddle
 In each evaluation sub-folder, evaluation.py, metrics.py and test_data.py are placed, which are the same as currently released version 
 (please check for the latest updates in the [github](https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/wpf_baseline_gru/kddcup22-sdwpf-evaluation/paddlepaddle)).
 Besides, apt-requirements.txt and pip-requirements.txt are placed if necessary for different environments. 
-If someone finds the environment (see [here](./requirements) for detailed specifications) does not support 
+If someone finds the environment (see [here](./preinstalled-pkgs) for detailed specifications) does not support 
 your model, please provide the detailed (apt/pip)-requirements.txt and contact the organizers ASAP. 
 
 ```
