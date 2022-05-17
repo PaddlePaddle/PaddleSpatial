@@ -36,7 +36,7 @@ the extracted items should look like as follows:
    | --- predict.py           (required) (rename it acording to your setting)
    | --- prepare.py           (required) (DO NOT rename it)
    | --- ... 
-   | --- ./your-model-folder  (required) (rename it acording your setting)
+   | --- ./your-model-folder  (optional)
    | --- ... 
 ```
 
