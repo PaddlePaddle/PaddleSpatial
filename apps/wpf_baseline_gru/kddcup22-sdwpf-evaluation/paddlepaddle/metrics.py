@@ -23,7 +23,7 @@ def mae(pred, gt):
     Returns:
         MAE value
     """
-    _mae = 0.
+    _mae = -1
     if len(pred) > 0 and len(gt) > 0:
         _mae = np.mean(np.abs(pred - gt))
     return _mae
@@ -39,7 +39,7 @@ def mse(pred, gt):
     Returns:
         MSE value
     """
-    _mse = 0.
+    _mse = -1
     if len(pred) > 0 and len(gt) > 0:
         _mse = np.mean((pred - gt) ** 2)
     return _mse
@@ -55,7 +55,10 @@ def rmse(pred, gt):
     Returns:
         RMSE value
     """
-    return np.sqrt(mse(pred, gt))
+    _mse = mse(pred, gt)
+    if _mse < 0:
+        return -1
+    return np.sqrt(_mse)
 
 
 def regressor_scores(prediction, gt):
@@ -91,7 +94,8 @@ def turbine_scores(pred, gt, raw_data, examine_len):
                    ((raw_data['Pab1'] > 89) | (raw_data['Pab2'] > 89) | (raw_data['Pab3'] > 89)) | \
                    ((raw_data['Wdir'] < -180) | (raw_data['Wdir'] > 180) | (raw_data['Ndir'] < -720) |
                     (raw_data['Ndir'] > 720))
-    indices = np.where(~nan_cond & ~invalid_cond)
+    nan_pred = pd.isna(pred).any(axis=1)
+    indices = np.where(~nan_cond & ~invalid_cond & ~nan_pred)
     prediction = pred[indices]
     targets = gt[indices]
     # NOTE: Before calculating the metrics, the unit of the outcome (e.g. predicted or true) power
@@ -118,11 +122,15 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
         gt = gts[i]
         raw_df = raw_df_lst[i]
         _mae, _rmse = turbine_scores(prediction, gt, raw_df, settings["output_len"])
-        # In case NaN is encountered
-        if _mae != _mae or _rmse != _rmse:
+        if _mae != _mae or _rmse != _rmse:  # In case NaN is encountered
+            continue
+        if _mae < 0 or _rmse < 0:
             continue
         all_mae.append(_mae)
         all_rmse.append(_rmse)
     total_mae = np.array(all_mae).sum()
     total_rmse = np.array(all_rmse).sum()
+    if len(all_mae) == 0 or len(all_rmse) == 0 or total_mae == 0 or total_rmse == 0:
+        total_mae = -1
+        total_rmse = -1
     return total_mae, total_rmse

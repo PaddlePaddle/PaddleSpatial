@@ -83,8 +83,11 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
     wind_farm_prediction = np.sum(prediction, axis=0)
     wind_farm_ground = np.sum(ground_truth, axis=0)
     day_len = settings["day_len"]
-    acc = 1 - metrics.rmse(wind_farm_prediction[-day_len:, -1],
-                           wind_farm_ground[-day_len:, -1]) / (settings["capacity"] * 1000)
+    _rmse = metrics.rmse(wind_farm_prediction[-day_len:, -1], wind_farm_ground[-day_len:, -1])
+    if _rmse < 0:
+        acc = -1
+    else:
+        acc = 1 - _rmse / (settings["capacity"] * 1000)
     overall_mae, overall_rmse = \
         metrics.regressor_detailed_scores(prediction, ground_truth, ground_truth_df, settings)
     return overall_mae, overall_rmse, acc
@@ -169,18 +172,24 @@ def evaluate(path_to_src_dir):
             test_ys.append(turbine[:envs["output_len"], -envs["out_var"]:])
         # tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_y, gt_y_df)
         tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, test_ys, raw_turbines)
-        print('\n\tThe {}-th prediction -- '
-              'RMSE: {}, MAE: {}, Score: {}, '
-              'and Accuracy: {:.4f}%'.format(i, tmp_rmse, tmp_mae, (tmp_rmse + tmp_mae) / 2, tmp_acc * 100))
+        if -1 == tmp_mae or -1 == tmp_rmse or -1 == tmp_acc:
+            print('\n\tThe {}-th prediction -- '
+                  'RMSE: None, MAE: None, Score: None, and Accuracy: None'.format(i))
+            continue
+        else:
+            print('\n\tThe {}-th prediction -- '
+                  'RMSE: {}, MAE: {}, Score: {}, '
+                  'and Accuracy: {:.4f}%'.format(i, tmp_rmse, tmp_mae, (tmp_rmse + tmp_mae) / 2, tmp_acc * 100))
         maes.append(tmp_mae)
         rmses.append(tmp_rmse)
 
-    avg_mae = np.array(maes).mean()
-    avg_rmse = np.array(rmses).mean()
-    total_score = (avg_mae + avg_rmse) / 2
-
-    print('\n --- Final MAE: {}, RMSE: {} ---'.format(avg_mae, avg_rmse))
-    print('--- Final Score --- \n\t{}'.format(total_score))
+    avg_mae, avg_rmse, total_score = -1, -1, 65535
+    if len(maes) > 0 and len(rmses) > 0:
+        avg_mae = np.array(maes).mean()
+        avg_rmse = np.array(rmses).mean()
+        total_score = (avg_mae + avg_rmse) / 2
+        print('\n --- Final MAE: {}, RMSE: {} ---'.format(avg_mae, avg_rmse))
+        print('--- Final Score --- \n\t{}'.format(total_score))
 
     if envs["is_debug"]:
         print("\nElapsed time for prediction is {} secs\n".format(end_forecast_time - start_test_time))
