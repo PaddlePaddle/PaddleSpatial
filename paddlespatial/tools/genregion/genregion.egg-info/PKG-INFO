@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: genregion
-Version: 0.0.1
+Version: 0.0.2
 Summary: Region generation using urban road netwok
-Author: Yanyan Li & Ming Zhang
+Author: Ming Zhang & Yanyan Li
 License: UNKNOWN
 Platform: UNKNOWN
 Description-Content-Type: text/markdown
@@ -13,16 +13,18 @@ License-File: LICENSE.txt
 
 ## 1.Introduction
 
-Urban area of interest (AOI) is broadly defined as the area within an urban environment that attracts People’s attention, and it is the prerequisite for many spatio-temporal applications such as urban planning and traffic analysis. However, constructing closed polygons to form numerous AOIs in a city is time-consuming and perplexing. Traditional grid-based methods offer the simple solution as they cut the city into equal-sized grids, but information about the urban structure will disappear.
-
-To relieve this problem, we report a vector-based approach to divide urban space into proper regions using road networks. Regions are generated through following steps:
-
-1. The algorithm tries to simplify the road network by conducting hierarchical clustering on two endpoints of each road segment.
-2. Every segment is broken into pieces by its intersections with other segments to guarantee that each segment only connects to others at the start and end nodes.
-3. We generate each region by recursively finding the leftmost link of a segment until a link has travelled back to itself.
-4. We merge tiny blocks and remove sub-regions to have a more meaningful output.
-
-To ensure the robustness of our model, we use road data from various sources and generate regions for different cities, and we also compare our model to other urban segmentation techniques to demonstrate the superiority of our method. A coherent application public interface is public available, and the code is open sourced (<https://github.com/PaddlePaddle/PaddleSpatial/tree/main/paddlespatial/tools/genregion>).
+Segmenting an urban area into regions is fundamentally important
+for many spatio-temporal applications such as urban computing,
+trajectory data mining and traffic prediction. The traditional grid-based method offers a simple solution as they cut the city map into
+equal-sized grids, but it fails to preserve any semantic information about the original urban structure. To address this problem
+while generating practicable regions efficiently, we report a vector-based method to segment the urban space into proper regions using
+the road network. The proposed method loads the road network
+into a graph with each road segment as an edge and its two endpoints as vertices. The graph is first simplified through clustering
+vertices, and every edge is then broken into pieces by the intersection point to assure connectivity of the graph. After that, we
+generate each region by recursively finding the leftmost link of a
+segment until a link has travelled back to itself. Lastly, we merge
+tiny blocks and remove sub-regions to output a list of meaningful
+Python Shapely Polygons.
 
 ## 2. Examples
 
@@ -67,7 +69,9 @@ The main function `generate_regions()` takes a list of road segments and generat
     * Ex: _[((x1, y1), (x2, y2)), ((x3, y3), (x4, y4)), ...]_.
 
 4. A list of shapely LineString objects.
-    * Ex: _[LineString_1, LineString_2]_.
+    * Ex: _[LineString_1, LineString_2, ...]_.
+    * Note that you can have a linestring that stores more than one segment.
+    Ex: LineString([(0,0), (0,1), (1,2)]) is allowed in the input list.
 
 Specifially, a concise example to use our module is shown below:
 
@@ -93,13 +97,15 @@ It defines whether a region is so narrow that it can be treated like a road. Any
   * If we are using projection coordinates like BD09MC or EPSG3587, we suggest Point.precision = 2.
   * If we are using the geodetic system like WGS84 and BD09, we suggest Point.precision = 5.
 
-### Potential Resources
+### Potential Road Network Resources
 
-The ***figshare*** website (<https://figshare.com/articles/dataset/Urban_Road_Network_Data/2061897>) provides road networks data for 80 of the most populated urban areas in the world. The data consist of a graph edge list for each city and two corresponding GIS shapefiles (i.e., links and nodes). We use some of their data to run the experiment. If you cannot find a good road network data source, this can be your choice.
+1. Open Street Map (OSM): It is a collaborative project to create a free editable geographic database of the world. Users can download the road network dataset in a number of ways. 
+
+2. The ***figshare*** website: It provides road networks data for 80 of the most populated urban areas in the world. The data consist of a graph edge list for each city and two corresponding GIS shapefiles (i.e., links and nodes). We use some of their data to run the experiment. If you cannot find a good road network data source, this can be your choice. <https://figshare.com/articles/dataset/Urban_Road_Network_Data/2061897>
 
 ## 4. Main advantages
 
-* Succinct Interface: Users only have to input a list of segments and can get a list of polygons easily.
+* Simple Interface: Users only have to input a list of segments and can get a list of polygons easily.
 
 * Compatibility: The input and output of our function can both be `shapely` objects, which can help users continue their geo-spatial projects smoothly.
 

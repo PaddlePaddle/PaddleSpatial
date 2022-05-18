@@ -140,6 +140,27 @@ def __cluster_points(segments, grid_size, clust_width):
     error.debug("The number of clusters: %d" % (len(clusters)))
     return clusters
 
+def linestring_to_segments(linestring):
+    """Convert a LineString to a list of segments.
+
+    Args:
+        linestring (Shapely LineString): A LineString object that might contain several segments
+
+    Returns:
+        _type_: _description_
+    """
+    boundary_points = list(linestring.coords)
+    start_index = 0
+    end_index = 1
+    ret = []
+    while end_index <= len(boundary_points) - 1:
+        start_point = mygeo.Point(boundary_points[start_index][0], boundary_points[start_index][1])
+        end_point = mygeo.Point(boundary_points[end_index][0], boundary_points[end_index][1])
+        ret.append(mygeo.Segment(start_point, end_point))
+        start_index += 1
+        end_index += 1
+    return ret
+
 def generate_segments(original_segments):
     """Convert a list of shapely linestrings, shapely point tuples, or coordinate pairs
         to a list of mygeo.Segment objects.
@@ -168,9 +189,7 @@ def generate_segments(original_segments):
             segs.append(seg)
     elif isinstance(original_segments[0], LineString):
         for linestr in original_segments:
-            (x1, y1), (x2, y2) = list(linestr.coords)
-            seg = mygeo.Segment(mygeo.Point(x1, y1), mygeo.Point(x2, y2))
-            segs.append(seg)
+            segs.extend(linestring_to_segments(linestr))
     else:
         raise error.RegionError("Unsupported type of input.")
     return segs
@@ -194,7 +213,8 @@ def generate_regions(segments, grid_size=1024, \
             Ex: [LineString_1, LineString_2]
     Important note: 
         All forms of segment representations must be a list of single segment.
-
+        Note that you can have a linestring that stores more than one segment.
+        Ex: LineString([(0,0), (0,1), (1,2)]) is allowed as input.
     Args:
         segments (list): See details above.
         grid_size (int, optional): Use to build a grid dictionary for searching. Defaults to 1024.

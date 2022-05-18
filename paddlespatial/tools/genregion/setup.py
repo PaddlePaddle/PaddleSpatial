@@ -13,13 +13,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="genregion",                     
-    version="0.0.1",                        
-    author="Yanyan Li & Ming Zhang",                  
+    version="0.0.2",                        
+    author="Ming Zhang & Yanyan Li",                  
     description="Region generation using urban road netwok",
     long_description=long_description,     
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),    
     py_modules=["genregion"],           
-    install_requires=['ordered_set', "shapely"]
+    install_requires=['ordered-set', "shapely"]
 )
 
