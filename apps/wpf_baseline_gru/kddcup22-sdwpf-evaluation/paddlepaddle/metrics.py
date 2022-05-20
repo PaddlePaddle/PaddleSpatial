@@ -88,14 +88,17 @@ def turbine_scores(pred, gt, raw_data, examine_len):
     Returns:
         The averaged MAE and RMSE
     """
+    _mae, _rmse = 1024, 1024
+    nan_pred = pd.isna(pred).any(axis=1)
+    if nan_pred.any():
+        return _mae, _rmse
     nan_cond = pd.isna(raw_data).any(axis=1)
     invalid_cond = (raw_data['Patv'] < 0) | \
                    ((raw_data['Patv'] == 0) & (raw_data['Wspd'] > 2.5)) | \
                    ((raw_data['Pab1'] > 89) | (raw_data['Pab2'] > 89) | (raw_data['Pab3'] > 89)) | \
                    ((raw_data['Wdir'] < -180) | (raw_data['Wdir'] > 180) | (raw_data['Ndir'] < -720) |
                     (raw_data['Ndir'] > 720))
-    nan_pred = pd.isna(pred).any(axis=1)
-    indices = np.where(~nan_cond & ~invalid_cond & ~nan_pred)
+    indices = np.where(~nan_cond & ~invalid_cond)
     prediction = pred[indices]
     targets = gt[indices]
     # NOTE: Before calculating the metrics, the unit of the outcome (e.g. predicted or true) power
