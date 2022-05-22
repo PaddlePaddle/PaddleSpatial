@@ -13,6 +13,31 @@ import numpy as np
 import pandas as pd
 
 
+def is_valid_prediction(pred):
+    """
+    Desc:
+        Check if the prediction is valid
+    Args:
+        pred:
+    Returns:
+        A boolean value
+    """
+    try:
+        if pred.ndim > 1:
+            nan_pred = pd.isna(pred).any(axis=1)
+            if nan_pred.any():
+                return False
+        #
+        if not np.any(pred):
+            return False
+        #
+        if np.min(pred) == np.max(pred):
+            return False
+    except ValueError:
+        return False
+    return True
+
+
 def mae(pred, gt):
     """
     Desc:
@@ -24,7 +49,10 @@ def mae(pred, gt):
         MAE value
     """
     _mae = -1
-    if len(pred) > 0 and len(gt) > 0:
+    if is_valid_prediction(pred):
+        if pred.shape != gt.shape:
+            raise Exception("Different shapes between Prediction and Ground Truth, "
+                            "shape of Ground Truth: {}, shape of Prediction: {}".format(gt.shape, pred.shape))
         _mae = np.mean(np.abs(pred - gt))
     return _mae
 
@@ -40,7 +68,10 @@ def mse(pred, gt):
         MSE value
     """
     _mse = -1
-    if len(pred) > 0 and len(gt) > 0:
+    if is_valid_prediction(pred):
+        if pred.shape != gt.shape:
+            raise Exception("Different shapes between Prediction and Ground Truth, "
+                            "shape of Ground Truth: {}, shape of Prediction: {}".format(gt.shape, pred.shape))
         _mse = np.mean((pred - gt) ** 2)
     return _mse
 
@@ -88,10 +119,6 @@ def turbine_scores(pred, gt, raw_data, examine_len):
     Returns:
         The averaged MAE and RMSE
     """
-    _mae, _rmse = 1024, 1024
-    nan_pred = pd.isna(pred).any(axis=1)
-    if nan_pred.any():
-        return _mae, _rmse
     nan_cond = pd.isna(raw_data).any(axis=1)
     invalid_cond = (raw_data['Patv'] < 0) | \
                    ((raw_data['Patv'] == 0) & (raw_data['Wspd'] > 2.5)) | \
@@ -122,18 +149,17 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
     all_mae, all_rmse = [], []
     for i in range(settings["capacity"]):
         prediction = predictions[i]
+        if not is_valid_prediction(prediction):
+            return 1024, 1024
         gt = gts[i]
         raw_df = raw_df_lst[i]
         _mae, _rmse = turbine_scores(prediction, gt, raw_df, settings["output_len"])
         if _mae != _mae or _rmse != _rmse:  # In case NaN is encountered
-            continue
-        if _mae < 0 or _rmse < 0:
             continue
         all_mae.append(_mae)
         all_rmse.append(_rmse)
     total_mae = np.array(all_mae).sum()
     total_rmse = np.array(all_rmse).sum()
     if len(all_mae) == 0 or len(all_rmse) == 0 or total_mae == 0 or total_rmse == 0:
-        total_mae = -1
-        total_rmse = -1
+        return 1024, 1024
     return total_mae, total_rmse

@@ -80,14 +80,14 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
     """
     # A convenient customized relative metric can be adopted
     # to evaluate the 'accuracy'-like performance of developed model for Wind Power forecasting problem
-    wind_farm_prediction = np.sum(prediction, axis=0)
-    wind_farm_ground = np.sum(ground_truth, axis=0)
+    wind_farm_prediction = np.sum(prediction, axis=0) / 1000
+    wind_farm_ground = np.sum(ground_truth, axis=0) / 1000
     day_len = settings["day_len"]
     _rmse = metrics.rmse(wind_farm_prediction[-day_len:, -1], wind_farm_ground[-day_len:, -1])
-    if _rmse < 0:
+    if _rmse <= 0:
         acc = -1
     else:
-        acc = 1 - _rmse / (settings["capacity"] * 1000)
+        acc = 1 - _rmse / settings["capacity"]
     overall_mae, overall_rmse = \
         metrics.regressor_detailed_scores(prediction, ground_truth, ground_truth_df, settings)
     return overall_mae, overall_rmse, acc
@@ -101,6 +101,9 @@ REQUIRED_ENV_VARS = [
     "checkpoints",
     "start_col",
     "framework"
+]
+SUPPORTED_FRAMEWORKS = [
+    "base", "paddlepaddle", "pytorch", "tensorflow"
 ]
 
 
@@ -127,6 +130,10 @@ def evaluate(path_to_src_dir):
                             "is missing in the prepared experimental settings! ".format(req_key, req_key))
     if "is_debug" not in envs:
         envs["is_debug"] = False
+    if envs["framework"] not in SUPPORTED_FRAMEWORKS:
+        raise Exception("Unsupported machine learning framework: {}. "
+                        "The supported frameworks are 'base', 'paddlepaddle', 'pytorch', "
+                        "and 'tensorflow'".format(envs["framework"]))
 
     envs["path_to_test_x"] = PRED_DIR
     envs["path_to_test_y"] = TAR_DIR
@@ -172,10 +179,18 @@ def evaluate(path_to_src_dir):
             test_ys.append(turbine[:envs["output_len"], -envs["out_var"]:])
         # tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_y, gt_y_df)
         tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, test_ys, raw_turbines)
-        if -1 == tmp_mae or -1 == tmp_rmse or -1 == tmp_acc:
+        if 1024 == tmp_mae or 1024 == tmp_rmse:
+            return {
+                "score": -65535,
+                "ML-framework": envs["framework"]
+            }
+        if tmp_acc <= 0:
             print('\n\tThe {}-th prediction -- '
-                  'RMSE: None, MAE: None, Score: None, and Accuracy: None'.format(i))
-            continue
+                  'RMSE: {}, MAE: {}, and Accuracy: {}'.format(i, tmp_mae, tmp_rmse, tmp_acc))
+            return {
+                "score": -65535,
+                "ML-framework": envs["framework"]
+            }
         else:
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, Score: {}, '
@@ -184,7 +199,7 @@ def evaluate(path_to_src_dir):
         rmses.append(tmp_rmse)
 
     avg_mae, avg_rmse, total_score = -1, -1, 65535
-    if len(maes) > 0 and len(rmses) > 0:
+    if len(maes) == len(test_y_files):
         avg_mae = np.array(maes).mean()
         avg_rmse = np.array(rmses).mean()
         total_score = (avg_mae + avg_rmse) / 2
