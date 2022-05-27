@@ -12,17 +12,46 @@
      * CUDA: 11.2, CuDNN: 8
      * Driver: 460.32.03
 
-3. Python version
+
+2. Python version
 
     python = 3.7.11
 
-4. Preinstalled Packages
+
+3. Preinstalled Packages
 
    1. [base](preinstalled-pkgs/base_env_installed_packages.md)     (Updated)
-   2. [paddlepaddle](preinstalled-pkgs/paddlepaddle_env_installed_packages.md)
-   3. [pytorch](preinstalled-pkgs/pytorch_env_installed_packages.md)
+   2. [paddlepaddle](preinstalled-pkgs/paddlepaddle_env_installed_packages.md)     (Updated) 
+   3. [pytorch](preinstalled-pkgs/pytorch_env_installed_packages.md)     (Updated)
    4. [tensorflow](preinstalled-pkgs/tensorflow_env_installed_packages.md)    (Updated)
+   
 
+4. Packages installed via the pip-requirements.txt
+   1. base environment
+   
+| Package     | Version  |
+|-------------|----------|
+| catboost    | 0.25.1   | 
+| statsmodels | 0.12.2   |
+
+   2. paddlapaddle environment
+
+| Package     | Version  |
+|-------------|----------|
+| easydict    | 1.9      | 
+| tqdm        | 0.46.0   |
+
+   3. pytorch environment
+
+| Package | Version |
+|---------|---------|
+|         |         | 
+
+   4. tensorflow environment
+
+| Package | Version |
+|---------|---------|
+|         |         | 
 
 
 ## Submitted Files
