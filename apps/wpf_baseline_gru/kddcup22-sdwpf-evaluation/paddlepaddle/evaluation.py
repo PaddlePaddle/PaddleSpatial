@@ -138,7 +138,7 @@ def evaluate(path_to_src_dir):
     envs["path_to_test_x"] = PRED_DIR
     envs["path_to_test_y"] = TAR_DIR
     envs["data_path"] = DATA_DIR
-    envs["filename"] = "sdwpf_baidukddcup2022_full.csv"
+    envs["filename"] = "wtbdata_245days.csv"
     envs["day_len"] = 144
     envs["capacity"] = 134
     envs["output_len"] = 288
