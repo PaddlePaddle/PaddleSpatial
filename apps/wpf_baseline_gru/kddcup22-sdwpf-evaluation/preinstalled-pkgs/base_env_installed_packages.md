@@ -1,46 +1,85 @@
 
-| 1.  | Package                | Version             |
-|-----|------------------------|---------------------|
-| 3.  | attrs                  | 21.2.0              |
-| 4.  | brotlipy               | 0.7.0               |
-| 5.  | certifi                | 2020.6.20           |
-| 6.  | cffi                   | 1.14.3              |
-| 7.  | chardet                | 3.0.4               |
-| 8.  | conda                  | 4.9.2               |
-| 9.  | conda-package-handling | 1.7.2               |
-| 10. | cryptography           | 3.2.1               |
-| 11. | flatbuffers            | 2.0                 |
-| 12. | idna                   | 2.10                |
-| 13. | importlib-metadata     | 4.6.3               |
-| 14. | iniconfig              | 1.1.1               |
-| 15. | numpy                  | 1.21.1              |
-| 16. | onnx                   | 1.10.1              |
-| 17. | onnxruntime-gpu        | 1.8.1               |
-| 18. | opencv-python          | 4.5.3.56            |
-| 19. | packaging              | 21.0                |
-| 20. | pandas                 | 1.3.1               |
-| 21. | pip                    | 20.2.4              |
-| 22. | pluggy                 | 0.13.1              |
-| 23. | protobuf               | 3.17.3              |
-| 24. | py                     | 1.10.0              | 
-| 25. | pycosat                | 0.6.3               |
-| 26. | pycparser              | 2.20                | 
-| 27. | pyOpenSSL              | 19.1.0              |
-| 28. | pyparsing              | 2.4.7               |
-| 29. | PySocks                | 1.7.1               |
-| 30. | pytest                 | 6.2.4               |
-| 31. | python-dateutil        | 2.8.2               |
-| 32. | pytz                   | 2021.1              |
-| 33. | requests               | 2.24.0              |
-| 34. | ruamel-yaml            | 0.15.87             |
-| 35. | setuptools             | 50.3.1.post20201107 |
-| 36. | six                    | 1.15.0              |
-| 37. | toml                   | 0.10.2              |
-| 38. | tqdm                   | 4.51.0              |
-| 39. | typing-extensions      | 3.10.0.0            |
-| 40. | urllib3                | 1.25.11             |
-| 41. | wheel                  | 0.35.1              |
-| 42. | zipp                   | 3.5.0               |
-| 43. | lightgbm               | 3.3.2               |
-| 44. | xgboost                | 1.6.1               |
+| Package                             | Version   |
+|-------------------------------------|-----------|
+| astor                               | 0.8.1     |
+| brotlipy                            | 0.7.0     |
+| babel                               | 2.10.1    | 
+| backports.entry-points-selectable   | 1.1.1     |
+| bce-python-sdk                      | 0.8.64    | 
+| certifi                             | 2021.10.8 |
+| cfgv                                | 3.3.1     |
+| charset-normalizer                  | 2.0.12    |
+| click                               | 8.1.3     |
+| convertdate                         | 2.4.0     |
+| cycler                              | 0.11.0    | 
+| decorator                           | 5.1.1     |
+| distlib                             | 0.3.4     |
+| filelock                            | 3.6.0     |
+| flake8                              | 4.0.1     |
+| Flask                               | 2.1.2     |
+| Flask-Babel                         | 2.0.0     |
+| fonttools                           | 4.33.3    |
+| future                              | 0.18.2    |
+| gast                                | 0.5.3     |
+| gluonts                             | 0.9.4     |
+| hijri-converter                     | 2.2.3     |
+| holidays                            | 0.13      |
+| identify                            | 2.5.0     |
+| idna                                | 3.3       |
+| imageio                             | 2.19.1    |
+| importlib-metadata                  | 4.2.0     |
+| itsdangerous                        | 2.1.2     |
+| Jinja2                              | 3.1.2     |
+| joblib                              | 1.1.0     |
+| kiwisolver                          | 1.4.2     |
+| korean-lunar-calendar               | 0.2.1     |
+| lightgbm                            | 3.3.2     |
+| MarkupSafe                          | 2.1.1     |
+| matplotlib                          | 3.5.2     |
+| mccabe                              | 0.6.1     |
+| networkx                            | 2.6.3     |
+| nodeenv                             | 1.6.0     |
+| numpy                               | 1.21.6    |
+| opencv-python                       | 4.5.5.64  |
+| opt-einsum                          | 3.3.0     |
+| packaging                           | 21.3      |
+| paddle-bfloat                       | 0.1.2     |
+| paddlepaddle-gpu                    | 2.3.0     |
+| pandas                              | 1.3.5     |
+| Pillow                              | 9.1.0     |
+| pip                                 | 21.2.2    |
+| platformdirs                        | 2.5.2     |
+| pre-commit                          | 2.19.0    |
+| protobuf                            | 3.20.1    |
+| pycodestyle                         | 2.8.0     |
+| pycryptodome                        | 3.14.1    |
+| pydantic                            | 1.9.1     |
+| pyflakes                            | 2.4.0     |
+| PyMeeus                             | 0.5.11    |
+| pyparsing                           | 3.0.9     |
+| python-dateutil                     | 2.8.2     |
+| pytz                                | 2022.1    |
+| PyWavelets                          | 1.3.0     |
+| PyYAML                              | 6.0       |
+| requests                            | 2.27.1    |
+| scikit-image                        | 0.19.2    |
+| scikit-learn                        | 1.0.2     |
+| scipy                               | 1.7.3     |
+| seaborn                             | 0.11.2    |
+| setuptools                          | 61.2.0    |
+| shellcheck-py                       | 0.8.0.4   |
+| six                                 | 1.16.0    |
+| threadpoolctl                       | 3.1.0     |
+| tifffile                            | 2021.11.2 |
+| toml                                | 0.10.2    |
+| toolz                               | 0.11.2    |
+| tqdm                                | 4.64.0    |
+| typing_extensions                   | 4.2.0     |
+| urllib3                             | 1.26.9    |
+| virtualenv                          | 20.14.1   |
+| visualdl                            | 2.2.3     |
+| Werkzeug                            | 2.1.2     |
+| wheel                               | 0.37.1    |
+| xgboost                             | 1.6.1     |
+| zipp                                | 3.8.0     |
 

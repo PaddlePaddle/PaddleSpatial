@@ -1,74 +1,81 @@
 
-| 1.  | Package                      | Version             |
-|-----|------------------------------|---------------------|
-| 3.  | absl-py                      | 0.13.0              |
-| 4.  | astor                        | 0.8.1               |
-| 5.  | attrs                        | 21.2.0              |
-| 6.  | cached-property              | 1.5.2               |
-| 7.  | cachetools                   | 4.2.2               |
-| 8.  | certifi                      | 2021.5.30           |
-| 9.  | charset-normalizer           | 2.0.4               |
-| 10. | cycler                       | 0.10.0              |
-| 11. | flatbuffers                  | 2.0                 |
-| 12. | gast                         | 0.2.2               |
-| 13. | google-auth                  | 1.34.0              |
-| 14. | google-auth-oauthlib         | 0.4.5               |
-| 15. | google-pasta                 | 0.2.0               |
-| 16. | grpcio                       | 1.39.0              |
-| 17. | h5py                         | 3.3.0               |
-| 18. | idna                         | 3.2                 |
-| 19. | imageio                      | 2.9.0               |
-| 20. | importlib-metadata           | 4.6.3               |
-| 21. | iniconfig                    | 1.1.1               |
-| 22. | joblib                       | 1.0.1               |
-| 23. | Keras-Applications           | 1.0.8               |
-| 24. | Keras-Preprocessing          | 1.1.2               |
-| 25. | kiwisolver                   | 1.3.1               |
-| 26. | Markdown                     | 3.3.4               |
-| 27. | matplotlib                   | 3.4.2               |
-| 28. | networkx                     | 2.6.2               |
-| 29. | numpy                        | 1.21.1              |
-| 30. | oauthlib                     | 3.1.1               |
-| 31. | onnx                         | 1.10.1              |
-| 32. | onnxruntime-gpu              | 1.8.1               |
-| 33. | opencv-python                | 4.5.3.56            |
-| 34. | opt-einsum                   | 3.3.0               |
-| 35. | packaging                    | 21.0                |
-| 36. | pandas                       | 1.3.1               |
-| 37. | Pillow                       | 8.3.1               |
-| 38. | pip                          | 21.2.2              |
-| 39. | pluggy                       | 0.13.1              |
-| 40. | protobuf                     | 3.17.3              |
-| 41. | py                           | 1.10.0              |
-| 42. | pyasn1                       | 0.4.8               |
-| 43. | pyasn1-modules               | 0.2.8               |
-| 44. | pyparsing                    | 2.4.7               |
-| 45. | pytest                       | 6.2.4               |
-| 46. | python-dateutil              | 2.8.2               |
-| 47. | pytz                         | 2021.1              |
-| 48. | PyWavelets                   | 1.1.1               |
-| 49. | requests                     | 2.26.0              |
-| 50. | requests-oauthlib            | 1.3.0               |
-| 51. | rsa                          | 4.7.2               |
-| 52. | scikit-image                 | 0.18.2              |
-| 53. | scikit-learn                 | 0.24.2              |
-| 54. | scipy                        | 1.4.1               |
-| 55. | seaborn                      | 0.11.1              |
-| 56. | setuptools                   | 52.0.0.post20210125 |
-| 57. | six                          | 1.16.0              |
-| 58. | tensorboard                  | 2.9.0               |
-| 59. | tensorflow-estimator         | 2.7.0               |
-| 60. | tensorflow-gpu               | 2.7.1               |
-| 61. | tensorboard-plugin-wit       | 1.8.1               |
-| 62. | tensorboard-data-server      | 0.6.1               |
-| 63. | tensorflow-io-gcs-filesystem | 0.25.0              |
-| 64. | termcolor                    | 1.1.0               |
-| 65. | threadpoolctl                | 2.2.0               |
-| 66. | tifffile                     | 2021.7.30           |
-| 67. | toml                         | 0.10.2              |
-| 68. | typing-extensions            | 3.10.0.0            |
-| 69. | urllib3                      | 1.26.6              |
-| 70. | Werkzeug                     | 2.0.1               |
-| 71. | wheel                        | 0.36.2              |
-| 72. | wrapt                        | 1.12.1              |
-| 73. | zipp                         | 3.5.0               |
+| Package                         | Version     |
+|---------------------------------|-------------|
+| absl-py                         | 1.0.0       |
+| astor                           | 0.8.1       |
+| astunparse                      | 1.6.3       |
+| attrs                           | 21.4.0      |
+| cached-property                 | 1.5.2       |
+| cachetools                      | 5.0.0       |
+| certifi                         | 2021.10.8   |
+| charset-normalizer              | 2.0.12      |
+| cycler                          | 0.11.0      |
+| flatbuffers                     | 2.0         |
+| fonttools                       | 4.33.3      |
+| gast                            | 0.4.0       |
+| google-auth                     | 2.6.6       |
+| google-auth-oauthlib            | 0.4.6       |
+| google-pasta                    | 0.2.0       |
+| grpcio                          | 1.46.1      |
+| h5py                            | 3.6.0       |
+| idna                            | 3.3         |
+| imageio                         | 2.19.1      |
+| importlib-metadata              | 4.11.3      |
+| iniconfig                       | 1.1.1       |
+| joblib                          | 1.1.0       |
+| keras                           | 2.7.0       |
+| Keras-Applications              | 1.0.8       |
+| Keras-Preprocessing             | 1.1.2       |
+| kiwisolver                      | 1.4.2       |
+| libclang                        | 14.0.1      |
+| lightgbm                        | 3.3.2       |
+| Markdown                        | 3.3.6       |
+| matplotlib                      | 3.5.2       |
+| networkx                        | 2.6.3       |
+| numpy                           | 1.21.6      |
+| oauthlib                        | 3.2.0       |
+| onnx                            | 1.11.0      |
+| onnxruntime-gpu                 | 1.11.1      |
+| opencv-python                   | 4.5.5.64    |
+| opt-einsum                      | 3.3.0       |
+| packaging                       | 21.3        |
+| pandas                          | 1.3.5       |
+| Pillow                          | 9.1.0       |
+| pip                             | 21.2.2      |
+| pluggy                          | 1.0.0       |
+| protobuf                        | 3.20.1      |
+| py                              | 1.11.0      |
+| pyasn1                          | 0.4.8       |
+| pyasn1-modules                  | 0.2.8       |
+| pyparsing                       | 3.0.9       |
+| pytest                          | 7.1.2       |
+| python-dateutil                 | 2.8.2       |
+| pytz                            | 2022.1      |
+| PyWavelets                      | 1.3.0       |
+| requests                        | 2.27.1      |
+| requests-oauthlib               | 1.3.1       |
+| rsa                             | 4.8         |
+| scikit-image                    | 0.19.2      |
+| scikit-learn                    | 1.0.2       |
+| scipy                           | 1.7.3       |
+| seaborn                         | 0.11.2      |
+| setuptools                      | 61.2.0      |
+| six                             | 1.16.0      |
+| tensorboard                     | 2.9.0       |
+| tensorboard-data-server         | 0.6.1       |
+| tensorboard-plugin-wit          | 1.8.1       |
+| tensorflow-estimator            | 2.7.0       |
+| tensorflow-gpu                  | 2.7.1       |
+| tensorflow-io-gcs-filesystem    | 0.25.0      |
+| termcolor                       | 1.1.0       |
+| threadpoolctl                   | 3.1.0       |
+| tifffile                        | 2021.11.2   |
+| toml                            | 0.10.2      |
+| tomli                           | 2.0.1       |
+| typing_extensions               | 4.2.0       |
+| urllib3                         | 1.26.9      |
+| Werkzeug                        | 2.1.2       |
+| wheel                           | 0.37.1      |
+| wrapt                           | 1.14.1      |
+| xgboost                         | 1.6.1       |
+| zipp                            | 3.8.0       |
