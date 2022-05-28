@@ -20,6 +20,33 @@ import metrics
 from test_data import TestData
 
 
+class EvaluationModuleNotFoundError(ModuleNotFoundError):
+    """
+    Desc:
+        Customize the ModuleNotFound error
+    """
+    def __init__(self, err_message):
+        ModuleNotFoundError.__init__(self, err_message)
+
+
+class EvaluationImportError(ImportError):
+    """
+    Desc:
+        Customize the import error
+    """
+    def __init__(self, err_message):
+        ImportError.__init__(self, err_message)
+
+
+class LoaderError(Exception):
+    """
+    Desc:
+        Customize the Exception
+    """
+    def __init__(self, err_message):
+        Exception.__init__(self, err_message)
+
+
 class Loader(object):
     """
     Desc:
@@ -41,11 +68,15 @@ class Loader(object):
             sys.path.append(os.path.join(*items[:-1]))
             ip_module = __import__(items[-1][:-3])
             return ip_module
-        except Exception as error:
-            print("IMPORT ERROR: ", error)
-            print("Load module [path %s] error: %s" % (path, traceback.format_exc()))
+        except ModuleNotFoundError as e:
             traceback.print_exc()
-            return None
+            raise EvaluationModuleNotFoundError(e.msg)
+        except ImportError as e:
+            traceback.print_exc()
+            raise EvaluationImportError(e.msg)
+        except Exception as error:
+            traceback.print_exc()
+            raise LoaderError("IMPORT ERROR: {}. Load module [path: {}]".format(error, path))
 
 
 def load_test_set(settings):
@@ -105,6 +136,8 @@ REQUIRED_ENV_VARS = [
 SUPPORTED_FRAMEWORKS = [
     "base", "paddlepaddle", "pytorch", "tensorflow"
 ]
+MAX_TIMEOUT = 3600 * 10     # 10 hours
+MIN_TIME = 3                # 3 secs
 
 
 def evaluate(path_to_src_dir):
@@ -116,7 +149,9 @@ def evaluate(path_to_src_dir):
     Returns:
         A dict indicating performance
     """
-    start_test_time = time.time()
+    begin_time = time.time()
+    left_time = MAX_TIMEOUT
+    start_test_time = begin_time
     # Set up the initial environment
     path_to_prep_script = os.path.join(path_to_src_dir, "prepare.py")
     if not os.path.exists(path_to_prep_script):
@@ -198,6 +233,16 @@ def evaluate(path_to_src_dir):
         maes.append(tmp_mae)
         rmses.append(tmp_rmse)
 
+        cost_time = time.time() - begin_time
+        left_time -= cost_time
+        cnt_left_runs = len(test_y_files) - (i + 1)
+        # After three runs, we will check how much time remain for your code:
+        if i > 1 and left_time < MIN_TIME * (cnt_left_runs + 1):
+            raise Exception("TIMEOUT! "
+                            "Based on current running time analysis, it's not gonna happen that "
+                            "your model can run {} predictions in {:.2f} secs! ".format(cnt_left_runs, left_time))
+        begin_time = time.time()
+
     avg_mae, avg_rmse, total_score = -1, -1, 65535
     if len(maes) == len(test_y_files):
         avg_mae = np.array(maes).mean()
@@ -224,7 +269,7 @@ def eval(submit_file):
     Args:
         submit_file:
     Returns:
-
+        A dict indicating the score and the machine learning framework
     """
     # Check suffix of the submitted file
     if not submit_file.endswith('.zip'):
