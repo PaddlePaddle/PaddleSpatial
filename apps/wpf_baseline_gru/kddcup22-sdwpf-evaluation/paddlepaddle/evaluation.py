@@ -47,6 +47,15 @@ class LoaderError(Exception):
         Exception.__init__(self, err_message)
 
 
+class EvaluationError(Exception):
+    """
+    Desc:
+        Customize the Exception for Evaluation
+    """
+    def __init__(self, err_message):
+        Exception.__init__(self, err_message)
+
+
 class Loader(object):
     """
     Desc:
@@ -79,24 +88,6 @@ class Loader(object):
             raise LoaderError("IMPORT ERROR: {}. Load module [path: {}]".format(error, path))
 
 
-def load_test_set(settings):
-    # type: (dict) -> tuple
-    """
-    Desc:
-        Obtain the input & output sequence in the testing set
-    Args:
-        settings:
-    Returns:
-         Input files and output files
-    """
-    test_x_dir = settings["path_to_test_x"]
-    test_x_files = os.listdir(test_x_dir)
-    test_x_files = sorted(test_x_files)
-    base_dir_test_y = settings["path_to_test_y"]
-    test_y_files = sorted(os.listdir(base_dir_test_y))
-    return test_x_files, test_y_files
-
-
 def performance(settings, prediction, ground_truth, ground_truth_df):
     """
     Desc:
@@ -124,8 +115,8 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
     return overall_mae, overall_rmse, acc
 
 
-TAR_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_y'))
-PRED_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_x'))
+TAR_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_y.zip'))
+PRED_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../test_x.zip'))
 DATA_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data'))
 REQUIRED_ENV_VARS = [
     "pred_file",
@@ -136,8 +127,72 @@ REQUIRED_ENV_VARS = [
 SUPPORTED_FRAMEWORKS = [
     "base", "paddlepaddle", "pytorch", "tensorflow"
 ]
+NUM_MAX_RUNS = 195
 MAX_TIMEOUT = 3600 * 10     # 10 hours
 MIN_TIME = 3                # 3 secs
+MIN_NOISE_LEVEL = 0.001     # 0.1 %
+
+
+def exec_predict_and_test(envs, test_file, forecast_module, flag='predict'):
+    """
+    Desc:
+        Do the prediction or get the ground truths
+    Args:
+        envs:
+        test_file:
+        forecast_module:
+        flag:
+    Returns:
+        A result dict
+    """
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        with zipfile.ZipFile(test_file) as test_f:
+            test_f.extractall(path=tmp_dir)
+            items = os.listdir(tmp_dir)
+            assert len(items) == 1, "More than one test files encountered in the tmp dir! "
+            assert str(items[0]).endswith('.csv'), "Test data does not end with csv! "
+            path_to_test_file = os.path.join(tmp_dir, items[0])
+            if 'predict' == flag:
+                envs["path_to_test_x"] = path_to_test_file
+                return {
+                    "prediction": forecast_module.forecast(envs)
+                }
+            elif flag == 'test':
+                test_data = TestData(path_to_data=path_to_test_file, start_col=envs["start_col"])
+                turbines, raw_turbines = test_data.get_all_turbines()
+                test_ys = []
+                for turbine in turbines:
+                    test_ys.append(turbine[:envs["output_len"], -envs["out_var"]:])
+                return {
+                    "ground_truth_y": np.array(test_ys), "ground_truth_df": raw_turbines
+                }
+            else:
+                raise EvaluationError("Unsupported evaluation task (only 'predict' or 'test' is acceptable)!")
+
+
+def predict_and_test(envs, path_to_data, forecast_module, idx, flag='predict'):
+    """
+    Desc:
+        Prediction or get the ground truths
+    Args:
+        envs:
+        path_to_data:
+        forecast_module:
+        idx:
+        flag:
+    Returns:
+        A dict
+    """
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        with zipfile.ZipFile(path_to_data) as test_f:
+            test_f.extractall(path=tmp_dir)
+            items = os.listdir(tmp_dir)
+            assert 1 == len(items), "More than one items in {}".format(tmp_dir)
+            tmp_dir = os.path.join(tmp_dir, items[0])
+            items = os.listdir(tmp_dir)
+            files = sorted(items)
+            path_to_test_file = os.path.join(tmp_dir, files[idx])
+            return exec_predict_and_test(envs, path_to_test_file, forecast_module, flag)
 
 
 def evaluate(path_to_src_dir):
@@ -170,8 +225,6 @@ def evaluate(path_to_src_dir):
                         "The supported frameworks are 'base', 'paddlepaddle', 'pytorch', "
                         "and 'tensorflow'".format(envs["framework"]))
 
-    envs["path_to_test_x"] = PRED_DIR
-    envs["path_to_test_y"] = TAR_DIR
     envs["data_path"] = DATA_DIR
     envs["filename"] = "wtbdata_245days.csv"
     envs["day_len"] = 144
@@ -180,51 +233,50 @@ def evaluate(path_to_src_dir):
     envs["out_var"] = 1
     envs["pred_file"] = os.path.join(path_to_src_dir, envs["pred_file"])
     envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
-
-    test_x_files, test_y_files = load_test_set(envs)
+    envs["min_distinct_ratio"] = 0.1
 
     if envs["is_debug"]:
         end_load_test_set_time = time.time()
         print("Load test_set (test_ys) in {} secs".format(end_load_test_set_time - start_test_time))
         start_test_time = end_load_test_set_time
 
-    maes, rmses = [], []
+    maes, rmses, accuracies = [], [], []
     forecast_module = Loader.load(envs["pred_file"])
 
     start_forecast_time = start_test_time
     end_forecast_time = start_forecast_time
-    test_x_dir = envs["path_to_test_x"]
-    base_dir_test_y = envs["path_to_test_y"]
-    for i, file in enumerate(test_x_files):
-        envs["path_to_test_x"] = os.path.join(test_x_dir, file)
-        prediction = forecast_module.forecast(envs)
-        #
+    for i in range(NUM_MAX_RUNS):
+        pred_res = predict_and_test(envs, PRED_DIR, forecast_module, i, flag='predict')
+        prediction = pred_res["prediction"]
         if envs["is_debug"]:
             end_forecast_time = time.time()
             print("\nElapsed time for {}-th prediction is: "
                   "{} secs \n".format(i, end_forecast_time - start_forecast_time))
             start_forecast_time = end_forecast_time
-
-        y_file = test_y_files[i]
-        envs["path_to_test_y"] = os.path.join(base_dir_test_y, y_file)
-        test_data = TestData(path_to_data=envs["path_to_test_y"], start_col=envs["start_col"])
-        turbines, raw_turbines = test_data.get_all_turbines()
-        test_ys = []
-        for turbine in turbines:
-            test_ys.append(turbine[:envs["output_len"], -envs["out_var"]:])
-        # tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_y, gt_y_df)
-        tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, test_ys, raw_turbines)
-        if 1024 == tmp_mae or 1024 == tmp_rmse:
+        gt_res = predict_and_test(envs, TAR_DIR, forecast_module, i, flag='test')
+        gt_ys = gt_res["ground_truth_y"]
+        gt_turbines = gt_res["ground_truth_df"]
+        tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_ys, gt_turbines)
+        #
+        if 1024 == tmp_mae or 1024 == tmp_rmse:     # empty prediction
             return {
-                "score": -65535,
-                "ML-framework": envs["framework"]
+                "score": -1024, "ML-framework": envs["framework"]
+            }
+        if 768 == tmp_mae or 768 == tmp_rmse:       # too many invalid predictions (on selected time points)
+            return {
+                "score": -768, "ML-framework": envs["framework"]
+            }
+        if 512 == tmp_mae or 512 == tmp_rmse:       # at least one of the initial predictions is invalid
+            return {
+                "score": -512, "ML-framework": envs["framework"]
             }
         if tmp_acc <= 0:
+            # accuracy is lower than Zero, which means one of the RMSEs is too large,
+            # which also indicates that the performance is probably poor and unrobust
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, and Accuracy: {}'.format(i, tmp_mae, tmp_rmse, tmp_acc))
             return {
-                "score": -65535,
-                "ML-framework": envs["framework"]
+                "score": -256, "ML-framework": envs["framework"]
             }
         else:
             print('\n\tThe {}-th prediction -- '
@@ -232,10 +284,11 @@ def evaluate(path_to_src_dir):
                   'and Accuracy: {:.4f}%'.format(i, tmp_rmse, tmp_mae, (tmp_rmse + tmp_mae) / 2, tmp_acc * 100))
         maes.append(tmp_mae)
         rmses.append(tmp_rmse)
+        accuracies.append(tmp_acc)
 
         cost_time = time.time() - begin_time
         left_time -= cost_time
-        cnt_left_runs = len(test_y_files) - (i + 1)
+        cnt_left_runs = NUM_MAX_RUNS - (i + 1)
         # After three runs, we will check how much time remain for your code:
         if i > 1 and left_time < MIN_TIME * (cnt_left_runs + 1):
             raise Exception("TIMEOUT! "
@@ -244,7 +297,14 @@ def evaluate(path_to_src_dir):
         begin_time = time.time()
 
     avg_mae, avg_rmse, total_score = -1, -1, 65535
-    if len(maes) == len(test_y_files):
+    if len(maes) == NUM_MAX_RUNS:
+        # TODO: more conditions should be taken into account ...
+        if np.std(np.array(rmses)) < MIN_NOISE_LEVEL or np.std(np.array(maes)) < MIN_NOISE_LEVEL \
+                or np.std(np.array(accuracies)) < MIN_NOISE_LEVEL:
+            # Basically, this is not going to happen most of the time, if so, something goes wrong
+            return {
+                "score": -128, "ML-framework": envs["framework"]
+            }
         avg_mae = np.array(maes).mean()
         avg_rmse = np.array(rmses).mean()
         total_score = (avg_mae + avg_rmse) / 2
@@ -256,10 +316,12 @@ def evaluate(path_to_src_dir):
         end_test_time = time.time()
         print("\nTotal time for evaluation is {} secs\n".format(end_test_time - start_test_time))
 
-    return {
-        "score": -1. * total_score,
-        "ML-framework": envs["framework"]
-    }
+    if total_score > 0:
+        return {
+            "score": -1. * total_score, "ML-framework": envs["framework"]
+        }
+    else:
+        raise EvaluationError("Invalid score ({}) returned".format(total_score))
 
 
 def eval(submit_file):

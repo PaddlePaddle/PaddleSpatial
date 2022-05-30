@@ -9,32 +9,51 @@ Description: Some useful metrics
 Authors: Lu,Xinjiang (luxinjiang@baidu.com)
 Date:    2022/03/10
 """
+import traceback
 import numpy as np
 import pandas as pd
 
 
-def is_valid_prediction(pred):
+class MetricsError(Exception):
+    """
+    Desc:
+        Customize the Exception
+    """
+    def __init__(self, err_message):
+        Exception.__init__(self, err_message)
+
+
+def is_valid_prediction(prediction, min_std=0.1, min_distinct_ratio=0.1):
     """
     Desc:
         Check if the prediction is valid
     Args:
-        pred:
+        prediction:
+        min_std:
+        min_distinct_ratio:
     Returns:
         A boolean value
     """
     try:
-        if pred.ndim > 1:
-            nan_pred = pd.isna(pred).any(axis=1)
-            if nan_pred.any():
+        if prediction.ndim > 1:
+            nan_prediction = pd.isna(prediction).any(axis=1)
+            if nan_prediction.any():
                 return False
         #
-        if not np.any(pred):
+        if not np.any(prediction):
             return False
         #
-        if np.min(pred) == np.max(pred):
+        if np.min(prediction) == np.max(prediction):
             return False
-    except ValueError:
-        return False
+        if np.std(prediction) <= min_std:
+            prediction = np.ravel(prediction)
+            distinct_prediction = set(prediction)
+            distinct_ratio = len(distinct_prediction) / np.size(prediction)
+            if distinct_ratio < min_distinct_ratio:
+                return False
+    except ValueError as e:
+        traceback.print_exc()
+        raise MetricsError("Value Error: {}".format(e))
     return True
 
 
@@ -149,8 +168,8 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
     all_mae, all_rmse = [], []
     for i in range(settings["capacity"]):
         prediction = predictions[i]
-        if not is_valid_prediction(prediction):
-            return 1024, 1024
+        if not is_valid_prediction(prediction, min_distinct_ratio=settings["min_distinct_ratio"]):
+            return 512, 512
         gt = gts[i]
         raw_df = raw_df_lst[i]
         _mae, _rmse = turbine_scores(prediction, gt, raw_df, settings["output_len"])
@@ -160,6 +179,8 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
         all_rmse.append(_rmse)
     total_mae = np.array(all_mae).sum()
     total_rmse = np.array(all_rmse).sum()
+    if total_mae < 0 or total_rmse < 0:
+        return 768, 768
     if len(all_mae) == 0 or len(all_rmse) == 0 or total_mae == 0 or total_rmse == 0:
         return 1024, 1024
     return total_mae, total_rmse
