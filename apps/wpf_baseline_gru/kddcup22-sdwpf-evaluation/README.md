@@ -29,10 +29,11 @@
 4. Packages installed via the pip-requirements.txt
    1. base environment
    
-| Package     | Version  |
-|-------------|----------|
-| catboost    | 0.25.1   | 
-| statsmodels | 0.12.2   |
+| Package     | Version   |
+|-------------|-----------|
+| catboost    | 0.25.1    | 
+| statsmodels | 0.12.2    |
+| pypmml      | 0.9.16    |
 
    2. paddlapaddle environment
 
