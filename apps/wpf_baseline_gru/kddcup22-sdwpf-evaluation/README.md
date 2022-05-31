@@ -20,39 +20,18 @@
 
 3. Preinstalled Packages
 
-   1. [base](preinstalled-pkgs/base_env_installed_packages.md)     (Updated)
-   2. [paddlepaddle](preinstalled-pkgs/paddlepaddle_env_installed_packages.md)     (Updated) 
-   3. [pytorch](preinstalled-pkgs/pytorch_env_installed_packages.md)     (Updated)
-   4. [tensorflow](preinstalled-pkgs/tensorflow_env_installed_packages.md)    (Updated)
+   1. [base](preinstalled-pkgs/base_env_installed_packages.md)     (UPDATED on 2022/05/27)
+   2. [paddlepaddle](preinstalled-pkgs/paddlepaddle_env_installed_packages.md)     (UPDATED on 2022/05/27) 
+   3. [pytorch](preinstalled-pkgs/pytorch_env_installed_packages.md)     (UPDATED on 2022/05/27)
+   4. [tensorflow](preinstalled-pkgs/tensorflow_env_installed_packages.md)    (UPDATED on 2022/05/27)
    
 
 4. Packages installed via the pip-requirements.txt
-   1. base environment
-   
-| Package     | Version   |
-|-------------|-----------|
-| catboost    | 0.25.1    | 
-| statsmodels | 0.12.2    |
-| pypmml      | 0.9.16    |
 
-   2. paddlapaddle environment
-
-| Package     | Version  |
-|-------------|----------|
-| easydict    | 1.9      | 
-| tqdm        | 0.46.0   |
-
-   3. pytorch environment
-
-| Package | Version |
-|---------|---------|
-|         |         | 
-
-   4. tensorflow environment
-
-| Package | Version |
-|---------|---------|
-|         |         | 
+   1) [base environment](runtime-installed-pkgs/base.md)        (UPDATED on 2022/05/30)
+   2) [paddlapaddle environment](runtime-installed-pkgs/paddle.md)
+   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)
+   4) [tensorflow environment](runtime-installed-pkgs/tensorflow.md)
 
 
 ## Submitted Files
