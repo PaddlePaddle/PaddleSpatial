@@ -100,18 +100,13 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
     Returns:
         MAE, RMSE and Accuracy
     """
+    overall_mae, overall_rmse, _, overall_latest_rmse = \
+        metrics.regressor_detailed_scores(prediction, ground_truth, ground_truth_df, settings)
     # A convenient customized relative metric can be adopted
     # to evaluate the 'accuracy'-like performance of developed model for Wind Power forecasting problem
-    wind_farm_prediction = np.sum(prediction, axis=0) / 1000
-    wind_farm_ground = np.sum(ground_truth, axis=0) / 1000
-    day_len = settings["day_len"]
-    _rmse = metrics.rmse(wind_farm_prediction[-day_len:, -1], wind_farm_ground[-day_len:, -1])
-    if _rmse <= 0:
-        acc = -1
-    else:
-        acc = 1 - _rmse / settings["capacity"]
-    overall_mae, overall_rmse = \
-        metrics.regressor_detailed_scores(prediction, ground_truth, ground_truth_df, settings)
+    if overall_latest_rmse < 0:
+        raise Exception("The RMSE of last 24 hours is negative ({})".format(overall_latest_rmse))
+    acc = 1 - overall_latest_rmse / settings["capacity"]
     return overall_mae, overall_rmse, acc
 
 
@@ -167,7 +162,7 @@ def exec_predict_and_test(envs, test_file, forecast_module, flag='predict'):
                     "ground_truth_y": np.array(test_ys), "ground_truth_df": raw_turbines
                 }
             else:
-                raise EvaluationError("Unsupported evaluation task (only 'predict' or 'test' is acceptable)!")
+                raise Exception("Unsupported evaluation task (only 'predict' or 'test' is acceptable)!")
 
 
 def predict_and_test(envs, path_to_data, forecast_module, idx, flag='predict'):
@@ -258,26 +253,14 @@ def evaluate(path_to_src_dir):
         gt_turbines = gt_res["ground_truth_df"]
         tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_ys, gt_turbines)
         #
-        if 1024 == tmp_mae or 1024 == tmp_rmse:     # empty prediction
-            return {
-                "score": -1024, "ML-framework": envs["framework"]
-            }
-        if 768 == tmp_mae or 768 == tmp_rmse:       # too many invalid predictions (on selected time points)
-            return {
-                "score": -768, "ML-framework": envs["framework"]
-            }
-        if 512 == tmp_mae or 512 == tmp_rmse:       # at least one of the initial predictions is invalid
-            return {
-                "score": -512, "ML-framework": envs["framework"]
-            }
         if tmp_acc <= 0:
-            # accuracy is lower than Zero, which means one of the RMSEs is too large,
-            # which also indicates that the performance is probably poor and unrobust
+            # Accuracy is lower than Zero, which means that the RMSE of this prediction is too large,
+            # which also indicates that the performance is probably poor and not robust
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, and Accuracy: {}'.format(i, tmp_mae, tmp_rmse, tmp_acc))
-            return {
-                "score": -256, "ML-framework": envs["framework"]
-            }
+            raise Exception("Accuracy ({}) is lower than Zero, which means that "
+                            "the RMSE (in latest 24 hours) of the {:04d}-th prediction "
+                            "is too large!".format(tmp_acc, i))
         else:
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, Score: {}, '
@@ -289,22 +272,22 @@ def evaluate(path_to_src_dir):
         cost_time = time.time() - begin_time
         left_time -= cost_time
         cnt_left_runs = NUM_MAX_RUNS - (i + 1)
-        # After three runs, we will check how much time remain for your code:
         if i > 1 and left_time < MIN_TIME * (cnt_left_runs + 1):
+            # After three runs, we will check how much time remain for your code:
             raise Exception("TIMEOUT! "
                             "Based on current running time analysis, it's not gonna happen that "
                             "your model can run {} predictions in {:.2f} secs! ".format(cnt_left_runs, left_time))
         begin_time = time.time()
 
     avg_mae, avg_rmse, total_score = -1, -1, 65535
+    # TODO: more invalid predictions should be taken into account ...
     if len(maes) == NUM_MAX_RUNS:
-        # TODO: more conditions should be taken into account ...
         if np.std(np.array(rmses)) < MIN_NOISE_LEVEL or np.std(np.array(maes)) < MIN_NOISE_LEVEL \
                 or np.std(np.array(accuracies)) < MIN_NOISE_LEVEL:
-            # Basically, this is not going to happen most of the time, if so, something goes wrong
-            return {
-                "score": -128, "ML-framework": envs["framework"]
-            }
+            # Basically, this is not going to happen most of the time, if so, something went wrong
+            raise Exception("Std of rmses ({:.4f}) or std of maes ({:.4f}) or std of accs ({:.4f}) "
+                            "is too small!".format(np.std(np.array(rmses)), np.std(np.array(maes)),
+                                                   np.std(np.array(accuracies))))
         avg_mae = np.array(maes).mean()
         avg_rmse = np.array(rmses).mean()
         total_score = (avg_mae + avg_rmse) / 2
@@ -321,7 +304,7 @@ def evaluate(path_to_src_dir):
             "score": -1. * total_score, "ML-framework": envs["framework"]
         }
     else:
-        raise EvaluationError("Invalid score ({}) returned".format(total_score))
+        raise Exception("Invalid score ({}) returned".format(total_score))
 
 
 def eval(submit_file):
@@ -337,15 +320,18 @@ def eval(submit_file):
     if not submit_file.endswith('.zip'):
         raise Exception("Submitted file does not end with zip ！")
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        # Extract files
-        # Handle exceptions
-        with zipfile.ZipFile(submit_file) as src_f:
-            src_f.extractall(path=tmp_dir)
-            items = os.listdir(tmp_dir)
-            if 1 == len(items):
-                tmp_dir = os.path.join(tmp_dir, items[0])
+    try:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # Extract files
+            # Handle exceptions
+            with zipfile.ZipFile(submit_file) as src_f:
+                src_f.extractall(path=tmp_dir)
                 items = os.listdir(tmp_dir)
-            if 0 == len(items):
-                raise Exception("Zip file is empty! ")
-            return evaluate(tmp_dir)
+                if 1 == len(items):
+                    tmp_dir = os.path.join(tmp_dir, items[0])
+                    items = os.listdir(tmp_dir)
+                if 0 == len(items):
+                    raise Exception("Zip file is empty! ")
+                return evaluate(tmp_dir)
+    except Exception as eval_error:
+        raise EvaluationError("Error: {}. \n{}".format(eval_error, traceback.format_exc()))
