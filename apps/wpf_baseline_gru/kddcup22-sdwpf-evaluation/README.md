@@ -29,8 +29,8 @@
 4. Packages installed via the pip-requirements.txt
 
    1) [base environment](runtime-installed-pkgs/base.md)        (UPDATED on 2022/05/30)
-   2) [paddlapaddle environment](runtime-installed-pkgs/paddle.md)
-   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)
+   2) [paddlapaddle environment](runtime-installed-pkgs/paddle.md)        (UPDATED on 2022/05/27)
+   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)        (UPDATED on 2022/06/01)
    4) [tensorflow environment](runtime-installed-pkgs/tensorflow.md)
 
 
@@ -59,13 +59,22 @@ In the prepare.py script, the prep_env() interface is required to be implemented
 by the evaluation.py script (see the evaluation.py for more details). 
 
 (UPDATE) ATTENTION: The argument parser is not allowed in the prepare.py (please refer to the newly updated tests/test-1.zip), 
-since it will conflict with the AIStudio eval_main() system call. 
+since it will conflict with the AIStudio eval_main() system call.
 
 In particular, the following arguments are required to be declared in 'prepare.py' for evaluation: 
    * checkpoints
    * pred_file
    * start_col
    * framework
+
+
+(UPDATE on 2022-06-01) 
+ATTENTION: 
+The framework argument declared in the prepare.py, 
+i.e. the value of 'framework' in the settings dictionary, 
+should be consistent with the machine learning framework adopted in the submission.
+Say, for instance, if someone declared the 'framework' in the settings to be 'paddlepaddle', 
+but the submitted code does not use the framework of paddlepaddle at all, this is not allowed.
 
 
 ## Backend Files for Evaluation

@@ -41,22 +41,22 @@ def is_valid_prediction(prediction, min_std=0.1, min_distinct_ratio=0.1, idx=Non
             nan_prediction = pd.isna(prediction).any(axis=1)
             if nan_prediction.any():
                 if idx is None:
-                    raise MetricsError("NaN in predicted values!")
+                    raise MetricsError("NaN in predicted values! ")
                 else:
-                    raise MetricsError("NaN in predicted values of the {}-th prediction!".format(idx))
+                    raise MetricsError("NaN in predicted values of the {}-th prediction! ".format(idx))
         #
         if not np.any(prediction):
             if idx is None:
-                raise MetricsError("Empty prediction!")
+                raise MetricsError("Empty prediction! ")
             else:
-                raise MetricsError("Empty predicted values in the {}-th prediction!".format(idx))
+                raise MetricsError("Empty predicted values in the {}-th prediction! ".format(idx))
         #
         if np.min(prediction) == np.max(prediction):
             if idx is None:
-                raise MetricsError("All the predicted values are the same: {:.4f}".format(np.min(prediction)))
+                raise MetricsError("All the predicted values are the same: {:.4f}. ".format(np.min(prediction)))
             else:
-                raise MetricsError("All the predicted values are the same: {:.4f} "
-                                   "in the {}-th prediction!".format(np.min(prediction), idx))
+                raise MetricsError("All the predicted values are the same: {:.4f} in the {}-th prediction! "
+                                   "".format(np.min(prediction), idx))
         if np.std(prediction) <= min_std:
             prediction = np.ravel(prediction)
             distinct_prediction = set(prediction)
@@ -64,16 +64,16 @@ def is_valid_prediction(prediction, min_std=0.1, min_distinct_ratio=0.1, idx=Non
             if distinct_ratio < min_distinct_ratio:
                 if idx is None:
                     raise MetricsError("The predicted values are almost the same. "
-                                       "Distinct values in the prediction are: {}".format(list(distinct_prediction)))
+                                       "Distinct values in the prediction are: {} ".format(list(distinct_prediction)))
                 else:
                     raise MetricsError("The predicted values are almost the same in the {}-th prediction. "
-                                       "Distinct values in the prediction are: {}".format(idx, list(distinct_prediction)))
+                                       "Distinct values in the prediction are: {} ".format(idx, list(distinct_prediction)))
     except ValueError as e:
         traceback.print_exc()
         if idx is None:
-            raise MetricsError("Value Error: {}".format(e))
+            raise MetricsError("Value Error: {}. ".format(e))
         else:
-            raise MetricsError("Value Error: {} in the {}-th prediction".format(e, idx))
+            raise MetricsError("Value Error: {} in the {}-th prediction. ".format(e, idx))
     return True
 
 
@@ -90,8 +90,8 @@ def mae(pred, gt):
     _mae = -1
     if is_valid_prediction(pred):
         if pred.shape != gt.shape:
-            raise Exception("Different shapes between Prediction and Ground Truth, "
-                            "shape of Ground Truth: {}, shape of Prediction: {}".format(gt.shape, pred.shape))
+            raise MetricsError("Different shapes between Prediction and Ground Truth, "
+                               "shape of Ground Truth: {}, shape of Prediction: {}. ".format(gt.shape, pred.shape))
         _mae = np.mean(np.abs(pred - gt))
     return _mae
 
@@ -109,8 +109,8 @@ def mse(pred, gt):
     _mse = -1
     if is_valid_prediction(pred):
         if pred.shape != gt.shape:
-            raise Exception("Different shapes between Prediction and Ground Truth, "
-                            "shape of Ground Truth: {}, shape of Prediction: {}".format(gt.shape, pred.shape))
+            raise MetricsError("Different shapes between Prediction and Ground Truth, "
+                               "shape of Ground Truth: {}, shape of Prediction: {}. ".format(gt.shape, pred.shape))
         _mse = np.mean((pred - gt) ** 2)
     return _mse
 
@@ -212,11 +212,11 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
     total_rmse = np.array(all_rmse).sum()
     if total_mae < 0 or total_rmse < 0:
         raise MetricsError("In the {}-th prediction, the sum of the MAE ({:.4f}) "
-                           "or the sum of the RMSE ({:.4f}) is negative, "
-                           "which means there are too many invalid values in the prediction! ".format(identifier, total_mae, total_rmse))
+                           "or the sum of the RMSE ({:.4f}) is negative, which means there are too many "
+                           "invalid values in the prediction! ".format(identifier, total_mae, total_rmse))
     if len(all_mae) == 0 or len(all_rmse) == 0 or total_mae == 0 or total_rmse == 0:
         raise MetricsError("There is no valid MAE or RMSE for "
-                           "all of the turbines in the {}-th prediction!".format(identifier))
+                           "all of the turbines in the {}-th prediction! ".format(identifier))
     total_latest_mae = np.array(all_latest_mae).sum()
     total_latest_rmse = np.array(all_latest_rmse).sum()
     return total_mae, total_rmse, total_latest_mae, total_latest_rmse

@@ -79,21 +79,22 @@ class Loader(object):
             return ip_module
         except ModuleNotFoundError as e:
             traceback.print_exc()
-            raise EvaluationModuleNotFoundError(e.msg)
+            raise EvaluationModuleNotFoundError("{}.\n{}".format(e.msg, traceback.format_exc()))
         except ImportError as e:
             traceback.print_exc()
-            raise EvaluationImportError(e.msg)
+            raise EvaluationImportError("{}.\n{}".format(e.msg, traceback.format_exc()))
         except Exception as error:
             traceback.print_exc()
-            raise LoaderError("IMPORT ERROR: {}. Load module [path: {}]".format(error, path))
+            raise LoaderError("IMPORT ERROR: {}. Load module [path: {}]. \n{}".format(error, path, traceback.format_exc()))
 
 
-def performance(settings, prediction, ground_truth, ground_truth_df):
+def performance(settings, idx, prediction, ground_truth, ground_truth_df):
     """
     Desc:
         Test the performance on the whole wind farm
     Args:
         settings:
+        idx:
         prediction:
         ground_truth:
         ground_truth_df:
@@ -105,7 +106,8 @@ def performance(settings, prediction, ground_truth, ground_truth_df):
     # A convenient customized relative metric can be adopted
     # to evaluate the 'accuracy'-like performance of developed model for Wind Power forecasting problem
     if overall_latest_rmse < 0:
-        raise Exception("The RMSE of last 24 hours is negative ({})".format(overall_latest_rmse))
+        raise EvaluationError("The RMSE of the last 24 hours is negative ({}) in the {}-th prediction"
+                              "".format(overall_latest_rmse, idx))
     acc = 1 - overall_latest_rmse / settings["capacity"]
     return overall_mae, overall_rmse, acc
 
@@ -162,7 +164,7 @@ def exec_predict_and_test(envs, test_file, forecast_module, flag='predict'):
                     "ground_truth_y": np.array(test_ys), "ground_truth_df": raw_turbines
                 }
             else:
-                raise Exception("Unsupported evaluation task (only 'predict' or 'test' is acceptable)!")
+                raise EvaluationError("Unsupported evaluation task (only 'predict' or 'test' is acceptable)! ")
 
 
 def predict_and_test(envs, path_to_data, forecast_module, idx, flag='predict'):
@@ -205,20 +207,28 @@ def evaluate(path_to_src_dir):
     # Set up the initial environment
     path_to_prep_script = os.path.join(path_to_src_dir, "prepare.py")
     if not os.path.exists(path_to_prep_script):
-        raise Exception("The preparation script, i.e. 'prepare.py', does NOT exist! ")
+        raise EvaluationError("The preparation script, i.e. 'prepare.py', does NOT exist! ")
     prep_module = Loader.load(path_to_prep_script)
-
     envs = prep_module.prep_env()
+
+    eval_path = os.path.normpath(os.path.dirname(os.path.realpath(__file__)))
+    eval_dir = os.path.split(eval_path)[-1]
+    if envs["framework"] not in eval_dir or eval_dir not in envs["framework"]:
+        raise Exception("The claimed framework ({}) is NOT the framework "
+                        "you used ({})!".format(envs["framework"], eval_dir))
+
     for req_key in REQUIRED_ENV_VARS:
         if req_key not in envs:
-            raise Exception("Key error: '{}'. The variable {} "
-                            "is missing in the prepared experimental settings! ".format(req_key, req_key))
+            raise EvaluationError("Key error: '{}'. The variable {} "
+                                  "is missing in the prepared experimental settings! ".format(req_key, req_key))
+
     if "is_debug" not in envs:
         envs["is_debug"] = False
+        
     if envs["framework"] not in SUPPORTED_FRAMEWORKS:
-        raise Exception("Unsupported machine learning framework: {}. "
-                        "The supported frameworks are 'base', 'paddlepaddle', 'pytorch', "
-                        "and 'tensorflow'".format(envs["framework"]))
+        raise EvaluationError("Unsupported machine learning framework: {}. "
+                              "The supported frameworks are 'base', 'paddlepaddle', 'pytorch', "
+                              "and 'tensorflow'".format(envs["framework"]))
 
     envs["data_path"] = DATA_DIR
     envs["filename"] = "wtbdata_245days.csv"
@@ -251,16 +261,16 @@ def evaluate(path_to_src_dir):
         gt_res = predict_and_test(envs, TAR_DIR, forecast_module, i, flag='test')
         gt_ys = gt_res["ground_truth_y"]
         gt_turbines = gt_res["ground_truth_df"]
-        tmp_mae, tmp_rmse, tmp_acc = performance(envs, prediction, gt_ys, gt_turbines)
+        tmp_mae, tmp_rmse, tmp_acc = performance(envs, i, prediction, gt_ys, gt_turbines)
         #
         if tmp_acc <= 0:
             # Accuracy is lower than Zero, which means that the RMSE of this prediction is too large,
             # which also indicates that the performance is probably poor and not robust
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, and Accuracy: {}'.format(i, tmp_mae, tmp_rmse, tmp_acc))
-            raise Exception("Accuracy ({}) is lower than Zero, which means that "
-                            "the RMSE (in latest 24 hours) of the {:04d}-th prediction "
-                            "is too large!".format(tmp_acc, i))
+            raise EvaluationError("Accuracy ({}) is lower than Zero, which means that "
+                                  "the RMSE (in latest 24 hours) of the {:04d}-th prediction "
+                                  "is too large!".format(tmp_acc, i))
         else:
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, Score: {}, '
@@ -274,9 +284,9 @@ def evaluate(path_to_src_dir):
         cnt_left_runs = NUM_MAX_RUNS - (i + 1)
         if i > 1 and left_time < MIN_TIME * (cnt_left_runs + 1):
             # After three runs, we will check how much time remain for your code:
-            raise Exception("TIMEOUT! "
-                            "Based on current running time analysis, it's not gonna happen that "
-                            "your model can run {} predictions in {:.2f} secs! ".format(cnt_left_runs, left_time))
+            raise EvaluationError("TIMEOUT! "
+                                  "Based on current running time analysis, it's not gonna happen that "
+                                  "your model can run {} predictions in {:.2f} secs! ".format(cnt_left_runs, left_time))
         begin_time = time.time()
 
     avg_mae, avg_rmse, total_score = -1, -1, 65535
@@ -285,9 +295,9 @@ def evaluate(path_to_src_dir):
         if np.std(np.array(rmses)) < MIN_NOISE_LEVEL or np.std(np.array(maes)) < MIN_NOISE_LEVEL \
                 or np.std(np.array(accuracies)) < MIN_NOISE_LEVEL:
             # Basically, this is not going to happen most of the time, if so, something went wrong
-            raise Exception("Std of rmses ({:.4f}) or std of maes ({:.4f}) or std of accs ({:.4f}) "
-                            "is too small!".format(np.std(np.array(rmses)), np.std(np.array(maes)),
-                                                   np.std(np.array(accuracies))))
+            raise EvaluationError("Std of rmses ({:.4f}) or std of maes ({:.4f}) or std of accs ({:.4f}) "
+                                  "is too small! ".format(np.std(np.array(rmses)), np.std(np.array(maes)),
+                                                          np.std(np.array(accuracies))))
         avg_mae = np.array(maes).mean()
         avg_rmse = np.array(rmses).mean()
         total_score = (avg_mae + avg_rmse) / 2
@@ -304,7 +314,7 @@ def evaluate(path_to_src_dir):
             "score": -1. * total_score, "ML-framework": envs["framework"]
         }
     else:
-        raise Exception("Invalid score ({}) returned".format(total_score))
+        raise EvaluationError("Invalid score ({}) returned. ".format(total_score))
 
 
 def eval(submit_file):
@@ -333,5 +343,9 @@ def eval(submit_file):
                 if 0 == len(items):
                     raise Exception("Zip file is empty! ")
                 return evaluate(tmp_dir)
-    except Exception as eval_error:
-        raise EvaluationError("Error: {}. \n{}".format(eval_error, traceback.format_exc()))
+    except EvaluationError as error:
+        raise Exception("{}\n{}".format(error, traceback.format_exc()))
+    except metrics.MetricsError as e:
+        raise Exception("{}\n{}".format(e, traceback.format_exc()))
+    except ValueError as err:
+        raise ValueError("{}\n{}".format(err, traceback.format_exc()))
