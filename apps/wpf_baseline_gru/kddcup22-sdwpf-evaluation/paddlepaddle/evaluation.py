@@ -20,24 +20,6 @@ import metrics
 from test_data import TestData
 
 
-class EvaluationModuleNotFoundError(ModuleNotFoundError):
-    """
-    Desc:
-        Customize the ModuleNotFound error
-    """
-    def __init__(self, err_message):
-        ModuleNotFoundError.__init__(self, err_message)
-
-
-class EvaluationImportError(ImportError):
-    """
-    Desc:
-        Customize the import error
-    """
-    def __init__(self, err_message):
-        ImportError.__init__(self, err_message)
-
-
 class LoaderError(Exception):
     """
     Desc:
@@ -77,15 +59,9 @@ class Loader(object):
             sys.path.append(os.path.join(*items[:-1]))
             ip_module = __import__(items[-1][:-3])
             return ip_module
-        except ModuleNotFoundError as e:
-            traceback.print_exc()
-            raise EvaluationModuleNotFoundError("{}.\n{}".format(e.msg, traceback.format_exc()))
-        except ImportError as e:
-            traceback.print_exc()
-            raise EvaluationImportError("{}.\n{}".format(e.msg, traceback.format_exc()))
         except Exception as error:
             traceback.print_exc()
-            raise LoaderError("IMPORT ERROR: {}. Load module [path: {}]. \n{}".format(error, path, traceback.format_exc()))
+            raise LoaderError("IMPORT ERROR: {}. Load module [path: {}].".format(error, path))
 
 
 def performance(settings, idx, prediction, ground_truth, ground_truth_df):
@@ -330,22 +306,15 @@ def eval(submit_file):
     if not submit_file.endswith('.zip'):
         raise Exception("Submitted file does not end with zip ！")
 
-    try:
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            # Extract files
-            # Handle exceptions
-            with zipfile.ZipFile(submit_file) as src_f:
-                src_f.extractall(path=tmp_dir)
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        # Extract files
+        # Handle exceptions
+        with zipfile.ZipFile(submit_file) as src_f:
+            src_f.extractall(path=tmp_dir)
+            items = os.listdir(tmp_dir)
+            if 1 == len(items):
+                tmp_dir = os.path.join(tmp_dir, items[0])
                 items = os.listdir(tmp_dir)
-                if 1 == len(items):
-                    tmp_dir = os.path.join(tmp_dir, items[0])
-                    items = os.listdir(tmp_dir)
-                if 0 == len(items):
-                    raise Exception("Zip file is empty! ")
-                return evaluate(tmp_dir)
-    except EvaluationError as error:
-        raise Exception("{}\n{}".format(error, traceback.format_exc()))
-    except metrics.MetricsError as e:
-        raise Exception("{}\n{}".format(e, traceback.format_exc()))
-    except ValueError as err:
-        raise ValueError("{}\n{}".format(err, traceback.format_exc()))
+            if 0 == len(items):
+                raise Exception("Zip file is empty! ")
+            return evaluate(tmp_dir)

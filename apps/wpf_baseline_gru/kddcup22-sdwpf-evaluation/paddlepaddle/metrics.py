@@ -41,112 +41,120 @@ def is_valid_prediction(prediction, min_std=0.1, min_distinct_ratio=0.1, idx=Non
             nan_prediction = pd.isna(prediction).any(axis=1)
             if nan_prediction.any():
                 if idx is None:
-                    raise MetricsError("NaN in predicted values! ")
+                    raise MetricsError("NaN in predicted values!")
                 else:
-                    raise MetricsError("NaN in predicted values of the {}-th prediction! ".format(idx))
+                    raise MetricsError("NaN in predicted values ({}-th prediction)!".format(idx))
         #
         if not np.any(prediction):
             if idx is None:
-                raise MetricsError("Empty prediction! ")
+                raise MetricsError("Empty prediction!")
             else:
-                raise MetricsError("Empty predicted values in the {}-th prediction! ".format(idx))
+                raise MetricsError("Empty predicted values ({}-th prediction!)".format(idx))
         #
         if np.min(prediction) == np.max(prediction):
             if idx is None:
-                raise MetricsError("All the predicted values are the same: {:.4f}. ".format(np.min(prediction)))
+                raise MetricsError("All the predicted values are same as {:.4f}!".format(np.min(prediction)))
             else:
-                raise MetricsError("All the predicted values are the same: {:.4f} in the {}-th prediction! "
+                raise MetricsError("Predicted values are all the same as {:.4f} ({}-th prediction)!"
                                    "".format(np.min(prediction), idx))
         if np.std(prediction) <= min_std:
             prediction = np.ravel(prediction)
             distinct_prediction = set(prediction)
             distinct_ratio = len(distinct_prediction) / np.size(prediction)
+            samples = list(distinct_prediction)[:3]
+            samples = ",".join("{:.4f}".format(s) for s in samples)
             if distinct_ratio < min_distinct_ratio:
                 if idx is None:
-                    raise MetricsError("The predicted values are almost the same. "
-                                       "Distinct values in the prediction are: {} ".format(list(distinct_prediction)))
+                    raise MetricsError("{:.2f}% of predicted values are the same! "
+                                       "Some predicted values are: "
+                                       "{},...".format((1 - distinct_ratio) * 100, samples))
                 else:
-                    raise MetricsError("The predicted values are almost the same in the {}-th prediction. "
-                                       "Distinct values in the prediction are: {} ".format(idx, list(distinct_prediction)))
+                    raise MetricsError("{:.2f}% of predicted values are the same ({}-th prediction)! "
+                                       "Some predicted values are: "
+                                       "{},...".format((1 - distinct_ratio) * 100, idx, samples))
     except ValueError as e:
         traceback.print_exc()
         if idx is None:
             raise MetricsError("Value Error: {}. ".format(e))
         else:
-            raise MetricsError("Value Error: {} in the {}-th prediction. ".format(e, idx))
+            raise MetricsError("Value Error: {} in {}-th prediction. ".format(e, idx))
     return True
 
 
-def mae(pred, gt):
+def mae(pred, gt, run_id=0):
     """
     Desc:
         Mean Absolute Error
     Args:
         pred:
         gt: ground truth vector
+        run_id:
     Returns:
         MAE value
     """
     _mae = -1
-    if is_valid_prediction(pred):
+    if is_valid_prediction(pred, idx=run_id):
         if pred.shape != gt.shape:
-            raise MetricsError("Different shapes between Prediction and Ground Truth, "
-                               "shape of Ground Truth: {}, shape of Prediction: {}. ".format(gt.shape, pred.shape))
+            raise MetricsError("Different shapes between Prediction ({}) and Ground Truth ({}) "
+                               "in {}-th prediction".format(pred.shape, gt.shape, run_id))
         _mae = np.mean(np.abs(pred - gt))
     return _mae
 
 
-def mse(pred, gt):
+def mse(pred, gt, run_id=0):
     """
     Desc:
         Mean Square Error
     Args:
         pred:
         gt: ground truth vector
+        run_id:
     Returns:
         MSE value
     """
     _mse = -1
-    if is_valid_prediction(pred):
+    if is_valid_prediction(pred, idx=run_id):
         if pred.shape != gt.shape:
-            raise MetricsError("Different shapes between Prediction and Ground Truth, "
-                               "shape of Ground Truth: {}, shape of Prediction: {}. ".format(gt.shape, pred.shape))
+            raise MetricsError("Different shapes between Prediction ({}) and Ground Truth ({}) "
+                               "in {}-th prediction".format(pred.shape, gt.shape, run_id))
         _mse = np.mean((pred - gt) ** 2)
     return _mse
 
 
-def rmse(pred, gt):
+def rmse(pred, gt, run_id=0):
     """
     Desc:
         Root Mean Square Error
     Args:
         pred:
         gt: ground truth vector
+        run_id:
     Returns:
         RMSE value
     """
-    _mse = mse(pred, gt)
+    _mse = mse(pred, gt, run_id=run_id)
     if _mse < 0:
         return -1
     return np.sqrt(_mse)
 
 
-def regressor_scores(prediction, gt):
+def regressor_scores(prediction, gt, idx=0):
     """
     Desc:
         Some common metrics for regression problems
     Args:
         prediction:
         gt: ground truth vector
+        idx:
     Returns:
         A tuple of metrics
     """
-    _mae = mae(prediction, gt)
-    _rmse = rmse(prediction, gt)
+    _mae = mae(prediction, gt, run_id=idx)
+    _rmse = rmse(prediction, gt, run_id=idx)
     return _mae, _rmse
 
 
-def turbine_scores(pred, gt, raw_data, examine_len):
+def turbine_scores(pred, gt, raw_data, examine_len, idx=0):
     """
     Desc:
         Calculate the MAE and RMSE of one turbine
@@ -155,6 +163,7 @@ def turbine_scores(pred, gt, raw_data, examine_len):
         gt: ground truth
         raw_data: the DataFrame of one wind turbine
         examine_len:
+        idx:
     Returns:
         The averaged MAE and RMSE
     """
@@ -171,7 +180,7 @@ def turbine_scores(pred, gt, raw_data, examine_len):
     #       should be converted from Kilo Watt to Mega Watt first.
     _mae, _rmse = -1, -1
     if np.any(prediction) and np.any(targets):
-        _mae, _rmse = regressor_scores(prediction[-examine_len:] / 1000, targets[-examine_len:] / 1000)
+        _mae, _rmse = regressor_scores(prediction[-examine_len:] / 1000, targets[-examine_len:] / 1000, idx=idx)
     return _mae, _rmse
 
 
@@ -198,25 +207,25 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
             continue
         gt = gts[i]
         raw_df = raw_df_lst[i]
-        _mae, _rmse = turbine_scores(prediction, gt, raw_df, settings["output_len"])
+        _mae, _rmse = turbine_scores(prediction, gt, raw_df, settings["output_len"], idx=identifier)
         if _mae != _mae or _rmse != _rmse:  # In case NaN is encountered
             continue
         if -1 == _mae or -1 == _rmse:       # In case the target is empty after filtering out the abnormal values
             continue
         all_mae.append(_mae)
         all_rmse.append(_rmse)
-        latest_mae, latest_rmse = turbine_scores(prediction, gt, raw_df, settings["day_len"])
+        latest_mae, latest_rmse = turbine_scores(prediction, gt, raw_df, settings["day_len"], idx=identifier)
         all_latest_mae.append(latest_mae)
         all_latest_rmse.append(latest_rmse)
     total_mae = np.array(all_mae).sum()
     total_rmse = np.array(all_rmse).sum()
     if total_mae < 0 or total_rmse < 0:
-        raise MetricsError("In the {}-th prediction, the sum of the MAE ({:.4f}) "
-                           "or the sum of the RMSE ({:.4f}) is negative, which means there are too many "
-                           "invalid values in the prediction! ".format(identifier, total_mae, total_rmse))
+        raise MetricsError("{}-th prediction: summed MAE ({:.2f}) or RMSE ({:.2f}) is negative, "
+                           "which indicates too many invalid values "
+                           "in the prediction! ".format(identifier, total_mae, total_rmse))
     if len(all_mae) == 0 or len(all_rmse) == 0 or total_mae == 0 or total_rmse == 0:
-        raise MetricsError("There is no valid MAE or RMSE for "
-                           "all of the turbines in the {}-th prediction! ".format(identifier))
+        raise MetricsError("No valid MAE or RMSE for "
+                           "all of the turbines in {}-th prediction! ".format(identifier))
     total_latest_mae = np.array(all_latest_mae).sum()
     total_latest_rmse = np.array(all_latest_rmse).sum()
     return total_mae, total_rmse, total_latest_mae, total_latest_rmse
