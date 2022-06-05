@@ -28,9 +28,9 @@
 
 4. Packages installed via the pip-requirements.txt
 
-   1) [base environment](runtime-installed-pkgs/base.md)        (UPDATED on 2022/05/30)
+   1) [base environment](runtime-installed-pkgs/base.md)        (UPDATED on 2022/06/05)
    2) [paddlapaddle environment](runtime-installed-pkgs/paddle.md)        (UPDATED on 2022/05/27)
-   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)        (UPDATED on 2022/06/01)
+   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)        (UPDATED on 2022/06/04)
    4) [tensorflow environment](runtime-installed-pkgs/tensorflow.md)
 
 
