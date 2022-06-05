@@ -42,14 +42,13 @@ def is_valid_prediction(prediction, idx=None):
                     msg = "NaN in predicted values!"
                 else:
                     msg = "NaN in predicted values ({}th prediction)!".format(idx)
-                raise MetricsError(msg[:100])
-        #
-        if not np.any(prediction):
+                raise MetricsError(msg)
+        if prediction.size == 0:
             if idx is None:
                 msg = "Empty prediction!"
             else:
                 msg = "Empty predicted values ({}th prediction)! ".format(idx)
-            raise MetricsError(msg[:100])
+            raise MetricsError(msg)
     except ValueError as e:
         traceback.print_exc()
         if idx is None:
@@ -162,6 +161,52 @@ def turbine_scores(pred, gt, raw_data, examine_len, idx=0):
     return _mae, _rmse
 
 
+def check_zero_prediction(prediction, idx=None):
+    """
+    Desc:
+       If zero prediction, return -1
+    Args:
+        prediction:
+        idx:
+    Returns:
+        An integer indicating status
+    """
+    if not np.any(prediction):
+        if idx is None:
+            msg = "Zero prediction!"
+        else:
+            msg = "Zero predicted values ({}th prediction)! ".format(idx)
+        print(msg)
+        return -1
+    return 0
+
+
+def is_zero_prediction(predictions, identifier, settings):
+    """
+    Desc:
+        Check if zero prediction for all turbines in a wind farm
+    Args:
+        predictions:
+        identifier:
+        settings:
+    Returns:
+        False if otherwise
+    """
+    wind_farm_statuses = []
+    for i in range(settings["capacity"]):
+        prediction = predictions[i]
+        status = check_zero_prediction(prediction, idx=identifier)
+        wind_farm_statuses.append(status)
+    statuses = np.array(wind_farm_statuses)
+    non_zero_predictions = statuses[statuses == 0]
+    non_zero_ratio = non_zero_predictions.size / settings["capacity"]
+    if non_zero_ratio < settings["min_non_zero_ratio"]:
+        msg = "{:.2f}% turbines with zero predicted values " \
+              "(in {}th prediction)!".format((1 - non_zero_ratio) * 100, identifier)
+        raise MetricsError(msg)
+    return False
+
+
 def check_identical_prediction(prediction, min_std=0.1, min_distinct_ratio=0.1, idx=None):
     """
     Desc:
@@ -230,7 +275,7 @@ def is_identical_prediction(predictions, identifier, settings):
     if variation_ratio < settings["min_distinct_ratio"]:
         msg = "{:.2f}% turbines with (almost) identical predicted values " \
               "({}th prediction)!".format((1 - variation_ratio) * 100, identifier)
-        raise MetricsError(msg[:100])
+        raise MetricsError(msg)
     return False
 
 
@@ -251,7 +296,8 @@ def regressor_detailed_scores(predictions, gts, raw_df_lst, settings):
     identifier = int(tokens[-1][:-6]) - 1
     all_mae, all_rmse = [], []
     all_latest_mae, all_latest_rmse = [], []
-    if not is_identical_prediction(predictions, identifier, settings):
+    if not is_identical_prediction(predictions, identifier, settings) and \
+            not is_zero_prediction(predictions, identifier, settings):
         pass
     for i in range(settings["capacity"]):
         prediction = predictions[i]

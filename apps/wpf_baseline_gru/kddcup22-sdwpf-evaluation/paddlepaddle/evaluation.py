@@ -61,7 +61,7 @@ class Loader(object):
             return ip_module
         except Exception as error:
             traceback.print_exc()
-            raise LoaderError("IMPORT ERROR: {}. Load module [path: {}].".format(error, path))
+            raise LoaderError("IMPORT ERROR: {}, load module [path: {}]!".format(error, path))
 
 
 def performance(settings, idx, prediction, ground_truth, ground_truth_df):
@@ -215,6 +215,7 @@ def evaluate(path_to_src_dir):
     envs["pred_file"] = os.path.join(path_to_src_dir, envs["pred_file"])
     envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
     envs["min_distinct_ratio"] = 0.1
+    envs["min_non_zero_ratio"] = 0.5
 
     if envs["is_debug"]:
         end_load_test_set_time = time.time()
@@ -306,15 +307,20 @@ def eval(submit_file):
     if not submit_file.endswith('.zip'):
         raise Exception("Submitted file does not end with zip ！")
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        # Extract files
-        # Handle exceptions
-        with zipfile.ZipFile(submit_file) as src_f:
-            src_f.extractall(path=tmp_dir)
-            items = os.listdir(tmp_dir)
-            if 1 == len(items):
-                tmp_dir = os.path.join(tmp_dir, items[0])
+    try:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # Extract files
+            # Handle exceptions
+            with zipfile.ZipFile(submit_file) as src_f:
+                src_f.extractall(path=tmp_dir)
                 items = os.listdir(tmp_dir)
-            if 0 == len(items):
-                raise Exception("Zip file is empty! ")
-            return evaluate(tmp_dir)
+                if 1 == len(items):
+                    tmp_dir = os.path.join(tmp_dir, items[0])
+                    items = os.listdir(tmp_dir)
+                if 0 == len(items):
+                    raise Exception("Zip file is empty! ")
+                return evaluate(tmp_dir)
+    except Exception as error:
+        submit_file = os.path.split(submit_file)[-1]
+        msg = "Err: {}! ({})".format(error, submit_file)
+        raise Exception(msg[:200])
