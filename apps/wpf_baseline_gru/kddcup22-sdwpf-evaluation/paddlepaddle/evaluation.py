@@ -245,8 +245,8 @@ def evaluate(path_to_src_dir):
             # which also indicates that the performance is probably poor and not robust
             print('\n\tThe {}-th prediction -- '
                   'RMSE: {}, MAE: {}, and Accuracy: {}'.format(i, tmp_mae, tmp_rmse, tmp_acc))
-            raise EvaluationError("Accuracy ({}) is lower than Zero, which means that "
-                                  "the RMSE (in latest 24 hours) of the {:04d}-th prediction "
+            raise EvaluationError("Accuracy ({:.3f}) is lower than Zero, which means that "
+                                  "the RMSE (in latest 24 hours) of the {}th prediction "
                                   "is too large!".format(tmp_acc, i))
         else:
             print('\n\tThe {}-th prediction -- '
