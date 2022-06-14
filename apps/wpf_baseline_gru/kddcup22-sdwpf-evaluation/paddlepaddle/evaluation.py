@@ -208,6 +208,7 @@ def evaluate(path_to_src_dir):
 
     envs["data_path"] = DATA_DIR
     envs["filename"] = "wtbdata_245days.csv"
+    envs["location_filename"] = "sdwpf_baidukddcup2022_turb_location.csv"
     envs["day_len"] = 144
     envs["capacity"] = 134
     envs["output_len"] = 288
@@ -323,4 +324,4 @@ def eval(submit_file):
     except Exception as error:
         submit_file = os.path.split(submit_file)[-1]
         msg = "Err: {}! ({})".format(error, submit_file)
-        raise Exception(msg[:200])
+        raise Exception(msg)
