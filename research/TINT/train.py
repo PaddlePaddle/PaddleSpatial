@@ -1,10 +1,10 @@
 '''
 Author: jianglinlang
 Date: 2021-12-06 14:30:26
-LastEditTime: 2022-05-23 15:20:50
+LastEditTime: 2022-06-15 15:22:56
 LastEditors: jianglinlang
 Description: train.py for small dataset.
-FilePath: /jianglinlang/paddle/train.py
+FilePath: /code/repo/PaddleSpatial/research/TINT/train.py
 '''
 import argparse
 import os
@@ -27,14 +27,9 @@ from collections import defaultdict
 import pickle
 from antdataset import ANTDataset
 
-# # logger
-# logger = config.logger_config("seq.log")
-
-# arguments parser
 
 def evaluate(model, discriminator, test_dataset, device, batch_size):
     model.eval()
-    # loader = simple_data_iter(test_dataset, batch_size, True, True)
     loader = candidate_data_iter(test_dataset, batch_size, False, True)
     data_len = len(test_dataset)
     hit_ratio = []
@@ -56,21 +51,11 @@ def evaluate(model, discriminator, test_dataset, device, batch_size):
     f1_var_time = {"short": [], "medium": [], "long": []}
     pair_f1_var_time = {"short": [], "medium": [], "long": []}
     with paddle.no_grad():
-        # for (user, poi, tag, trg, time_limit, user_trg, poi_trg, tag_trg, idx_in_src) in loader:
         for (user, poi, tag, discret_time, trg, time_limit, user_trg, poi_trg, tag_trg, idx_in_src, seqids) in loader:
-            # user = user.to(device)
-            # poi = poi.to(device)
-            # tag = tag.to(device)
-            # discret_time = discret_time.to(device)
             start_t = time.time()
             pi, tag_global, time_encoder = model(user, poi, tag, discret_time, idx_in_src, None, None, None, time_limit, False, sampling=False)
             time_cost += time.time() - start_t
             time_enc += time_encoder - start_t
-            # tag_cr = cal_tag_cover_rate(tag_trg, tag_global.to("cpu"))
-            # tag_cover_rate += tag_cr
-            # tag_eval = tag.t().cpu()
-            # label = [list(range(1, len(seq))) for seq in trg]
-            # label = [seq[1:] for seq in trg]
             label = [seq for seq in trg]
             for i in range(len(label)):
                 time_budget = 0.
@@ -130,8 +115,6 @@ def train(model, discriminator, train_set, valid_set, test_set, device, epoch_nu
           dis_optimizer, gen_optimizer, eval_interval, save_path, dis_criterion, gen_scheduler):
     best_cr, best_cr_v = 0., 0.
     best_osp, best_osp_v = 0., 0.
-    # model.reset_parameters()
-    # model.init_embed()
     # modify the learning rate
     dis_optimizer.set_lr(1e-4)
     gen_optimizer.set_lr(1e-4)
@@ -146,21 +129,10 @@ def train(model, discriminator, train_set, valid_set, test_set, device, epoch_nu
         nll_loss = 0.
         pred_score = 0.
         truth_score = paddle.to_tensor(0)
-        # logger.info("=====epoch {:>3d}=====".format(epoch_idx + 1))
         batch_iter = candidate_data_iter(train_set, batch_size, False, True)
         model.train()
         discriminator.train()
-        # for (user, poi, tag, trg, time_limit, user_trg, poi_trg, tag_trg, idx_in_src) in batch_iter:
         for (user, poi, tag, discret_time, trg, time_limit, user_trg, poi_trg, tag_trg, idx_in_src, _) in batch_iter:
-            # user = user.to(device)
-            # poi = poi.to(device)
-            # tag = tag.to(device)
-            # discret_time = discret_time.to(device)
-
-            # get the embed for ground-truth
-            # user_trg = user_trg.to(device)
-            # poi_trg = poi_trg.to(device)
-            # tag_trg = tag_trg.to(device)
             all_log_p, pi, selected_embed, truth_embed, loss_n, hit_reward = model(user, poi, tag, discret_time, idx_in_src,
                                                                                    user_trg, poi_trg, tag_trg,
                                                                                    time_limit, False, False,
@@ -183,23 +155,13 @@ def train(model, discriminator, train_set, valid_set, test_set, device, epoch_nu
                 dis_loss += loss.item()
 
             # Then update the generator
-            # Reward
-            # label = [seq[1:] for seq in trg]
-            # reward = get_hr_from_pi(pi, label, poi)
-
-            # reward = torch.tensor(reward, device=device)
-            # update the generator
             pred_selected = discriminator(selected_embed, pi_len)
             pred_score += pred_selected[:, 0].exp().mean()
-            # reinforce_loss = -(pred_selected[:, 0].exp() * 3 * log_p).mean()
             log_p = model.cal_log_p(all_log_p, pi).sum(1)
             reinforce_loss = -(pred_selected[:, 0].exp() * log_p).mean()
-            # reinforce_loss = -(hit_reward.sum(1) * log_p).mean()
 
             gen_optimizer.clear_grad()
             reinforce_loss.backward()
-            # all_loss = loss_n + reinforce_loss
-            # all_loss.backward()
             gen_optimizer.step()
 
             # Teacher forcing
@@ -213,12 +175,7 @@ def train(model, discriminator, train_set, valid_set, test_set, device, epoch_nu
             nll_loss += loss_n.item()
             running_loss += reinforce_loss.item()
             processed_batch += 1
-        # gen_scheduler.step()
         epoch_time = Time.time() - start_time
-        # logger.info("epoch {:>2d} completed.".format(epoch_idx + 1))
-        # logger.info("time taken: {:.2f} sec".format(epoch_time))
-        # # logger.info("discriminator avg. loss: {:.4f}".format(dis_loss / processed_batch))
-        # logger.info("generator avg. loss: {:.4f}".format(running_loss / processed_batch))
         logger.info("epoch {:>2d} completed, time taken: {:.2f}, reinforce avg. loss: {:.4f}, NLL avg. loss: {:.4f}, Dis avg. loss: {:.4f}".
                     format(epoch_idx + 1, epoch_time, running_loss / processed_batch, nll_loss / processed_batch,
                            dis_loss / processed_batch))
@@ -237,8 +194,6 @@ def train(model, discriminator, train_set, valid_set, test_set, device, epoch_nu
                 best_osp = o
                 model.save(os.path.join(save_path, "best_model_g.pt"))
                 discriminator.save(os.path.join(save_path, "best_model_d.pt"))
-    # model.save(os.path.join(save_path, "model_final_g.pt"))
-    # discriminator.save(os.path.join(save_path, "model_final_d.pt"))
     if need_nni:
         nni.report_final_result(best_cr)
     logger.info(f"best F1: {best_cr:.4f}, correspoding PairF1: {best_osp:.4f}")
@@ -249,21 +204,11 @@ def pretrain_dis(discriminator, model, train_set, device, pre_d_e,
     logger.info("====pretraining discriminator====")
     for epoch_idx in range(pre_d_e):
         start_time = Time.time()
-        # batch_iter = simple_data_iter(train_set, batch_size, False, True)
         batch_iter = candidate_data_iter(train_set, batch_size, False, True)
         discriminator.train()
         running_loss = 0.
         processed_batch = 0.
-        # for user, poi, tag, trg, time_limit, user_trg, poi_trg, tag_trg, idx_in_src in batch_iter:
         for user, poi, tag, discret_time, trg, time_limit, user_trg, poi_trg, tag_trg, idx_in_src, _ in batch_iter:
-            # get the log_p, pi and selected_embed from our model
-            # user = user.to(device)
-            # poi = poi.to(device)
-            # tag = tag.to(device)
-            # discret_time = discret_time.to(device)
-            # user_trg = user_trg.to(device)
-            # poi_trg = poi_trg.to(device)
-            # tag_trg = tag_trg.to(device)
             _, pi, selected_embed, truth_embed, _, _ = model(user, poi, tag, discret_time, idx_in_src, user_trg, poi_trg, tag_trg, time_limit, False)
 
             # compute the loss for discriminator
@@ -279,14 +224,9 @@ def pretrain_dis(discriminator, model, train_set, device, pre_d_e,
             target_truth = paddle.zeros([pred_truth.shape[0]], dtype='int64')
             loss = dis_criterion(pred_seleted, target_selected) + dis_criterion(pred_truth, target_truth)
 
-            # try wgan
-            # loss = -torch.mean(pred_truth) + torch.mean(pred_seleted)
             dis_optimizer.clear_grad()
             loss.backward()
             dis_optimizer.step()
-            # wgan clip the weights
-            # for p in discriminator.parameters():
-            #     p.data.clamp_(-0.01, 0.01)
             running_loss += loss.item()
             processed_batch += 1
         epoch_time = Time.time() - start_time
@@ -308,12 +248,7 @@ def pretrain_gen(model, train_set, valid_set, test_set, device, pre_g_e, batch_s
         processed_batch = 0.
         batch_iter = candidate_data_iter(train_set, batch_size, True)
         model.train()
-        # for user, poi, tag, trg, time_limit, idx_in_src in batch_iter:
         for user, poi, tag, discret_time, trg, time_limit, idx_in_src, _ in batch_iter:
-            # user = user.to(device)
-            # poi = poi.to(device)
-            # tag = tag.to(device)
-            # discret_time = discret_time.to(device)
             loss = model(user, poi, tag, discret_time, idx_in_src,
                          None, None, None, time_limit,
                          True, False, True)
@@ -322,7 +257,6 @@ def pretrain_gen(model, train_set, valid_set, test_set, device, pre_g_e, batch_s
             gen_optimizer.step()
             running_loss += loss.item()
             processed_batch += 1
-        # gen_scheduler.step()
         epoch_time = Time.time() - start_time
         logger.info("epoch {:>2d} completed, time taken: {:.2f}, avg. loss: {:.4f}".
                     format(epoch_idx + 1, epoch_time, running_loss / processed_batch))
@@ -364,16 +298,12 @@ if __name__ == "__main__":
     for atter, value in args.__dict__.items():
         logger.info('\t{} = {}'.format(atter, value))
 
-    # os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
-    # device = torch.device(args.gpu if torch.cuda.is_available() else 'cpu')
     device = None
     paddle.set_device("gpu:" + args.gpu)
     if args.nogpu:
-        # device = torch.device("cpu")
         paddle.set_device("cpu")
 
     data_dir = 'data/city/' + args.dataset
-    # data_dir = '/data/jianglinlang/seq_imitation/data/data_source/city/' + args.dataset
     train_file = os.path.join(data_dir, "trainsetANT")
     valid_file = os.path.join(data_dir, "validsetANT")
     test_file = os.path.join(data_dir, "testsetANT")
@@ -406,7 +336,6 @@ if __name__ == "__main__":
         args.random_sample,
         n_time=data_info.n_time
     )
-    # model.to(device)
 
     if args.load_path:
         if args.adversarial:
@@ -423,14 +352,12 @@ if __name__ == "__main__":
         exit()
 
     gen_optimizer = paddle.optimizer.Adam(args.lr, parameters=model.parameters())
-    # gen_scheduler = paddle.optimizer.lr_scheduler.ExponentialLR(gen_optimizer, 1)
     gen_scheduler = None
 
     if args.adversarial:
         # define the discriminator
         discriminator = Discriminator(args.user_dim + args.poi_dim + args.tag_dim, 256,
                                       args.num_heads_encoder, args.num_layers_encoder, args.dropout)
-        # discriminator.to(device)
         dis_optimizer = paddle.optimizer.Adam(args.lr, parameters=discriminator.parameters())
         dis_criterion = nn.NLLLoss(reduction='sum')
 
@@ -441,7 +368,6 @@ if __name__ == "__main__":
     # pretrain generator
     if args.restore_path:
         model.load(args.restore_path)
-        # restore_step = int(args.restore_path.split("_")[-1].split('.')[0])
         restore_step = int(re.findall('\d+', args.restore_path)[0])
     else:
         restore_step = 0
@@ -453,6 +379,3 @@ if __name__ == "__main__":
         train(model, discriminator, train_set, valid_set, test_set, device, args.epoch,
               args.batch_size, dis_optimizer, gen_optimizer,
               args.eval_interval, args.save_path, dis_criterion, gen_scheduler)
-
-    # if args.save_path:
-    #     model.save(args.save_path)
