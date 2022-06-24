@@ -1,7 +1,22 @@
-| Package          | Version |
-|------------------|---------|
-| einops           | 0.4.1   |
-| reformer-pytorch | 1.4.4   |
-| tofa             | 0.0.6   |
- | transformers     | 4.19.2  |
- | xlrd             | 2.0.1   |
+| Package             | Version   |
+|---------------------|-----------|
+| atspy               | 0.2.3     |
+| AutoTS              | 0.4.2     |
+| autox               | 0.2.3     | 
+| datasets            | 1.17.0    |
+| dgl                 | 0.6.1     |
+| einops              | 0.4.1     |
+| gluonts             | 0.9.5     |
+| gpytorch            | 1.6.0     |
+| mlxtend             | 0.20.0    |
+| nltk                | 3.7       |
+| pytorch_forecasting | 0.10.1    |
+| reformer-pytorch    | 1.4.4     |
+| statsmodels         | 0.13.0    |
+| sympy               | 1.10.1    |
+| tofa                | 0.0.6     |
+ | transformers        | 4.19.2    |
+| tsai                | 0.3.1     |
+| tsfel               | 0.1.4     |
+| tsfresh             | 0.19.0    |
+ | xlrd                | 2.0.1     |

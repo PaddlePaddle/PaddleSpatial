@@ -100,7 +100,7 @@ REQUIRED_ENV_VARS = [
 SUPPORTED_FRAMEWORKS = [
     "base", "paddlepaddle", "pytorch", "tensorflow"
 ]
-NUM_MAX_RUNS = 195
+NUM_MAX_RUNS = 219
 MAX_TIMEOUT = 3600 * 10     # 10 hours
 MIN_TIME = 3                # 3 secs
 MIN_NOISE_LEVEL = 0.001     # 0.1 %

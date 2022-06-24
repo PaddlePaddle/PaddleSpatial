@@ -6,9 +6,11 @@
 
 1. System
 
+   * CPU: 4 cores  
+   * Memory: 16 GB
    * OS: Ubuntu 18.04 LTS
    * GPU (one card)
-     * Tesla V100 (32 GB)
+     * Tesla V100 (8 GB)
      * CUDA: 11.2, CuDNN: 8
      * Driver: 460.32.03
 
@@ -28,10 +30,10 @@
 
 4. Packages installed via the pip-requirements.txt
 
-   1) [base environment](runtime-installed-pkgs/base.md)        (UPDATED on 2022/06/14)
-   2) [paddlapaddle environment](runtime-installed-pkgs/paddle.md)        (UPDATED on 2022/06/15)
-   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)        (UPDATED on 2022/06/13)
-   4) [tensorflow environment](runtime-installed-pkgs/tensorflow.md)
+   1) [base environment](runtime-installed-pkgs/base.md)        (UPDATED on 2022/06/23)
+   2) [paddlapaddle environment](runtime-installed-pkgs/paddle.md)        (UPDATED on 2022/06/23)
+   3) [pytorch environment](runtime-installed-pkgs/pytorch.md)        (UPDATED on 2022/06/23)
+   4) [tensorflow environment](runtime-installed-pkgs/tensorflow.md)        (UPDATED on 2022/06/23)
 
 
 ## Submitted Files
