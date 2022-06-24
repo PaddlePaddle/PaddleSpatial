@@ -19,9 +19,6 @@ def set_random_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
     paddle.seed(seed)
-    # torch.manual_seed(seed)
-    # torch.cuda.manual_seed_all(seed)
-
 
 def serialize(obj, path):
     with open(path, 'wb') as file:
@@ -52,35 +49,12 @@ def gather(x, dim, index):
     paddle_out = paddle.gather_nd(x, ind2).reshape(index_shape)
     return paddle_out
 
-# def get_osp(selected, ground_truth):
-#     seclcted_len = len(selected)
-#     sec = [x for x in selected if x in ground_truth]
-#     # pair_s = [(0, sec[i]) if i == 0 else (sec[i], sec[i + 1]) for i in range(len(sec) - 1)]
-#     # pair_g = [(0, ground_truth[0]) if i == 0 else (ground_truth[i], ground_truth[i + 1]) for i in range(len(ground_truth) - 1)]
-#     sec_len = len(sec)
-#     gt_len = len(ground_truth)
-#     pair_s = [(sec[i], sec[j]) for i in range(sec_len - 1) for j in range(i + 1, sec_len)]
-#     pair_g = [(ground_truth[i], ground_truth[j]) for i in range(gt_len - 1) for j in range(i + 1, gt_len)]
-#     sec_pair = [x for x in pair_s if x in pair_g]
-#     if len(pair_s) == 0:
-#         return 0
-#     # else:
-#     #     return len(sec_pair) / len(pair_s)
-#     precision = len(sec_pair) / (seclcted_len * (seclcted_len - 1) / 2)
-#     recall = len(sec_pair) / len(pair_g)
-#     denominator = precision + recall
-#     if denominator == 0:
-#         denominator = 1
-#     return 2 * precision * recall / denominator
-
 def get_osp(y_hat, y):
     # y_hat is selected
     assert (len(y) > 0)
     if len(y_hat) < 2:
         return 0.
-    # assert (len(y) == len(set(y)))  # no loops in y
-    # cdef int n, nr, nc, poi1, poi2, i, j
-    # cdef double n0, n0r
+
     n = len(y)
     nr = len(y_hat)
     n0 = n * (n - 1) / 2
@@ -184,9 +158,6 @@ def candidate_data_iter(dataset, batch_size, pretraining_gen, align=True, time_e
                 poi_t = paddle.to_tensor(p_t)
                 tag_t = paddle.to_tensor(t_t)
             else:
-                # u_t_ = [paddle.to_tensor(x) for x in u_t]
-                # p_t_ = [paddle.to_tensor(x) for x in p_t]
-                # t_t_ = [paddle.to_tensor(x) for x in t_t]
                 user_t = sequence_pad(u_t, 0)
                 poi_t = sequence_pad(p_t, 0)
                 tag_t = sequence_pad(t_t, 0)
@@ -194,36 +165,6 @@ def candidate_data_iter(dataset, batch_size, pretraining_gen, align=True, time_e
                 yield user_e.t(), poi_e.t(), tag_e.t(), time_e.t(), p_t, time_limit, user_t, poi_t, tag_t, idx_in_src, seqid
             else:
                 yield user_e.t(), poi_e.t(), tag_e.t(), p_t, time_limit, user_t, poi_t, tag_t, idx_in_src, seqid
-
-
-def mip_data_iter(dataset, align=True):
-    num_dataset = len(dataset)
-    indices = list(range(num_dataset))
-    if align:
-        indices = sorted(indices, key=lambda k: len(dataset[k][3]))
-    for i in range(0, num_dataset):
-        data_source = dataset[i]
-        # _, p_e, _, u_t, p_t, _, _ = zip(*data_source)
-        _, src_poi, _, _, u, p, _, time_limit, _ = data_source
-        user = [u[0]]
-        start_point = [p[0]]
-        end_point = [p[-1]]
-        yield user, start_point, end_point, src_poi, p, time_limit
-
-def pers_data_iter(dataset, align=True):
-    num_dataset = len(dataset)
-    indices = list(range(num_dataset))
-    if align:
-        indices = sorted(indices, key=lambda k: len(dataset[k][3]))
-    for i in range(0, num_dataset):
-        data_source = dataset[i]
-        # _, p_e, _, u_t, p_t, _, _ = zip(*data_source)
-        _, src_poi, src_tag, u, p, _, time_limit, _ = data_source
-        user = u[0]
-        start_point = [p[0]]
-        end_point = [p[-1]]
-        yield user, start_point, end_point, src_poi, src_tag, p, time_limit
-
 
 def cal_tag_cover_rate(tag_trg, tag_global):
     sec_per = []
