@@ -130,7 +130,7 @@ def exec_predict_and_test(envs, test_file, forecast_module, flag='predict'):
                 return {
                     "prediction": forecast_module.forecast(envs)
                 }
-            elif flag == 'test':
+            elif 'test' == flag:
                 test_data = TestData(path_to_data=path_to_test_file, start_col=envs["start_col"])
                 turbines, raw_turbines = test_data.get_all_turbines()
                 test_ys = []
@@ -216,7 +216,7 @@ def evaluate(path_to_src_dir):
     envs["pred_file"] = os.path.join(path_to_src_dir, envs["pred_file"])
     envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
     envs["min_distinct_ratio"] = 0.1
-    envs["min_non_zero_ratio"] = 0.5
+    envs["min_non_zero_ratio"] = 0.9
 
     if envs["is_debug"]:
         end_load_test_set_time = time.time()
