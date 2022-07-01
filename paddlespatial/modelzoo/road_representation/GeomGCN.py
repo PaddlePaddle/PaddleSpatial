@@ -8,6 +8,8 @@ from tqdm import tqdm
 import util as utils
 
 
+# Reference: https://github.com/LibCity/Bigscity-LibCity/blob/master/libcity/model/road_representation/GeomGCN.py
+# Reference: https://github.com/KAIDI3270/Geom_GCN_pytorch_implementation/blob/main/utils_layers_original.py
 class GeomGCNSingleChannel(nn.Layer):
     def __init__(self, g, in_feats, out_feats, num_divisions, activation, dropout_prob, merge, device):
         super(GeomGCNSingleChannel, self).__init__()
