@@ -5,6 +5,7 @@ from logging import getLogger
 import util as utils
 
 
+# Reference: https://github.com/LibCity/Bigscity-LibCity/blob/master/libcity/model/road_representation/ChebConv.py
 class ChebConv(nn.Layer):
     def __init__(self, config, data_feature):
         super().__init__()

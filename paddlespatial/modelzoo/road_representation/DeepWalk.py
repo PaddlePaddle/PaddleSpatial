@@ -13,6 +13,7 @@ import random
 
 
 # Reference: https://github.com/phanein/deepwalk
+# Reference: https://github.com/LibCity/Bigscity-LibCity/blob/master/libcity/model/road_representation/DeepWalk.py
 class Graph(defaultdict):
 
     def __init__(self):

@@ -4,6 +4,7 @@ import paddle.nn as nn
 import paddle.nn.functional as F
 
 
+# Reference: https://github.com/LibCity/Bigscity-LibCity/blob/master/libcity/model/road_representation/LINE.py
 class LINE_FIRST(nn.Layer):
     def __init__(self, num_nodes, output_dim):
         super().__init__()
