@@ -11,4 +11,4 @@
 | scikit-learn-intelex | 2021.6.3 | 
 | skforecast           | 0.4.3    |
 | sktime               | 0.11.4   |
-| statsmodels          | 0.12.2   |
+| statsmodels          | 0.13.0   |
