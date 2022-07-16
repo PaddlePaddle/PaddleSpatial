@@ -77,6 +77,7 @@ def performance(settings, idx, prediction, ground_truth, ground_truth_df):
     Returns:
         MAE, RMSE and Accuracy
     """
+    initiate_env(settings)
     overall_mae, overall_rmse, _, overall_latest_rmse = \
         metrics.regressor_detailed_scores(prediction, ground_truth, ground_truth_df, settings)
     # A convenient customized relative metric can be adopted
@@ -103,7 +104,27 @@ SUPPORTED_FRAMEWORKS = [
 NUM_MAX_RUNS = 219
 MAX_TIMEOUT = 3600 * 10     # 10 hours
 MIN_TIME = 3                # 3 secs
-MIN_NOISE_LEVEL = 0.001     # 0.1 %
+MIN_NOISE_LEVEL = 0.05      # 5 %
+
+
+def initiate_env(envs):
+    """
+    Desc:
+        Initiate the environment settings
+    Args:
+        envs:
+    Returns:
+        None
+    """
+    envs["data_path"] = DATA_DIR
+    envs["filename"] = "wtbdata_245days.csv"
+    envs["location_filename"] = "sdwpf_baidukddcup2022_turb_location.csv"
+    envs["day_len"] = 144
+    envs["capacity"] = 134
+    envs["output_len"] = 288
+    envs["out_var"] = 1
+    envs["min_distinct_ratio"] = 0.1
+    envs["min_non_zero_ratio"] = 0.9
 
 
 def exec_predict_and_test(envs, test_file, forecast_module, flag='predict'):
@@ -206,18 +227,11 @@ def evaluate(path_to_src_dir):
                               "The supported frameworks are 'base', 'paddlepaddle', 'pytorch', "
                               "and 'tensorflow'".format(envs["framework"]))
 
-    envs["data_path"] = DATA_DIR
-    envs["filename"] = "wtbdata_245days.csv"
-    envs["location_filename"] = "sdwpf_baidukddcup2022_turb_location.csv"
-    envs["day_len"] = 144
-    envs["capacity"] = 134
-    envs["output_len"] = 288
-    envs["out_var"] = 1
+    initiate_env(envs)
     envs["pred_file"] = os.path.join(path_to_src_dir, envs["pred_file"])
     envs["checkpoints"] = os.path.join(path_to_src_dir, envs["checkpoints"])
-    envs["min_distinct_ratio"] = 0.1
-    envs["min_non_zero_ratio"] = 0.9
-
+    #
+    #
     if envs["is_debug"]:
         end_load_test_set_time = time.time()
         print("Load test_set (test_ys) in {} secs".format(end_load_test_set_time - start_test_time))
