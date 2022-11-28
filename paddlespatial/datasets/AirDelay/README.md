@@ -1,7 +1,8 @@
 
 If you find this dataset useful, please consider citing:
 
-> @inproceedings{li2023towards,
+```bibtex
+@inproceedings{li2023towards,
 author = {Li, Yan and Lu, Xinjiang and Xiong, Haoyi and Tang, Jian and Su, Jiantao and Jin, Bo and Dou, Dejing},
 title = {Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution},
 year = {2023},
@@ -10,6 +11,7 @@ booktitle = {Proceedings of the 39th IEEE International Conference on Data Engin
 location = {Anaheim, California, USA},
 series = {ICDE '23}
 }
+```
 
 
 
