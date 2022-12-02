@@ -3,7 +3,7 @@
 This code corresponds to the paper "Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution"
 
 
-If you find this code or any of the ideas in the paper useful, please consider citing:
+If you find this code or any of the ideas in the paper useful, please cite:
 
 ```bibtex
 @inproceedings{li2023towards,
@@ -15,4 +15,6 @@ booktitle = {Proceedings of the 39th IEEE International Conference on Data Engin
 location = {Anaheim, California, USA},
 series = {ICDE '23}
 }
+``` 
+
 
