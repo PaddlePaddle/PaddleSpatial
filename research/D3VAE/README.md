@@ -21,8 +21,8 @@ The framework overview is as follows:
 
 
 We implement ${D^3}VAE$ with Python 3.8 and PaddlePaddle 2.3.2 
-([paddlepaddle](https://www.paddlepaddle.org.cn)). 
-The Pytorch version is available [here](./d3vae_pytorch). 
+([paddlepaddle](https://www.paddlepaddle.org.cn/en)). 
+The Pytorch version is available [here](https://github.com/PaddlePaddle/PaddleSpatial/tree/main/research/D3VAE/d3vae_pytorch). 
 
 
 ## Installation
