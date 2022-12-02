@@ -132,13 +132,13 @@ python main.py       --root_path $root_path --data_path $data_path \
 
 ### Basic Parameters
 
-| Params                | Description                                                                                                         |
-|:----------------------|:--------------------------------------------------------------------------------------------------------------------|
-| --sequence_length     | The length of input series.                                                                                         |
-| --prediction_length   | The length of output series, which should be exactly the same as the input length.                                  |
-| --input_dim           | Number of dimensions of input series.                                                                               |
-| --embedding_dimension | Number of dimensions of the embedding.                                                                              |
-| --percentage          | Percentage of the original dataset, it should be set between [0, 1] to decide the percentage of the sliced dataset. |
+| Params                   | Description                                                                                                               |
+|:-------------------------|:--------------------------------------------------------------------------------------------------------------------------|
+| --sequence_length        | The length of input series.                                                                                               |
+| --prediction_length      | The length of output series, which should be exactly the same as the input length.                                        |
+| --input_dim              | Number of dimensions of input series.                                                                                     |
+| --embedding_dimension    | Number of dimensions of the embedding.                                                                                    |
+| --percentage             | Percentage of the original dataset, it should be set between [0, 1] to decide the <br/> percentage of the sliced dataset. |
 
 
 ### Parameters for The Coupled Diffusion Process
