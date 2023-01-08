@@ -1,6 +1,6 @@
 
 ## Introduction
-This code corresponds to the paper "Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution"
+This code corresponds to the paper "Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution" (will be available soon).
 
 
 If you find this code or any of the ideas in the paper useful, please cite:
