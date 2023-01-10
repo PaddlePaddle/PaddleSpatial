@@ -32,7 +32,7 @@ We provide [tutorials](./tutorials) to help you navigate the repository and star
 
 ## Feedback and Community Support
 
-* Questions, reports, and suggestions are welcome through [Github Issues!](https://github.com/PaddlePaddle/PaddleSpatial/issues) 
+* Questions, reports, and suggestions are welcome through [GitHub Issues!](https://github.com/PaddlePaddle/PaddleSpatial/issues) 
 
 
 
