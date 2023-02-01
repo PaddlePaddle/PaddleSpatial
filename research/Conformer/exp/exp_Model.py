@@ -1,18 +1,23 @@
+# -*-Encoding: utf-8 -*-
+"""
+Description:
+    If you use any part of the code in this repository, please consider citing the following paper:
+    Yan Li et al. Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution,
+    in Proceedings of 39th IEEE International Conference on Data Engineering (ICDE '23),
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 from data.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_Pred, Dataset_elec
 from exp.exp_basic import Exp_Basic
 from models.model import Model
 
 from utils.tools import EarlyStopping, adjust_learning_rate
 from utils.metrics import metric
-from utils.metrics import RMSE
 
 import numpy as np
-import math
-import collections
 import paddle
 import paddle.nn as nn
 from paddle.io import DataLoader
-import copy
 import os
 import time
 

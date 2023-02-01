@@ -1,6 +1,11 @@
+# -*-Encoding: utf-8 -*-
+"""
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 import numpy as np
 import paddle
-import copy
+
 
 def adjust_learning_rate(optimizer, epoch, args):
     # lr = args.learning_rate * (0.2 ** (epoch // 2))
@@ -16,6 +21,7 @@ def adjust_learning_rate(optimizer, epoch, args):
         lr = lr_adjust[epoch]
         optimizer.set_lr(lr)
         print('Updating learning rate to {}'.format(lr))
+
 
 class EarlyStopping:
     def __init__(self, patience=7, verbose=False, delta=0):
@@ -51,11 +57,13 @@ class EarlyStopping:
         self.bestmodel = True
         self.val_loss_min = val_loss
 
+
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
 
 class StandardScaler():
     def __init__(self):

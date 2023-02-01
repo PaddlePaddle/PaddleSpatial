@@ -1,13 +1,24 @@
+# -*-Encoding: utf-8 -*-
+"""
+Description:
+    If you use any part of the code in this repository, please consider citing the following paper:
+    Yan Li et al. Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution,
+    in Proceedings of 39th IEEE International Conference on Data Engineering (ICDE '23),
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 import paddle.nn.functional as F
 import paddle
 import paddle.nn as nn
-import math
+
+
 class moving_avg(nn.Layer):
-    
+
     def __init__(self, kernel_size, stride):
         super(moving_avg, self).__init__()
         self.kernel_size = kernel_size
         self.avg = nn.AvgPool1D(kernel_size=kernel_size, stride=stride, padding=0)
+
     def forward(self, x):
         y = paddle.zeros(shape=[x.shape[0], (self.kernel_size - 1) // 2, x.shape[2]])
         y1 = paddle.zeros(shape=[x.shape[0], (self.kernel_size) // 2, x.shape[2]])
@@ -18,6 +29,7 @@ class moving_avg(nn.Layer):
         x = paddle.transpose(x, perm = [0, 2, 1])
         return x
 
+
 class series_decomp(nn.Layer):
     def __init__(self, kernel_size):
         super(series_decomp, self).__init__()
@@ -27,6 +39,7 @@ class series_decomp(nn.Layer):
         moving_mean = self.moving_avg(x)
         res = x - moving_mean
         return res, moving_mean
+
 
 class DecoderLayer(nn.Layer):
     def __init__(self, self_attention, cross_attention, dec_lstm, step_len, d_model, c_out, d_ff=None,
@@ -88,6 +101,7 @@ class DecoderLayer(nn.Layer):
         residual_trend = paddle.transpose(residual_trend, (1, 0, 2))
         residual_trend = paddle.transpose(self.projection(paddle.transpose(residual_trend, (0, 2, 1))), (0, 2, 1))
         return x, residual_trend, hidden
+
 
 class Decoder(nn.Layer):
     def __init__(self, layers, norm_layer=None):

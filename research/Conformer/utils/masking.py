@@ -1,5 +1,10 @@
-#import torch
+# -*-Encoding: utf-8 -*-
+"""
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 import paddle
+
 
 class TriangularCausalMask():
     def __init__(self, B, L, device="cpu"):
@@ -10,7 +15,8 @@ class TriangularCausalMask():
     @property
     def mask(self):
         return self._mask
-        
+
+
 class Tri_sliding():
     def __init__(self, B, L, H, device="cpu"):
         mask_shape = [B, L, H]
@@ -20,6 +26,8 @@ class Tri_sliding():
     @property
     def mask(self):
         return self._mask
+
+
 class ProbMask():
     def __init__(self, B, H, L, index, scores, device="cpu"):
         _mask = paddle.ones(L, scores.shape[-1], dtype=torch.bool).to(device).triu(1)

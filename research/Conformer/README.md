@@ -36,7 +36,7 @@ the forecast performance of this version is different from the result reported i
 * Both the sliding-window attention and full attention are supported in this implementation.
 
 * The installation of the PaddlePaddle framework can refer to 
-[this link](https://www.paddlepaddle.org.cn/documentation/docs/zh/install/index_cn.html).
+[this link](https://www.paddlepaddle.org.cn/documentation/docs/en/install/index_en.html).
 
 
 ## Requirement
@@ -95,8 +95,6 @@ python -u train.py  --data ETTm1 --root_path $1 --pred_len $2
 # ETTh1
 python -u train.py  --data ETTh1 --root_path $1 --pred_len $2
 
-# Wind power
-python -u train.py  --data elec --root_path $1 --pred_len $2
 ```
 
 

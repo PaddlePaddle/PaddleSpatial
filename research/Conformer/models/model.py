@@ -1,12 +1,20 @@
-import paddle.nn.functional as F
+# -*-Encoding: utf-8 -*-
+"""
+Description:
+    If you use any part of the code in this repository, please consider citing the following paper:
+    Yan Li et al. Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution,
+    in Proceedings of 39th IEEE International Conference on Data Engineering (ICDE '23),
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 import paddle
 import paddle.nn as nn
 from paddle.distribution import Normal
-from utils.masking import TriangularCausalMask, ProbMask
 from models.encoder import Encoder, EncoderLayer, ConvLayer
 from models.decoder import Decoder, DecoderLayer, series_decomp
 from models.attn import FullAttention, LongformerSelfAttention, AttentionLayer
 from models.embed import DataEmbedding
+
 
 class normal_flow_layer(nn.Layer):
     def __init__(self,d_model, c_out, out_len):
@@ -16,6 +24,7 @@ class normal_flow_layer(nn.Layer):
         nn.ReLU())
         self.mu = nn.Linear(d_model+out_len, out_len, weight_attr=nn.initializer.KaimingUniform(), bias_attr=nn.initializer.KaimingUniform())
         self.sigma = nn.Linear(d_model+out_len, out_len, weight_attr=nn.initializer.KaimingUniform(), bias_attr=nn.initializer.KaimingUniform())
+
     def forward(self,input_data, sample):
         h = self.conv(input_data)
         #h = h.squeeze()
@@ -26,6 +35,7 @@ class normal_flow_layer(nn.Layer):
         h = paddle.concat((h[:,:, 0:h.shape[2]-self.pred_len], sample), 2)
         output = input_data + 0.1*h
         return output, sample, sigma
+
 
 class Model(nn.Layer):
     def __init__(self, enc_in, dec_in, c_out, seq_len, label_len, out_len, step_len, d_model=512, n_heads=8, e_layers=3, d_layers=2, 

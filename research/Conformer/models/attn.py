@@ -1,4 +1,12 @@
-
+# -*-Encoding: utf-8 -*-
+"""
+Description:
+    If you use any part of the code in this repository, please consider citing the following paper:
+    Yan Li et al. Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution,
+    in Proceedings of 39th IEEE International Conference on Data Engineering (ICDE '23),
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 import paddle.nn.functional as F
 import paddle 
 import paddle.nn as nn
@@ -6,10 +14,7 @@ import numpy as np
 import math
 from math import sqrt
 from utils.masking import TriangularCausalMask, ProbMask
-from torch.nn.parameter import Parameter
-from utils.utils import deterministic_dropout, look_back, reverse_sort,\
-                        expand, get_dup_keys, expand_gather
-from utils.utils import deterministic_dropout
+
 
 class FullAttention(nn.Layer):
     def __init__(self, mask_flag=True, scale=None, attention_dropout=0.1):
@@ -31,6 +36,7 @@ class FullAttention(nn.Layer):
         A = self.dropout(paddle.nn.functional.softmax(scale * scores, -1))
         V = paddle.einsum("bhls,bshd->blhd", A, values)
         return (V, None)
+
 
 class LongformerSelfAttention(nn.Layer):
     def __init__(self, num_attention_heads=8, d_model=512, attention_window=2, attention_dilation=1):
@@ -129,6 +135,7 @@ class LongformerSelfAttention(nn.Layer):
         attn = self.sliding_chunks_matmul_pv(attn_weights, v, self.attention_window)
         attn = paddle.reshape(paddle.transpose(attn, perm = (1, 0, 2, 3)), [bsz, seq_len, embed_dim])
         return attn
+
 
 class AttentionLayer(nn.Layer):
     def __init__(self, attention, d_model, n_heads, 

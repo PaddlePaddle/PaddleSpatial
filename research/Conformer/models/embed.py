@@ -1,6 +1,15 @@
+# -*-Encoding: utf-8 -*-
+"""
+Description:
+    If you use any part of the code in this repository, please consider citing the following paper:
+    Yan Li et al. Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution,
+    in Proceedings of 39th IEEE International Conference on Data Engineering (ICDE '23),
+Authors:
+    Li,Yan (liyan22021121@gmail.com)
+"""
 import paddle
 import paddle.nn as nn
-import math
+
 
 class TokenEmbedding(nn.Layer):
     def __init__(self, c_in, d_model):
@@ -33,6 +42,7 @@ class TokenEmbedding(nn.Layer):
         x = paddle.transpose(self.tokenConv(paddle.transpose(x3, perm=(0, 2, 1))), perm=(0, 2, 1))
         return x
 
+
 class TemporalEmbedding(nn.Layer):
     def __init__(self, d_model, freq='h'):
         super(TemporalEmbedding, self).__init__()
@@ -49,6 +59,7 @@ class TemporalEmbedding(nn.Layer):
         self.weekday_embed = Embed(weekday_size, d_model)
         self.day_embed = Embed(day_size, d_model)
         self.month_embed = Embed(month_size, d_model)
+
     def forward(self, x):
         x = x.astype('int64')
         if hasattr(self, 'minute_embed'): 
@@ -72,6 +83,7 @@ class DataEmbedding(nn.Layer):
         super(DataEmbedding, self).__init__()
         self.value_embedding = TokenEmbedding(c_in=c_in, d_model=d_model)
         self.temporal_embedding = TemporalEmbedding(d_model=d_model, freq=freq)
+
     def forward(self, x, x_mark):
         x = self.value_embedding(x) + self.temporal_embedding(x_mark)
         return x
