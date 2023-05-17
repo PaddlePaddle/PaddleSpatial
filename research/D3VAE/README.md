@@ -22,7 +22,6 @@ The framework overview is as follows:
 
 We implement ${D^3}VAE$ with Python 3.8 and PaddlePaddle 2.3.2 
 ([paddlepaddle](https://www.paddlepaddle.org.cn/en)). 
-The Pytorch version is available [here](https://github.com/PaddlePaddle/PaddleSpatial/tree/main/research/D3VAE/d3vae_pytorch). 
 
 
 ## Installation
@@ -172,8 +171,6 @@ The implementation of bidirectional vae architecture is built on top of [NVAE](h
 
 Some basic results can be seen as follows. 
 Note that, to obtain better performance, more dedicated parameter tuning is required. 
-Please refer to the [pytorch version](./d3vae_pytorch) for the full experiment results 
-which are in accordance with the results reported in our paper. 
 
 ![res](fig/res.png)
 
