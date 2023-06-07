@@ -56,6 +56,7 @@ class Exp_Model(Exp_Basic):
             features=args.features,
             target=args.target,
             percentage = args.percentage,
+            inverse = args.inverse,
         )
         print(flag, len(data_set))
         data_loader = DataLoader(
@@ -168,6 +169,11 @@ class Exp_Model(Exp_Basic):
             preds.append(out.squeeze(1).detach().cpu().numpy())
             trues.append(batch_y.detach().cpu().numpy())
             input.append(batch_x[...,-1:].detach().cpu().numpy())
+            
+        if self.args.inverse: 
+            preds = test_data.inverse_transform(preds)
+            trues = test_data.inverse_transform(trues)
+          
         preds = np.array(preds)
         trues = np.array(trues)
         noisy = np.array(noisy)
