@@ -2,7 +2,6 @@
 ## Introduction
 
 This code corresponds to the [PaddlePaddle](https://www.paddlepaddle.org.cn/en) implementation of the paper "Towards Long-Term Time-Series Forecasting: Feature, Pattern, and Distribution".
-The PyTorch version can be found [here](https://github.com/yl4467/Conformer).
 
 
 We propose a long-term time-series forecasting model, named Conformer.
@@ -31,7 +30,7 @@ series = {ICDE '23}
 In the implementation of PaddlePaddle version, we employ the same setup as reported in the paper,
 the forecast performance of this version is different from the result reported in the paper.
 
-* Further parameter tuning is required to obtain comparable performance as the PyTorch version.
+* Further parameter tuning is required to obtain comparable performance.
 
 * Both the sliding-window attention and full attention are supported in this implementation.
 
