@@ -40,12 +40,12 @@ the forecast performance of this version is different from the result reported i
 
 ## Requirement
 
-* Python 3.6
-* matplotlib == 3.1.1
-* numpy == 1.19.4
-* pandas == 0.25.1
-* scikit_learn == 0.21.3
-* paddlepaddle == 2.2.2
+* Python >= 3.6
+* matplotlib ~= 3.1.1
+* numpy >= 1.19.4
+* pandas >= 0.25.1
+* scikit_learn ~= 0.21.3
+* paddlepaddle ~= 2.2.2
 
 Dependencies should be installed using the following command before training:
 `
