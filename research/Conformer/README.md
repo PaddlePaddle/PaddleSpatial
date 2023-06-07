@@ -26,9 +26,7 @@ series = {ICDE '23}
 
 ### NOTE
 
-* The experimental result reported in the paper is implemented on top of the PyTorch version. 
-In the implementation of PaddlePaddle version, we employ the same setup as reported in the paper,
-the forecast performance of this version is different from the result reported in the paper.
+* In the implementation of PaddlePaddle version, we employ the same setup as reported in the paper.
 
 * Further parameter tuning is required to obtain comparable performance.
 
