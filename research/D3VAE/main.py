@@ -78,6 +78,7 @@ parser.add_argument('--batch_size', type=int, default=16, help='batch size of tr
 parser.add_argument('--learning_rate', type=float, default=0.005, help='optimizer learning rate')
 parser.add_argument('--weight_decay', type=float, default=0.00, help='weight decay')
 parser.add_argument('--loss_type', type=str, default='kl',help='loss function')
+parser.add_argument('--inverse', type=bool, default=False,help='whether inverse the output')
 
 # device
 parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
