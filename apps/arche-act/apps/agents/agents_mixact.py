@@ -460,7 +460,7 @@ def stop_session(state) -> Tuple[State, Dict, Dict]:
     """
     state.session = None
     return (state, gr.update(visible=False), gr.update(interactive=True), 
-            gr.update(visible=False), 
+            gr.update(visible=True), 
             gr.update(value='Clarified Task if needed', visible=False),
             gr.update(visible=False))
 
@@ -553,17 +553,18 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
                                             multiselect=True,
                                             interactive=True)
     with gr.Row():
+        logo_path = "https://github.com/PaddlePaddle/PaddleSpatial/main/apps/arche-act/misc/br_logo.png"
         with gr.Column(scale=2):
             title_md = gr.Markdown(
                 "# ArcheAct: A Collaborative Agent Framework with"
-                " Disambiguaty and MixAct\n"
-                "Github repo: [https://github.com/xxx/xxx]"
-                "(https://github.com/xxx/xxx)"
+                " Disambiguation and Polymorphic Role-Playing\n"
+                "Github repo: [https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/arche-act]"
+                "(https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/arche-act)"
                 '<div style="display:flex; justify-content:center;">'
-                '<img src="http://10.35.199.41:8079/arche-act/'
-                'misc/br_logo.png" alt="Logo" style="max-width:15%;">'
-                '</div>', 
-                visible=False)
+                f'<img src="{logo_path}"'
+                ' alt="Logo" style="max-width:15%;">'
+                '</div>',
+                visible=True)
     with gr.Row():
         with gr.Column(scale=4):
             original_task_ta = gr.TextArea(

@@ -8,7 +8,7 @@
 </div>
 
 <p align="center">
-  <img src='misc/ArcheAct_v2.0_framework.png' width=800>
+  <img src='misc/archeact_framework.png' width=800>
 </p>
 
 ## Overview
