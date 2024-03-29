@@ -1,0 +1,45 @@
+# http://buildcloud.baidu.com/ci_yml/2-config_format_spec
+
+Global:
+  version: 2.0
+  #group_email: xxx@baidu.com   # <------ 配置团队邮箱地址，用于接收latest软件版本升级通知邮件
+
+Default:
+  profile: [dev]
+
+Profiles:
+  - profile:
+    name: dev
+    mode: AGENT
+    environment:
+      image: DECK_CENTOS7U5_K3         # http://buildcloud.baidu.com/submitter/5-env_declare
+      resourceType: MEDIUM
+      #tools:                          # <------ 配置软件版本信息
+      #  - go: latest                  # http://buildcloud.baidu.com/ci_yml/2-config_format_spec#20.-specify-dev-tool-for-AGENT-template
+    build:
+      command: sh build.sh
+      cache:
+        enable: true
+        trimeThresholdSize: 1
+        #paths:
+        #  - packages
+    artifacts:
+      release: true
+
+  - profile:
+    name: publish
+    mode: AGENT
+    environment:
+      image: DECK_CENTOS7U5_K3         # http://buildcloud.baidu.com/submitter/5-env_declare
+      resourceType: MEDIUM
+      #tools:                          # <------ 配置软件版本信息
+      #  - go: latest                  # http://buildcloud.baidu.com/ci_yml/2-config_format_spec#20.-specify-dev-tool-for-AGENT-template
+    build:
+      command: sh publish.sh
+      cache:
+        enable: true
+        trimeThresholdSize: 1
+        #paths:
+        #  - packages
+    artifacts:
+      release: true
