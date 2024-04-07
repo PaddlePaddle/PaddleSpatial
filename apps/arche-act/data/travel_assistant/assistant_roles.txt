@@ -1,2 +1,2 @@
-1. 出行助手
-2. 行程规划助手
+1. Travel Assistant
+2. Trip Planner

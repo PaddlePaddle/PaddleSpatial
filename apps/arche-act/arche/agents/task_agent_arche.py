@@ -104,7 +104,7 @@ class JudgeAgent(ChatAgent):
         if output_language.lower() in 'chinese' or 'chinese' in output_language.lower():
             sys_prompt = "请做出判断。"
         else:
-            sys_prompt = "You can judge a statement."
+            sys_prompt = "You can judge a statement. "
         
         system_message = BaseMessage(
             role_name="Statement Judge",
@@ -183,7 +183,7 @@ class RouteAgent(ChatAgent):
         self.router_prompt: Union[str, TextPrompt]
         if router_prompt is None:
             router_prompt_template = \
-                PromptTemplateGenerator().get_prompt_from_key(task_type, "router_proompt")
+                PromptTemplateGenerator().get_prompt_from_key(task_type, "router_prompt")
             self.router_prompt = format_assistant_agent_list(assistant_model_list, 
                                                             router_prompt_template, 
                                                             output_language)
@@ -195,7 +195,7 @@ class RouteAgent(ChatAgent):
         if output_language.lower() in 'chinese' or 'chinese' in output_language.lower():
             sys_prompt = "请选择一个适合执行指令的agent。"
         else:
-            sys_prompt = "You can select an executive agent."
+            sys_prompt = "You can select an executive agent that is suibtable for the given instruction."
         
         system_message = BaseMessage(
             role_name="Instruction Router",
@@ -335,6 +335,102 @@ class SpecifyAgent(ChatAgent):
             raise RuntimeError("Task specification failed.")
 
         return TextPrompt(specified_task_msg.content)
+
+
+class SummaryAgent(ChatAgent):
+    r"""An agent that summarizes, specifies, and simplifies the given conversation.
+
+    Attributes:
+        DEFAULT_WORD_LIMIT (int): The default word limit for the task prompt.
+
+    Args:
+        model (ModelType, optional): The type of model to use for the agent.
+            (default: :obj:`ModelType.GPT_3_5_TURBO`)
+        task_type (TaskType, optional): The type of task for which to generate
+            a prompt. (default: :obj:`TaskType.AI_SOCIETY`)
+        model_config (Any, optional): The configuration for the model.
+            (default: :obj:`None`)
+        task_simplify_prompt (Union[str, TextPrompt], optional): The prompt for
+            summarizing the task. (default: :obj:`None`)
+        word_limit (int, optional): The word limit for the task prompt.
+            (default: :obj:`50`)
+        output_language (str, optional): The language to be output by the
+            agent. (default: :obj:`None`)
+    """
+    DEFAULT_WORD_LIMIT = 50
+
+    def __init__(
+        self,
+        model: Optional[ModelType] = None,
+        task_type: TaskType = TaskType.TRAVEL_ASSISTANT,
+        model_config: Optional[Any] = None,
+        task_simplify_prompt: Optional[Union[str, TextPrompt]] = None,
+        word_limit: int = DEFAULT_WORD_LIMIT,
+        output_language: Optional[str] = None,
+    ) -> None:
+        self.task_simplify_prompt: Union[str, TextPrompt]
+        if task_simplify_prompt is None:
+            task_simplify_prompt_template = \
+                PromptTemplateGenerator().get_task_simplify_prompt(task_type)
+            self.task_simplify_prompt = task_simplify_prompt_template.format(
+                word_limit=word_limit)
+        else:
+            self.task_simplify_prompt = TextPrompt(task_simplify_prompt)
+
+        model = model or ModelType.EB_TURBO
+        model_config = model_config or ErnieBotConfig(temperature=0.8)
+
+        if output_language.lower() in 'chinese' or 'chinese' in output_language.lower():
+            sys_prompt = "请总结出任务需求。"
+        else:
+            sys_prompt = "Please summarize the task. "
+        
+        system_message = BaseMessage(
+            role_name="Task Simplifier",
+            role_type=RoleType.ASSISTANT,
+            meta_dict=None,
+            content=sys_prompt        
+        )
+
+        super().__init__(system_message, 
+                         model=model,
+                         model_config=model_config,
+                         output_language=output_language,
+                         with_declare_output_language=False)
+
+    def run(
+        self,
+        task_prompt: Union[str, TextPrompt],
+        meta_dict: Optional[Dict[str, Any]] = None,
+    ) -> TextPrompt:
+        r"""Simplify the given task prompt by providing more a summary.
+
+        Args:
+            task_prompt (Union[str, TextPrompt]): The original task descriptions.
+            meta_dict (Dict[str, Any], optional): A dictionary containing
+                additional information to include in the prompt.
+                (default: :obj:`None`)
+
+        Returns:
+            TextPrompt: The specified task prompt.
+        """
+        self.reset()
+        task_simplify_prompt = self.task_simplify_prompt.format(task=task_prompt)
+
+        if meta_dict is not None:
+            task_simplify_prompt = task_simplify_prompt.format(**meta_dict)
+
+        task_msg = BaseMessage.make_user_message(role_name="Task Simplifier",
+                                                 content=task_simplify_prompt)
+        simplifier_response = self.step(task_msg)
+        if len(simplifier_response.msgs) == 0:
+            raise RuntimeError("Got no simplification message.")
+        simplified_task_msg = simplifier_response.msgs[0]
+
+        if simplifier_response.terminated:
+            raise RuntimeError("Task summary and simplification failed.")
+
+        return TextPrompt(simplified_task_msg.content)
 
 
 class PlannerAgent(ChatAgent):

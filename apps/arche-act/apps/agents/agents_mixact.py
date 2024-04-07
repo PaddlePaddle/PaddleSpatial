@@ -235,7 +235,7 @@ def playing_start(
         logger.info("Double click")
         return {}  # may fail
 
-    if society_name not in {"Travel Assistant", "Trip Plan", "Travel Assistant En"}:
+    if society_name not in {"Travel Assistant", "Trip Plan", "Travel Assistant ZH"}:
         logger.info("Error: unrecognezed society {}", society_name)
         return {}
 
@@ -245,20 +245,10 @@ def playing_start(
     if society_name == "Travel Assistant":
         meta_dict = None
         extend_sys_msg_meta_dicts = None
-        # Keep user and assistant intact
         task_type = TaskType.TRAVEL_ASSISTANT
         assistant_agents_subpath = "travel_assistant/assistant_agents.txt"
-    elif society_name == "Travel Assistant En":
-        meta_dict = None
-        extend_sys_msg_meta_dicts = None
-        # Keep user and assistant intact
-        task_type = TaskType.TRAVEL_ASSISTANT_EN
-        assistant_agents_subpath = "travel_assistant_en/assistant_agents.txt"
-    else:  # "Trip Plan"
-        meta_dict = None
-        extend_sys_msg_meta_dicts = None
-        # Keep user and assistant intact
-        task_type = TaskType.TRIP_PLAN
+    else:  # TODO
+        pass
 
     try:
         if not model_names:
@@ -271,11 +261,17 @@ def playing_start(
         for model_name in model_names:
             model_capability = assistant_agent_descs[model_name]
             assistant_model_list.append([model_name, model_capability])
-
+        
         if clarified_task:
             State.update_tasks(state, clarified_task)
             if state.tasks:
                 original_task = original_task + '\n\n' + '\n\n'.join(desc for desc in state.tasks)
+                original_task = ArcheActPlaying.summarize_user_request(
+                                                    conversation=original_task, 
+                                                    user_role_name=user, 
+                                                    output_language=language, 
+                                                    task_type=task_type
+                                                )
         
         session = ArcheActPlaying(
             assistant,
@@ -297,14 +293,12 @@ def playing_start(
         # traceback.print_exc()
         return (state, str(ex), "", [], gr.update(), gr.update(), gr.update())
 
-    # Can't re-create a state like below since it
-    # breaks 'role_playing_chat_cont' runner with every=N.
-    # `state = State(session=session, max_messages=int(max_messages), chat=[],`
-    # `             saved_assistant_msg=None)`
-
     State.construct_inplace(state, session, int(max_messages), [], None)
     if session.task_prompt:
-        State.update_tasks(state, session.task_prompt.split('问题：')[-1].strip('.。'))
+        if "chinese" in language.lower() or language.lower() in "chinese":
+            State.update_tasks(state, session.task_prompt.split('问题：')[-1].strip('.。'))
+        else:
+            State.update_tasks(state, session.task_prompt.split('Question:')[-1].strip('.。 '))
 
     specified_task_prompt = session.specified_task_prompt \
         if session.specified_task_prompt is not None else ""
@@ -423,9 +417,6 @@ def playing_chat_cont(state) -> \
 
     state.saved_assistant_msg = a_msg
 
-    # logger.debug('u_msg: \n{}\n', u_msg.content)
-    # logger.debug('\na_msg: \n{}\n', a_msg.content)
-
     state.chat.append((None, split_markdown_code(u_msg.content.replace('<', '\<').replace('>', '\>'))))
     state.chat.append((split_markdown_code(a_msg.content), None))
 
@@ -483,22 +474,18 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
         os.environ["ERNIE_BOT_ACCESS_TOKEN"] = eb_access_token
 
     society_dict: Dict[str, Dict[str, Any]] = {}
-    for society_name in ("Travel Assistant", "Trip Plan", "Travel Assistant En"):
+    for society_name in ("Travel Assistant"):
         if society_name == "Travel Assistant":
             assistant_role_subpath = "travel_assistant/assistant_roles.txt"
             user_role_subpath = "travel_assistant/user_roles.txt"
             assistant_agents_subpath = "travel_assistant/assistant_agents.txt"
-            assistant_role = "出行助手"
-            user_role = "游客"
-            # default_task = "找一条最近的公交路线"
-            default_task = "找一条最近的去颐和园的公交路线"
+            assistant_role = "Travel Assistant"
+            user_role = "Tourist"
+            default_task = "Search for the nearest bus route to Summer Palace"
+            language = "English"
         else:
-            assistant_role_subpath = "trip_plan/assistant_roles.txt"
-            user_role_subpath = "trip_plan/user_roles.txt"
-            assistant_agents_subpath = "trip_plan/assistant_agents.txt"
-            assistant_role = "行程规划助手"
-            user_role = "游客"
-            default_task = "去哈尔滨旅游"
+            # TODO
+            pass
 
         assistant_role_path = os.path.join(REPO_ROOT, f"data/{assistant_role_subpath}")
         user_role_path = os.path.join(REPO_ROOT, f"data/{user_role_subpath}")
@@ -511,6 +498,7 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
             assistant_role=assistant_role,
             user_role=user_role,
             default_task=default_task,
+            language=language
         )
         society_dict[society_name] = society_info
 
@@ -525,11 +513,12 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
         assistant_list_dd_update = gr.update(
                                     choices=list(society["assistant_agents"].keys())
                                     )
-        return assistant_dd_update, user_dd_update, society['default_task'], assistant_list_dd_update
+        language_ta_update = gr.update(value=society['language'])
+        return assistant_dd_update, user_dd_update, society['default_task'], assistant_list_dd_update, language_ta_update
 
     with gr.Row():
         with gr.Column(scale=1):
-            society_dd = gr.Dropdown(["Travel Assistant", "Trip Plan"],
+            society_dd = gr.Dropdown(["Travel Assistant"],
                                      label="Choose the society",
                                      value="Travel Assistant", interactive=True)
         with gr.Column(scale=2):
@@ -556,14 +545,14 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
         logo_path = "https://github.com/PaddlePaddle/PaddleSpatial/main/apps/arche-act/misc/br_logo.png"
         with gr.Column(scale=2):
             title_md = gr.Markdown(
-                "# ArcheAct: A Collaborative Agent Framework with"
+                "# ArcheAct: A Multi-Agent Framework with"
                 " Disambiguation and Polymorphic Role-Playing\n"
                 "Github repo: [https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/arche-act]"
                 "(https://github.com/PaddlePaddle/PaddleSpatial/tree/main/apps/arche-act)"
                 '<div style="display:flex; justify-content:center;">'
                 f'<img src="{logo_path}"'
                 ' alt="Logo" style="max-width:15%;">'
-                '</div>',
+                '</div>', 
                 visible=True)
     with gr.Row():
         with gr.Column(scale=4):
@@ -593,7 +582,7 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
                                             interactive=True,
                                             label="Messages to generate")
             with gr.Row():
-                language_ta = gr.TextArea(label="Language", value="Chinese",
+                language_ta = gr.TextArea(label="Language", value="English",
                                           lines=1, 
                                           interactive=True)
         with gr.Column(scale=2):
@@ -625,7 +614,7 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
                                       visible=False)
     
     # ===========  Blocks for role-playing session ===============
-    chatbot = gr.Chatbot(label="Chat between autonomous agents")
+    chatbot = gr.Chatbot(label="Chat between autonomous agents", height=1000)
     empty_state = State.empty()
     session_state: gr.State = gr.State(empty_state)
 
@@ -667,7 +656,7 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
                     clarified_task_ta, clarify_task_bn])
 
     society_dd.change(change_society, society_dd,
-                      [assistant_dd, user_dd, original_task_ta, assistant_list_dd])
+                      [assistant_dd, user_dd, original_task_ta, assistant_list_dd, language_ta])
     assistant_dd.change(lambda dd: dd, assistant_dd, assistant_ta)
     user_dd.change(lambda dd: dd, user_dd, user_ta)
 

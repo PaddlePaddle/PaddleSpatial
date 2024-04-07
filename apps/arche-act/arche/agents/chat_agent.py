@@ -297,12 +297,6 @@ class ChatAgent(BaseAgent):
         """
         if role not in {'system', 'user', 'assistant', 'function'}:
             raise ValueError(f"Unsupported role {role}")
-        # last_msg = self.stored_messages[-1]
-        # # print(f'last_msg.role_at_backend: {last_msg.role_at_backend}')
-        # # print(f'role: {role}')
-        # # If the last message is from the same role, do not add it again
-        # if last_msg.role_at_backend == role:
-        #     return self.stored_messages
         self.stored_messages.append(ChatRecord(role, message))
         return self.stored_messages
 

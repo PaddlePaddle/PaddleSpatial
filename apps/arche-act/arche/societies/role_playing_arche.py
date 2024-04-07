@@ -16,6 +16,7 @@ from arche.agents import (
     CriticAgent,
     PlannerAgent,
     SpecifyAgent, 
+    SummaryAgent,
     JudgeAgent,
     RouteAgent,
 )
@@ -177,7 +178,9 @@ class ArcheActPlaying:
         """
         if self.with_task_specify:
             task_specify_meta_dict = dict()
-            if self.task_type in [TaskType.TRAVEL_ASSISTANT]:
+            if self.task_type in [
+                TaskType.TRAVEL_ASSISTANT
+            ]:
                 task_specify_meta_dict.update(
                     dict(
                         assistant_role=assistant_role_name, 
@@ -202,18 +205,27 @@ class ArcheActPlaying:
             self.task_is_clarified = self.clarify_task()
             if self.task_is_clarified:
                 # Get rid of the clarifcation part
-                self.task_prompt = self.task_prompt.split('任务描述：')[-1].strip('.。')
+                if "chinese" in self.output_language.lower() or self.output_language.lower() in "chinese":
+                    self.task_prompt = self.task_prompt.split('任务描述：')[-1].strip('.。')
+                else:
+                    self.task_prompt = self.task_prompt.split('Task description:')[-1].strip('.。 ')
     
     def clarify_task(self):
         r"""Check if the task prompt is clarified.
         Returns:
             bool: True if the task prompt is clarified, False otherwise.
         """
-        if "需要澄清：True" not in self.specified_task_prompt:
+        clarify_stmt = "Need clarification"
+        if "chinese" in self.output_language.lower() or self.output_language.lower() in "chinese":
+            clarify_stmt = "需要澄清"
+            true_stmt = f"{clarify_stmt}：True"
+        else:
+            true_stmt = f"{clarify_stmt}: True"
+        if true_stmt not in self.specified_task_prompt:
             return True
         if not self.judgement_assess(
             response=self.specified_task_prompt,
-            statement="需要澄清",
+            statement=clarify_stmt,
             output_language=self.output_language
         ):
             return True
@@ -261,6 +273,46 @@ class ArcheActPlaying:
             else:
                 raise ValueError("Judgement {} is not recognized.".format(judgement))
         return status
+    
+    @staticmethod
+    def summarize_user_request(
+            conversation: Union[str, TextPrompt], 
+            user_role_name: str,
+            output_language: Optional[str], 
+            task_type: Optional[TaskType], 
+            model_type: Optional[ModelType] = None, 
+            agent_kwargs: Optional[Dict] = None) -> bool:
+        r"""Initialize a summary agent to summarize and simplify the task descriptions (user request).
+
+        Args:
+            conversation (str): The conversation about a user's request. 
+            user_role_name (str): The name of the user role.
+            output_language (str, optional): The language to be output by the
+                agent.
+            task_type (TaskType, optional): The task type to be used.
+            model_type (ModelType, optional): The model type to be used by the agent.
+            agent_kwargs (Dict, optional): Additional arguments to pass to the agent.
+        """
+        if model_type is not None:
+            if agent_kwargs is None:
+                agent_kwargs = {}
+            agent_kwargs.update(dict(model=model_type))
+        summary_agent = SummaryAgent(
+            task_type=task_type,
+            output_language=output_language,
+            **(agent_kwargs or {}),
+        )
+        task_summary_meta_dict = dict()
+        task_summary_meta_dict.update(
+            dict(
+                user_role=user_role_name
+            )
+        )
+        summary = summary_agent.run(
+            task_prompt=conversation,
+            meta_dict=task_summary_meta_dict
+        )        
+        return summary
 
     def task_is_done(self, response: str, strict_constraint=False) -> bool:
         r"""Check if the task is done.
@@ -317,14 +369,12 @@ class ArcheActPlaying:
         """
         sys_msg_meta_dicts = [dict(task=self.task_prompt) for _ in range(2)]
         if (extend_sys_msg_meta_dicts is None and self.task_type in [
-                TaskType.TRAVEL_ASSISTANT,
+                TaskType.TRAVEL_ASSISTANT
         ]):
             extend_sys_msg_meta_dicts = [
                 dict(assistant_role=assistant_role_name,
                      user_role=user_role_name) for _ in range(2)
             ]
-        # logger.debug(f"sys_msg_meta_dicts: {sys_msg_meta_dicts}")
-        # logger.debug(f"extend_sys_msg_meta_dicts: {extend_sys_msg_meta_dicts}")
 
         if extend_sys_msg_meta_dicts is not None:
             sys_msg_meta_dicts = [{
@@ -332,7 +382,6 @@ class ArcheActPlaying:
                 **extend_sys_msg_meta_dict
             } for sys_msg_meta_dict, extend_sys_msg_meta_dict in zip(
                 sys_msg_meta_dicts, extend_sys_msg_meta_dicts)]
-        # logger.debug(f"sys_msg_meta_dicts: {sys_msg_meta_dicts}")
 
         init_assistant_sys_msg, init_user_sys_msg = (
             sys_msg_generator.from_dicts(
@@ -342,9 +391,6 @@ class ArcheActPlaying:
                     (user_role_name, RoleType.USER if self.with_router else RoleType.USER_PLAN),
                 ],
             ))
-        # logger.info(f"user_role: {RoleType.USER if self.with_router else RoleType.USER_PLAN}")
-        # logger.info(f"init_assistant_sys_msg: {init_assistant_sys_msg}")
-        # logger.info(f"init_user_sys_msg: {init_user_sys_msg}")
         return init_assistant_sys_msg, init_user_sys_msg, sys_msg_meta_dicts
 
     def init_planner(self,
@@ -390,7 +436,9 @@ class ArcheActPlaying:
         """
         if self.with_router:
             router_meta_dict = dict()
-            if self.task_type in [TaskType.TRAVEL_ASSISTANT]:
+            if self.task_type in [
+                TaskType.TRAVEL_ASSISTANT
+            ]:
                 router_meta_dict.update(
                     dict(
                         assistant_model_list=self.assistant_model_list
@@ -433,9 +481,6 @@ class ArcheActPlaying:
                 agents.
         """
         if self.model_type is not None:
-            # if assistant_agent_kwargs is None:
-            #     assistant_agent_kwargs = {}
-            # assistant_agent_kwargs.update(dict(model=self.model_type))
             if user_agent_kwargs is None:
                 user_agent_kwargs = {}
             user_agent_kwargs.update(dict(model=self.model_type))
@@ -450,7 +495,6 @@ class ArcheActPlaying:
                                                     init_user_sys_msg.content, 
                                                     output_language)
                 init_user_sys_msg = init_user_sys_msg.create_new_instance(content=init_user_sys_msg_upd_content)
-                # print(f'\ninit_user_sys_msg: {init_user_sys_msg.content}\n')
             else:
                 self.init_router(route_agent_kwargs=route_agent_kwargs, output_language=output_language)
 
@@ -669,6 +713,9 @@ class ArcheActPlaying:
                 if 'input' in valued_elems:
                     input_params = valued_elems['input']
                 response_msg, executor = self.router_agent(instruction=instruction, input_params=input_params)
+                
+                if not executor:
+                    raise RuntimeError(f"Invalid Exector: {executor}! \nCAN NOT find an executor from response: {response_msg}")
 
                 if self.output_language.lower() in 'chinese' or 'chinese' in self.output_language.lower():
                     user_instruction += "\n" + "执行者：" + executor
@@ -745,5 +792,3 @@ class ArcheActPlaying:
             ChatAgentResponse([routed_user_msg], user_response.terminated,
                               user_response.info),
         )
-
-

@@ -17,12 +17,9 @@ class RoleType(Enum):
     """
     ASSISTANT = "assistant"
     USER = "user"
-    # USER_SPECIFY = "user_specify"
     USER_PLAN = "user_plan"
     CRITIC = "critic"
     EMBODIMENT = "embodiment"
-    # ACTOR = "actor"
-    # PLANNER = "planner"
     DEFAULT = "default"
 
 
@@ -182,8 +179,6 @@ class TaskType(Enum):
     The type of tasks.
     """
     TRAVEL_ASSISTANT = "travel_assistant"
-    TRAVEL_ASSISTANT_EN = "travel_assistant_en"
-    TRIP_PLAN = "trip_plan"
 
     CODE = "code"
     SOLUTION_EXTRACTION = "solution_extraction"

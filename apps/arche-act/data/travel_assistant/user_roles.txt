@@ -1,6 +1,6 @@
-1. 公司职员
-2. 大学生
-3. 游客
-4. 大学教师
-5. 老年人
-6. 商务人士
+1. Company employee
+2. College student
+3. Tourist
+4. University teacher
+5. Elderly people
+6. Business professional

@@ -1,5 +1,5 @@
 print-%  : ; @echo $* = $($*)
-PROJECT_NAME   = arche
+PROJECT_NAME   = arche-act
 COPYRIGHT      = "@ baidu.com. All Rights Reserved."
 PROJECT_PATH   = $(PROJECT_NAME)
 SHELL          = /bin/bash

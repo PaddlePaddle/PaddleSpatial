@@ -1,6 +1,6 @@
 
 
-# ArcheAct: A Collaborative Agent Framework with MixAct and Disambiguaty
+# ArcheAct: An LLM-Based Multi-Agent Framework with Disambiguation and Polymorphic Role-Playing
 
 <div align="center">
 
@@ -12,30 +12,46 @@
 </p>
 
 ## Overview
-The rapid advancement of conversational and chat-based language models has led to remarkable progress in complex task-solving. 
-However, their success heavily relies on human input to guide the conversation, which can be challenging and time-consuming. 
-This work explores the potential of building scalable techniques to facilitate autonomous cooperation among communicative agents and provide insight into their "cognitive" processes. 
-To address the challenges of achieving autonomous cooperation, we propose a novel communicative agent framework named *role-playing*. Our approach involves using *inception prompting* to guide chat agents toward task completion while maintaining consistency with human intentions. 
-We showcase how role-playing can be used to generate conversational data for studying the behaviors and capabilities of chat agents, providing a valuable resource for investigating conversational language models. 
-Our contributions include introducing a novel communicative agent framework, offering a scalable approach for studying the cooperative behaviors and capabilities of multi-agent systems, and open-sourcing our library to support research on communicative agents and beyond. 
-The GitHub repository of this project is made publicly available on: [https://github.com/xxx/xxx](https://github.com/xxx/archeact).
+
+To address the challenges of automating data annotation for complex problem-solving, we introduce a novel multi-agent framework called ArcheAct. 
+This framework is built upon conversational LLMs and incorporates a disambiguation mechanism and a polymorphic role-playing approach. 
+The disambiguation mechanism ensures that user queries are precise and actionable within the task's context. 
+Moreover, through multi-step reasoning facilitated by communicative agents and implementing a polymorphic role-playing strategy, ArcheAct can navigate the intricacies of real-world tasks that are too complex for a single agent to handle. 
 
 ## Try it yourself
-We provide a 
-
-## Documentation
+We provide a demo showcasing the application of ArcheAct to simulate the travel assistant multi-agent system for searching POIs, navigating, obtaining travel advice, etc.
 
 
-## Installation
+
+### Installation
 
 
-## Example
+Install `ArcheAct` from source with conda and pip: 
+
+```sh
+# Create a conda virtual environment
+conda create --name arche-act python=3.10
+
+# Activate arche conda environment
+conda activate arche-act
+
+# Clone github repo
+git clone https://github.com/PaddlePaddle/PaddleSpatial
+
+# Change directory into project directory
+cd PaddleSpatial/apps/arche-act
+
+# Install ArcheAct from source
+pip install -e .
+```
+
+### Example
 
 
 **For Bash shell (Linux, macOS, Git Bash on Windows):**
 
 ```bash
-# Export your OpenAI API key
+# Export your ERNIE Bot Access Token
 export ERNIE_BOT_ACCESS_TOKEN=<insert your EB Access Token>
 ```
 
@@ -56,42 +72,16 @@ $env:ERNIE_BOT_ACCESS_TOKEN="<insert your ErnieBot Access Token>"
 Replace `<insert your ErnieBot Access Token>` with your actual ErnieBot Access Token in each case. 
 Make sure there are no spaces around the `=` sign.
 
-After setting the OpenAI API key, you can run the script:
+After setting the API key, you can run the script:
 
 ```bash
-# You can change the role pair and initial prompt in role_playing.py
+# A web-based user interface demo
 python apps/agents/agents_mixact.py
 ```
 
 Please note that the environment variable is session-specific. 
 If you open a new terminal window or tab, you will need to set the access token again in that new session.
 
-
-## Use Open-Source Models as Backends
-
-
-### Supported Models
-
-
-
-## Data (Hosted on Hugging Face)
-
-
-## Visualizations of Instructions and Tasks
-
-
-
-## Implemented Research Ideas from Other Works
-
-
-## News
-- 
-
-## Citation
-```
-
-```
-## Acknowledgement
 
 
 ## License
@@ -100,12 +90,3 @@ The intended purpose and licensing of ArcheAct is solely for research use.
 
 The source code is licensed under Apache 2.0.
 
-The datasets are licensed under CC BY NC 4.0, which permits only non-commercial usage. 
-It is advised that any models trained using the dataset should not be utilized for anything other than research purposes.
-
-## Contributing to  🐫
-We appreciate your interest in contributing to our open-source initiative. 
-
-
-## Contact
-For more information please contact 

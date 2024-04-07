@@ -10,7 +10,6 @@ from typing import Any, Dict
 
 from arche.prompts import (
     TravelAssistantPromptTemplateDict,
-    TravelAssistantEnPromptTemplateDict,
     SolutionExtractionPromptTemplateDict,
     TextPromptDict,
 )
@@ -32,8 +31,6 @@ class TaskPromptTemplateDict(Dict[Any, TextPromptDict]):
         self.update({
             TaskType.TRAVEL_ASSISTANT:
             TravelAssistantPromptTemplateDict(),
-            TaskType.TRAVEL_ASSISTANT_EN:
-            TravelAssistantEnPromptTemplateDict,
             TaskType.SOLUTION_EXTRACTION:
             SolutionExtractionPromptTemplateDict(),
         })

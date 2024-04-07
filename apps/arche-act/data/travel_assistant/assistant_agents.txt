@@ -1,2 +1,2 @@
-1.  EB_8K # 具有思考和逻辑推理能力,能够准确的执行单步动作,稳定性高
-2.  EB_TURBO # 具备快速执行多步动作的能力
+1.  EB_8K # Possesses thinking and logical reasoning abilities, can accurately execute single-step actions, high stability
+2.  EB_TURBO # Has the ability to quickly execute multi-step actions

@@ -110,3 +110,17 @@ class PromptTemplateGenerator:
             TextPrompt: The generated prompt for specifying a task.
         """
         return self.get_prompt_from_key(task_type, "task_specify_prompt")
+
+    def get_task_simplify_prompt(
+        self,
+        task_type: TaskType,
+    ) -> TextPrompt:
+        r"""Gets the prompt for simplifying a task for a given task type.
+
+        Args:
+            task_type (TaskType): The type of the task.
+
+        Returns:
+            TextPrompt: The generated prompt for simplifying a task.
+        """
+        return self.get_prompt_from_key(task_type, "task_simplify_prompt")
