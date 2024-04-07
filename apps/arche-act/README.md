@@ -30,10 +30,10 @@ Install `ArcheAct` from source with conda and pip:
 
 ```sh
 # Create a conda virtual environment
-conda create --name arche-act python=3.10
+conda create --name arche python=3.10
 
 # Activate arche conda environment
-conda activate arche-act
+conda activate arche
 
 # Clone github repo
 git clone https://github.com/PaddlePaddle/PaddleSpatial

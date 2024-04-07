@@ -235,7 +235,7 @@ def playing_start(
         logger.info("Double click")
         return {}  # may fail
 
-    if society_name not in {"Travel Assistant", "Trip Plan", "Travel Assistant ZH"}:
+    if society_name not in {"Travel Assistant"}:
         logger.info("Error: unrecognezed society {}", society_name)
         return {}
 
@@ -474,18 +474,18 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
         os.environ["ERNIE_BOT_ACCESS_TOKEN"] = eb_access_token
 
     society_dict: Dict[str, Dict[str, Any]] = {}
-    for society_name in ("Travel Assistant"):
+    for society_name in ["Travel Assistant"]:
         if society_name == "Travel Assistant":
             assistant_role_subpath = "travel_assistant/assistant_roles.txt"
             user_role_subpath = "travel_assistant/user_roles.txt"
             assistant_agents_subpath = "travel_assistant/assistant_agents.txt"
             assistant_role = "Travel Assistant"
             user_role = "Tourist"
-            default_task = "Search for the nearest bus route to Summer Palace"
+            default_task = "Search to go"
             language = "English"
         else:
             # TODO
-            pass
+            continue
 
         assistant_role_path = os.path.join(REPO_ROOT, f"data/{assistant_role_subpath}")
         user_role_path = os.path.join(REPO_ROOT, f"data/{user_role_subpath}")
@@ -568,7 +568,7 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
                 task_specifier_cb = gr.Checkbox(value=True,
                                                 label="With task specifier")
             with gr.Row():
-                router_cb = gr.Checkbox(value=False,
+                router_cb = gr.Checkbox(value=True,
                                         label="With agent router")
             with gr.Row():
                 ts_word_limit_nb = gr.Number(
@@ -614,7 +614,7 @@ def construct_ui(blocks, api_key: Optional[str] = None, eb_access_token: Optiona
                                       visible=False)
     
     # ===========  Blocks for role-playing session ===============
-    chatbot = gr.Chatbot(label="Chat between autonomous agents", height=1000)
+    chatbot = gr.Chatbot(label="Chat between autonomous agents")
     empty_state = State.empty()
     session_state: gr.State = gr.State(empty_state)
 

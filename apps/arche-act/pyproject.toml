@@ -3,7 +3,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "arche-act"
+name = "arche"
 version = "0.1.1"
 authors = ["baidu.com"]
 description = "Communicative Agents with Disambiguation and Polymorphic Role-Playing"
@@ -38,6 +38,7 @@ protobuf = "^4"
 docx2txt = "^0.8" 
 PyMuPDF = "^1.22.5"  
 pathlib = "^1.0.1"
+gradio = "4.25.0"
 loguru = "^0.7.2"
 
 transformers = { version = "^4", optional = true }
