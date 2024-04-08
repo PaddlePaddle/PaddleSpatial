@@ -21,7 +21,9 @@ Moreover, through multi-step reasoning facilitated by communicative agents and i
 ## Try it yourself
 We provide a demo showcasing the application of ArcheAct to simulate the travel assistant multi-agent system for searching POIs, navigating, obtaining travel advice, etc.
 
-![](./misc/demo_showcase.gif)
+<p align="center">
+  <img src='./misc/demo_showcase.gif' width=800>
+</p>
 
 
 
