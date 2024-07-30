@@ -1,8 +1,7 @@
 ## Introduction
 
 This code corresponds to the [PaddlePaddle](https://www.paddlepaddle.org.cn/en) implementation of the paper "Visualization Recommendation with Prompt-based Reprogramming of  Large Language Models" (ACL2024).
-
-<img src="./model.jpg" alt="image-20240730230406847" style="zoom:10%;" />
+<img src="./model.jpg"  style="zoom:50%;" width="300" />
 
 ## Requirements
 
