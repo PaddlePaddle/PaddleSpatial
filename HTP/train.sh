@@ -1,0 +1,1 @@
+python -u  -m paddle.distributed.launch --gpus "0,1" train.py ./train.json

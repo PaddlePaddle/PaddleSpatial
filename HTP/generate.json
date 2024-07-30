@@ -1,0 +1,29 @@
+{
+    "model_name_or_path": "checkpoint-path",
+    "per_device_train_batch_size": 1,
+    "per_device_eval_batch_size": 1,
+    "gradient_accumulation_steps":16,
+    "fp16": true,
+    "fp16_opt_level": "O2",
+    "hard_code_file": "./hard_code/hard_code.pdparams",
+    "cluster_index_file": "./cluster_prompt/test_labels.pdparams",
+    "test_file": "./data_preprocess/input_data/test_data.pdparams",
+    "output_dir": "./output/test",
+    "do_predict": true,
+    "eval_with_do_generation": true,
+    "MAX_H": 15,
+    "MAX_VAL": 20,
+    "learning_rate":1e-5,
+    "max_target_length": 256,
+    "table_column": "table",
+    "text_column": "format_table",
+    "target_column": "chart",
+    "save_strategy": "epoch",
+    "max_steps": 200000,
+    "logging_strategy":"steps",
+    "logging_steps":1,
+    "predict_with_generate":true
+  }
+
+
+  
