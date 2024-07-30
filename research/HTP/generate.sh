@@ -1,0 +1,1 @@
+python -u  -m paddle.distributed.launch --gpus "0" generate.py ./generate.json
