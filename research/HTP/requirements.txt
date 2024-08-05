@@ -1,0 +1,12 @@
+datasets
+editdistance
+imblearn
+joblib
+matplotlib
+numpy
+paddleclip
+paddlenlp
+paddlepaddle-gpu==2.6.1
+pandas
+scikit-learn
+scipy
