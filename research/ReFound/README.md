@@ -1,7 +1,7 @@
 
 ## Introduction
 
-This repo is the [PaddlePaddle](https://www.paddlepaddle.org.cn/en) implementation of the KDD 2024 Reasearch Track paper "ReFound: Crafting a Foundation Model for Urban Region Understanding upon Language and Visual Foundations".
+This repo is the [PaddlePaddle](https://www.paddlepaddle.org.cn/en) implementation of the KDD 2024 Reasearch Track paper "ReFound: Crafting a Foundation Model for Urban Region Understanding upon Language and Visual Foundations"([paper link](https://dl.acm.org/doi/pdf/10.1145/3637528.3671992)).
 
 ## Requirement
 
