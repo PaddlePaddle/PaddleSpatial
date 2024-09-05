@@ -1,0 +1,5 @@
+numpy
+PIL
+paddlepaddle-gpu==2.4.2
+scikit-learn
+scipy
