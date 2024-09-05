@@ -38,6 +38,7 @@ We provide the processed dataset of two downstream tasks in our paper: Urban Vil
 
 
 ## Folder Structure
+Please create folders with the following directory structure:
 ```
 ReFound
    |- bert-based-chinese
