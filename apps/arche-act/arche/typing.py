@@ -35,8 +35,8 @@ class ModelType(Enum):
     STUB = "stub"
 
     EB = "ernie-bot"
-    EB_TURBO = "ernie-bot-turbo"
-    EB_8K = "ernie-bot-8k"
+    EB_8K = "ernie-bot-turbo"
+    EB_TURBO = "ernie-bot-speed"
     EB_4 = "ernie-bot-4"
 
     LLAMA_2 = "llama-2"
@@ -65,9 +65,10 @@ class ModelType(Enum):
         if self is ModelType.EB:
             return "chat/compeletions"
         elif self is ModelType.EB_TURBO:
-            return "chat/eb-instant"
+            # return "chat/eb-instant"
+            return "chat/ernie_speed"
         elif self is ModelType.EB_8K:
-            return "chat/ernie_bot_8k"
+            return "chat/ernie-4.0-turbo-8k"
         elif self is ModelType.EB_4:
             return "chat/completions_pro"
         else:
